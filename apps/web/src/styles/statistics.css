@@ -1,0 +1,276 @@
+/* Codexonx Statistics Report Styles */
+
+/* Progress Component */
+.codexonx-progress {
+  display: flex;
+  align-items: center;
+}
+
+/* Progress Bar Container */
+.codexonx-progress-container {
+  background-color: hsl(var(--muted));
+  width: 6rem;
+  height: 0.5rem;
+  border-radius: var(--codexonx-radius-full);
+  margin-right: 0.5rem;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Progress Bar */
+.codexonx-progress-bar {
+  height: 100%;
+  border-radius: var(--codexonx-radius-full);
+  transition: width 0.5s var(--codexonx-easing-standard);
+}
+
+/* Height Variants */
+.codexonx-progress-container.h-1 {
+  height: 0.25rem;
+}
+
+.codexonx-progress-container.h-1\.5 {
+  height: 0.375rem;
+}
+
+.codexonx-progress-container.h-2 {
+  height: 0.5rem;
+}
+
+.codexonx-progress-container.h-3 {
+  height: 0.75rem;
+}
+
+/* Pre-defined width classes */
+.codexonx-progress-width-0 { width: 0%; }
+.codexonx-progress-width-5 { width: 5%; }
+.codexonx-progress-width-10 { width: 10%; }
+.codexonx-progress-width-15 { width: 15%; }
+.codexonx-progress-width-20 { width: 20%; }
+.codexonx-progress-width-25 { width: 25%; }
+.codexonx-progress-width-30 { width: 30%; }
+.codexonx-progress-width-35 { width: 35%; }
+.codexonx-progress-width-40 { width: 40%; }
+.codexonx-progress-width-45 { width: 45%; }
+.codexonx-progress-width-50 { width: 50%; }
+.codexonx-progress-width-55 { width: 55%; }
+.codexonx-progress-width-60 { width: 60%; }
+.codexonx-progress-width-65 { width: 65%; }
+.codexonx-progress-width-70 { width: 70%; }
+.codexonx-progress-width-75 { width: 75%; }
+.codexonx-progress-width-80 { width: 80%; }
+.codexonx-progress-width-85 { width: 85%; }
+.codexonx-progress-width-90 { width: 90%; }
+.codexonx-progress-width-95 { width: 95%; }
+.codexonx-progress-width-100 { width: 100%; }
+
+/* Animation variant */
+@keyframes progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.codexonx-progress-animated::before {
+  content: '';
+  position: absolute;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  animation: progress-indeterminate 1.5s infinite;
+  width: 50%;
+}
+
+/* Label styles */
+.codexonx-progress-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.codexonx-progress-label-right {
+  margin-left: 0.5rem;
+}
+
+.codexonx-progress-label-top {
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.codexonx-progress-label-bottom {
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Progress Bar Types */
+.codexonx-progress-primary {
+  background-color: rgb(var(--codexonx-primary));
+}
+
+.codexonx-progress-secondary {
+  background-color: rgb(var(--codexonx-secondary));
+}
+
+.codexonx-progress-accent {
+  background-color: rgb(var(--codexonx-accent));
+}
+
+.codexonx-progress-success {
+  background-color: rgb(var(--codexonx-success));
+}
+
+.codexonx-progress-warning {
+  background-color: rgb(var(--codexonx-warning));
+}
+
+.codexonx-progress-error {
+  background-color: rgb(var(--codexonx-error));
+}
+
+.codexonx-progress-info {
+  background-color: rgb(var(--codexonx-info));
+}
+
+/* Error Status Bars */
+.codexonx-error-500 {
+  background-color: rgb(var(--codexonx-error));
+}
+
+.codexonx-error-400 {
+  background-color: rgb(var(--codexonx-warning));
+}
+
+.codexonx-error-other {
+  background-color: rgb(var(--codexonx-info));
+}
+
+/* Geographic Distribution Bars */
+.codexonx-geo-bar {
+  background: linear-gradient(90deg, rgba(var(--codexonx-primary), 0.8), rgba(var(--codexonx-info), 0.9));
+  height: 100%;
+  border-radius: var(--codexonx-radius-full);
+}
+
+/* Device Type Bars */
+.codexonx-device-bar {
+  background: linear-gradient(90deg, rgba(var(--codexonx-secondary), 0.8), rgba(var(--codexonx-primary), 0.9));
+  height: 100%;
+  border-radius: var(--codexonx-radius-full);
+}
+
+/* Loading Shimmer Effect */
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+.codexonx-loading-bar {
+  animation-duration: 1.5s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: shimmer;
+  animation-timing-function: linear;
+  background: linear-gradient(to right, hsl(var(--muted)) 8%, hsl(var(--accent)) 18%, hsl(var(--muted)) 33%);
+  background-size: 800px 104px;
+  height: 100%;
+  border-radius: var(--codexonx-radius-full);
+}
+
+/* Statistics Card Enhancements */
+.codexonx-stats-card {
+  transition: transform var(--codexonx-transition-normal) var(--codexonx-easing-standard),
+              box-shadow var(--codexonx-transition-normal) var(--codexonx-easing-standard);
+}
+
+.codexonx-stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--codexonx-shadow-md);
+}
+
+/* Improved table styles */
+.codexonx-stats-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.codexonx-stats-table th {
+  background-color: hsl(var(--muted)/30%);
+  font-weight: 500;
+  text-align: left;
+  padding: 0.75rem 1rem;
+}
+
+.codexonx-stats-table tr {
+  transition: background-color var(--codexonx-transition-fast) var(--codexonx-easing-standard);
+}
+
+.codexonx-stats-table tbody tr:hover {
+  background-color: hsl(var(--muted)/20%);
+}
+
+.codexonx-stats-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.codexonx-stats-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Maintain backwards compatibility */
+.progress-bar {
+  background-color: rgb(var(--codexonx-primary));
+  height: 100%;
+  border-radius: var(--codexonx-radius-full);
+}
+
+.progress-bar-container {
+  background-color: hsl(var(--muted));
+  width: 6rem;
+  height: 0.5rem;
+  border-radius: var(--codexonx-radius-full);
+  margin-right: 0.5rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.error-bar { 
+  height: 100%; 
+  border-radius: var(--codexonx-radius-full); 
+}
+
+.error-500 {
+  background-color: rgb(var(--codexonx-error));
+}
+
+.error-400 {
+  background-color: rgb(var(--codexonx-warning));
+}
+
+.error-other {
+  background-color: rgb(var(--codexonx-info));
+}
+
+.geo-bar {
+  background: linear-gradient(90deg, rgba(var(--codexonx-primary), 0.8), rgba(var(--codexonx-info), 0.9));
+  height: 100%;
+  border-radius: var(--codexonx-radius-full);
+}
+
+.device-bar {
+  background: linear-gradient(90deg, rgba(var(--codexonx-secondary), 0.8), rgba(var(--codexonx-primary), 0.9));
+  height: 100%;
+  border-radius: var(--codexonx-radius-full);
+}

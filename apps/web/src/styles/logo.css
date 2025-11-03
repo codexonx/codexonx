@@ -1,0 +1,193 @@
+/* Codexonx Logo Styles */
+
+/* Logo container */
+.codexonx-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Text styles */
+.codexonx-logo-text {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  display: inline-flex;
+  align-items: baseline;
+  color: var(--logo-text-color);
+}
+
+.light .codexonx-logo-text {
+  --logo-text-color: #111827;
+}
+
+.dark .codexonx-logo-text {
+  --logo-text-color: #F9FAFB;
+}
+
+.codexonx-logo-text-primary {
+  color: var(--logo-primary-color);
+  font-weight: 900;
+}
+
+.light .codexonx-logo-text-primary {
+  --logo-primary-color: #4F46E5;
+}
+
+.dark .codexonx-logo-text-primary {
+  --logo-primary-color: #6366F1;
+}
+
+.codexonx-logo-text-secondary {
+  color: var(--logo-secondary-color);
+  font-weight: 800;
+  font-style: italic;
+}
+
+.light .codexonx-logo-text-secondary {
+  --logo-secondary-color: #818CF8;
+}
+
+.dark .codexonx-logo-text-secondary {
+  --logo-secondary-color: #A5B4FC;
+}
+
+/* Logo spin animation */
+@keyframes cx-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.codexonx-logo-spin {
+  animation: cx-spin 10s linear infinite;
+}
+
+.codexonx-logo-spin-slow {
+  animation: cx-spin 20s linear infinite;
+}
+
+/* Pulse animation */
+@keyframes cx-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.codexonx-logo-pulse {
+  animation: cx-pulse 2s ease-in-out infinite;
+}
+
+/* Logo size variants */
+.codexonx-logo-xs {
+  font-size: 0.875rem;
+}
+
+.codexonx-logo-sm {
+  font-size: 1.125rem;
+}
+
+.codexonx-logo-md {
+  font-size: 1.5rem;
+}
+
+.codexonx-logo-lg {
+  font-size: 2rem;
+}
+
+.codexonx-logo-xl {
+  font-size: 2.5rem;
+}
+
+/* SVG Icon size variants */
+.codexonx-logo-icon-xs {
+  width: 20px;
+  height: 20px;
+}
+
+.codexonx-logo-icon-sm {
+  width: 28px;
+  height: 28px;
+}
+
+.codexonx-logo-icon-md {
+  width: 36px;
+  height: 36px;
+}
+
+.codexonx-logo-icon-lg {
+  width: 48px;
+  height: 48px;
+}
+
+.codexonx-logo-icon-xl {
+  width: 64px;
+  height: 64px;
+}
+
+/* SVG icon styles */
+.codexonx-logo-svg-path-primary {
+  stroke: rgb(var(--codexonx-primary));
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.codexonx-logo-svg-path-secondary {
+  stroke: rgb(var(--codexonx-secondary));
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+/* Dark theme adjustments */
+.dark .codexonx-logo-text-primary {
+  color: rgb(var(--codexonx-primary));
+}
+
+.dark .codexonx-logo-text-secondary {
+  color: rgb(var(--codexonx-secondary));
+}
+
+/* Animation classes for staggered children */
+.codexonx-logo-anim-stagger > * {
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.codexonx-logo-anim-stagger > *:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.codexonx-logo-anim-stagger > *:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.codexonx-logo-anim-stagger > *:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

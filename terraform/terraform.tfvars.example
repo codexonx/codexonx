@@ -1,0 +1,6 @@
+aws_region  = "us-east-1"
+project_name = "codexonx"
+ec2_ami      = "ami-0261755bbcb8c4a84"
+key_name     = "your-key-pair-name"
+db_username  = "postgres"
+db_password  = "change_this_password"

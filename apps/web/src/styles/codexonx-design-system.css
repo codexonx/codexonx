@@ -1,0 +1,310 @@
+/* Codexonx Design System - Core Styles */
+
+:root {
+  /* Ana Marka Renkleri */
+  --codexonx-primary: 92, 124, 250;   /* #5C7CFA - Ana mavi renk */
+  --codexonx-secondary: 125, 87, 230; /* #7D57E6 - Mor */
+  --codexonx-accent: 37, 194, 160;    /* #25C2A0 - Turkuaz */
+  --codexonx-neutral: 100, 116, 139;  /* #64748B - Nötr gri */
+  
+  /* UI Durum Renkleri */
+  --codexonx-success: 34, 197, 94;    /* #22C55E - Yeşil */
+  --codexonx-warning: 245, 158, 11;   /* #F59E0B - Turuncu */
+  --codexonx-error: 239, 68, 68;      /* #EF4444 - Kırmızı */
+  --codexonx-info: 59, 130, 246;      /* #3B82F6 - Mavi */
+
+  /* Nötr Tonlar */
+  --codexonx-dark: 17, 24, 39;        /* #111827 */
+  --codexonx-light: 249, 250, 251;    /* #F9FAFB */
+  
+  /* Gölgeler */
+  --codexonx-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --codexonx-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --codexonx-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --codexonx-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Border Radius */
+  --codexonx-radius-sm: 0.125rem;
+  --codexonx-radius-md: 0.375rem;
+  --codexonx-radius-lg: 0.5rem;
+  --codexonx-radius-xl: 0.75rem;
+  --codexonx-radius-full: 9999px;
+
+  /* Animasyonlar */
+  --codexonx-transition-fast: 150ms;
+  --codexonx-transition-normal: 250ms;
+  --codexonx-transition-slow: 350ms;
+  --codexonx-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --codexonx-easing-accelerate: cubic-bezier(0.4, 0, 1, 1);
+  --codexonx-easing-decelerate: cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Tema Değişkenleri - Tailwind İle Uyumlu */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  
+  --primary: rgb(var(--codexonx-primary));
+  --primary-foreground: 210 40% 98%;
+  
+  --secondary: rgb(var(--codexonx-secondary));
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  
+  --accent: rgb(var(--codexonx-accent));
+  --accent-foreground: 222.2 47.4% 11.2%;
+  
+  --success: rgb(var(--codexonx-success));
+  --warning: rgb(var(--codexonx-warning));
+  --error: rgb(var(--codexonx-error));
+  --info: rgb(var(--codexonx-info));
+  
+  --radius: var(--codexonx-radius-md);
+}
+
+/* Karanlık Tema */
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  
+  --primary: rgb(var(--codexonx-primary));
+  --primary-foreground: 222.2 47.4% 11.2%;
+  
+  --secondary: rgb(var(--codexonx-secondary));
+  --secondary-foreground: 210 40% 98%;
+  
+  --accent: rgb(var(--codexonx-accent));
+  --accent-foreground: 210 40% 98%;
+}
+
+/* Temel Element Stilleri */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Animasyonlu Geçişler */
+.codexonx-fade-in {
+  opacity: 0;
+  animation: codexonxFadeIn var(--codexonx-transition-normal) var(--codexonx-easing-standard) forwards;
+}
+
+.codexonx-slide-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: codexonxSlideUp var(--codexonx-transition-normal) var(--codexonx-easing-standard) forwards;
+}
+
+.codexonx-slide-down {
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: codexonxSlideDown var(--codexonx-transition-normal) var(--codexonx-easing-standard) forwards;
+}
+
+/* Animasyon Keyframes */
+@keyframes codexonxFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes codexonxSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes codexonxSlideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Özel Bileşen Sınıfları */
+.codexonx-card {
+  border-radius: var(--codexonx-radius-lg);
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  box-shadow: var(--codexonx-shadow-sm);
+  transition: transform var(--codexonx-transition-normal) var(--codexonx-easing-standard),
+              box-shadow var(--codexonx-transition-normal) var(--codexonx-easing-standard);
+}
+
+.codexonx-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--codexonx-shadow-md);
+}
+
+.codexonx-gradient-text {
+  background: linear-gradient(135deg, rgb(var(--codexonx-primary)), rgb(var(--codexonx-secondary)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.codexonx-glass {
+  background: rgba(255, 255, 255, 0.2);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: var(--codexonx-radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .codexonx-glass {
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Profesyonel Panel Stilleri */
+.codexonx-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.codexonx-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid hsl(var(--border));
+  background-color: hsl(var(--card));
+}
+
+.codexonx-panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+.codexonx-panel-footer {
+  border-top: 1px solid hsl(var(--border));
+  padding: 1rem 1.5rem;
+  background-color: hsl(var(--card));
+}
+
+/* Responsive Yardımcılar */
+@media (max-width: 640px) {
+  .codexonx-mobile-hidden {
+    display: none;
+  }
+  
+  .codexonx-panel-content {
+    padding: 1rem;
+  }
+}
+
+/* Icon Stilleri */
+.codexonx-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+}
+
+.codexonx-icon-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.codexonx-icon-lg {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Button Varyantları */
+.codexonx-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--codexonx-radius-md);
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  transition: all var(--codexonx-transition-fast) var(--codexonx-easing-standard);
+  cursor: pointer;
+}
+
+.codexonx-btn-primary {
+  background-color: rgb(var(--codexonx-primary));
+  color: #ffffff;
+}
+
+.codexonx-btn-secondary {
+  background-color: rgb(var(--codexonx-secondary));
+  color: #ffffff;
+}
+
+.codexonx-btn-accent {
+  background-color: rgb(var(--codexonx-accent));
+  color: #ffffff;
+}
+
+.codexonx-btn-outline {
+  background-color: transparent;
+  border: 1px solid currentColor;
+}
+
+.codexonx-btn-ghost {
+  background-color: transparent;
+}
+
+/* Form Elemanları */
+.codexonx-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--codexonx-radius-md);
+  border: 1px solid hsl(var(--input));
+  background-color: transparent;
+  color: hsl(var(--foreground));
+}
+
+.codexonx-input:focus {
+  outline: none;
+  border-color: rgb(var(--codexonx-primary));
+  box-shadow: 0 0 0 2px rgba(var(--codexonx-primary), 0.2);
+}
+
+/* Yardımcı Utilitler */
+.codexonx-hidden {
+  display: none !important;
+}
+
+.codexonx-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.codexonx-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

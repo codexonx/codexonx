@@ -1,0 +1,283 @@
+/* Codexonx Platform Responsive CSS */
+
+/* Temel Değişkenler */
+:root {
+  --container-width-xl: 1280px;
+  --container-width-lg: 1024px;
+  --container-width-md: 768px;
+  --container-width-sm: 640px;
+  --container-width-xs: 475px;
+  
+  /* Boşluk değişkenleri */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+
+  /* Geçiş süreleri */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* Mobil öncelikli yaklaşım */
+html {
+  font-size: 16px;
+}
+
+/* Mobil Responsive Sınıflar */
+.hidden-mobile {
+  display: none;
+}
+
+/* Kapsayıcı Düzeni */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-md);
+}
+
+/* Mobil İçin Scroll Optimizasyonu */
+.mobile-scroll {
+  /* Modern tarayıcılar için yeterli */
+  overflow-y: auto;
+  overflow-x: auto;
+  /* MS Edge and IE */
+  -ms-overflow-style: none;
+}
+
+/* Firefox için tarayıcı algılaması */
+@supports (scrollbar-width: none) {
+  .mobile-scroll {
+    scrollbar-width: none;
+  }
+}
+
+.mobile-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+/* Dokunmatik Hedef Boyutları */
+.touch-target {
+  min-height: 48px;
+  min-width: 48px;
+}
+
+/* Kırılım Noktaları */
+/* XSmall Cihazlar (475px ve üzeri) */
+@media (min-width: 475px) {
+  .container {
+    max-width: var(--container-width-xs);
+  }
+  
+  .hidden-mobile {
+    display: initial;
+  }
+  
+  .hidden-xs {
+    display: none;
+  }
+}
+
+/* Small Cihazlar (640px ve üzeri) */
+@media (min-width: 640px) {
+  .container {
+    max-width: var(--container-width-sm);
+  }
+  
+  .hidden-sm {
+    display: none;
+  }
+  
+  .block-sm {
+    display: block;
+  }
+  
+  .flex-sm {
+    display: flex;
+  }
+}
+
+/* Medium Cihazlar (768px ve üzeri) */
+@media (min-width: 768px) {
+  .container {
+    max-width: var(--container-width-md);
+    padding-left: var(--spacing-lg);
+    padding-right: var(--spacing-lg);
+  }
+  
+  .hidden-md {
+    display: none;
+  }
+  
+  .block-md {
+    display: block;
+  }
+  
+  .flex-md {
+    display: flex;
+  }
+  
+  .grid-md {
+    display: grid;
+  }
+}
+
+/* Large Cihazlar (1024px ve üzeri) */
+@media (min-width: 1024px) {
+  .container {
+    max-width: var(--container-width-lg);
+  }
+  
+  html {
+    font-size: 17px;
+  }
+  
+  .hidden-lg {
+    display: none;
+  }
+}
+
+/* XLarge Cihazlar (1280px ve üzeri) */
+@media (min-width: 1280px) {
+  .container {
+    max-width: var(--container-width-xl);
+  }
+  
+  html {
+    font-size: 18px;
+  }
+  
+  .hidden-xl {
+    display: none;
+  }
+}
+
+/* Tipografi Responsive Ayarları */
+h1 {
+  font-size: 1.8rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: 2.25rem;
+  }
+  
+  h2 {
+    font-size: 1.8rem;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Mobil Cihazlarda Grid Düzeni */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+}
+
+@media (min-width: 640px) {
+  .grid-cols-2-sm {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .grid-cols-3-md {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-cols-4-lg {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Mobil Navigation Stillleri */
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--background);
+  border-top: 1px solid var(--border);
+  z-index: 50;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.75rem 0;
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  transition: color var(--transition-fast);
+}
+
+.mobile-nav-item.active {
+  color: var(--primary);
+}
+
+.mobile-nav-icon {
+  margin-bottom: 0.25rem;
+}
+
+@media (min-width: 768px) {
+  .mobile-nav {
+    display: none;
+  }
+}
+
+/* Mobil Dokunmatik Stil İyileştirmeleri */
+@media (max-width: 767px) {
+  /* Dokunmatik hedef büyütme */
+  button, 
+  a, 
+  input[type="submit"],
+  input[type="button"],
+  input[type="checkbox"],
+  input[type="radio"],
+  select,
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Form elementleri */
+  input, 
+  select, 
+  textarea {
+    font-size: 16px !important; /* iOS zoom önleme */
+  }
+}
+
+/* Mobil Oryantasyon Ayarlamaları */
+@media screen and (orientation: portrait) {
+  .landscape-only {
+    display: none;
+  }
+}
+
+@media screen and (orientation: landscape) and (max-width: 900px) {
+  .portrait-only {
+    display: none;
+  }
+}

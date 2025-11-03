@@ -1,0 +1,121 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String?
+  password      String
+  role          UserRole  @default(USER)
+  emailVerified Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  tokens        Token[]
+  subscriptions Subscription[]
+  projects      Project[]
+}
+
+model Token {
+  id        String    @id @default(uuid())
+  token     String    @unique
+  type      TokenType
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+}
+
+model Plan {
+  id            String    @id @default(uuid())
+  name          String
+  description   String?
+  price         Float
+  currency      String    @default("USD")
+  interval      Interval  @default(MONTH)
+  features      String[]
+  active        Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id            String     @id @default(uuid())
+  status        SubStatus  @default(ACTIVE)
+  startDate     DateTime   @default(now())
+  endDate       DateTime?
+  cancelAt      DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  plan          Plan       @relation(fields: [planId], references: [id])
+  planId        String
+  payments      Payment[]
+}
+
+model Payment {
+  id             String        @id @default(uuid())
+  amount         Float
+  currency       String        @default("USD")
+  status         PaymentStatus @default(PENDING)
+  paymentMethod  PaymentMethod
+  paymentIntentId String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  subscriptionId String?
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  apiKey      String   @unique @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum TokenType {
+  RESET_PASSWORD
+  VERIFY_EMAIL
+}
+
+enum Interval {
+  MONTH
+  YEAR
+}
+
+enum SubStatus {
+  ACTIVE
+  CANCELED
+  EXPIRED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  STRIPE
+  BINANCE_PAY
+}

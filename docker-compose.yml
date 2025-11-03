@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: codexonx-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: codexonx
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - codexonx-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Backend API Server
+  server:
+    build:
+      context: ./apps/server
+      dockerfile: Dockerfile
+    container_name: codexonx-server
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/codexonx
+      - JWT_SECRET=your_jwt_secret
+      - JWT_EXPIRES_IN=1d
+      - PORT=3001
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - codexonx-network
+    restart: always
+
+  # Frontend Web Application
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: codexonx-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://server:3001/api
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=your_nextauth_secret
+    depends_on:
+      - server
+    networks:
+      - codexonx-network
+    restart: always
+
+networks:
+  codexonx-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
