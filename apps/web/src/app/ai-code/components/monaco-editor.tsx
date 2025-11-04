@@ -1,12 +1,20 @@
-"use client";
+'use client';
 
 // @ts-nocheck
 // TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
 // arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
 
-import React, { useRef, useEffect, useState } from 'react';
-import * as monaco from 'monaco-editor';
+import React, { useRef, useEffect, useState, Suspense, lazy } from 'react';
 import { useTheme } from 'next-themes';
+
+// Monaco Editor stil dosyasını içe aktar
+import './monaco-editor.css';
+
+// Monaco Editor'ü client-side'da lazy loading ile yükle
+let monaco: typeof import('monaco-editor');
+if (typeof window !== 'undefined') {
+  monaco = require('monaco-editor');
+}
 
 interface MonacoEditorProps {
   value: string;
@@ -105,9 +113,9 @@ export default function MonacoEditor({
   }, [theme]);
 
   return (
-    <div 
-      ref={editorRef} 
-      style={{ width, height }} 
+    <div
+      ref={editorRef}
+      className="monaco-editor-container"
       data-testid="monaco-editor"
       aria-label="Monaco kod editörü"
     />
@@ -116,22 +124,43 @@ export default function MonacoEditor({
 
 // Monaco başlatıcı
 export function setupMonaco() {
-  // Dil desteği
+  // Yalnızca client tarafında çalıştığından emin ol
+  if (typeof window === 'undefined' || !monaco) return;
+
+  // Dil desteği - performans için yalnızca gerekli dilleri yükle
   const languages = ['javascript', 'typescript', 'html', 'css', 'json', 'python', 'markdown'];
-  
+
   // Dil özelliklerini yükle
   languages.forEach(lang => {
+    if (monaco.languages.getLanguages().some((l: any) => l.id === lang)) return;
     monaco.languages.register({ id: lang });
-    
-    // Sözdizimi vurgulama ve otomatik tamamlama için gerekli eklentiler
-    // Gerçek bir uygulamada burada dil hizmetlerini ekleyebilirsiniz
   });
+
+  // Monaco WebWorker yönetimi için özellikler
+  // @ts-ignore
+  self.MonacoEnvironment = {
+    getWorkerUrl: function (_moduleId: any, label: string) {
+      if (label === 'json') {
+        return '/monaco-workers/json.worker.js';
+      }
+      if (label === 'css' || label === 'scss' || label === 'less') {
+        return '/monaco-workers/css.worker.js';
+      }
+      if (label === 'html' || label === 'handlebars' || label === 'razor') {
+        return '/monaco-workers/html.worker.js';
+      }
+      if (label === 'typescript' || label === 'javascript') {
+        return '/monaco-workers/ts.worker.js';
+      }
+      return '/monaco-workers/editor.worker.js';
+    },
+  };
 }
 
 // Otomatik tamamlama sağlayıcısı örneği
 export function registerCompletionProvider() {
   monaco.languages.registerCompletionItemProvider('javascript', {
-    provideCompletionItems: function(model, position) {
+    provideCompletionItems: function (model, position) {
       const word = model.getWordUntilPosition(position);
       const range = {
         startLineNumber: position.lineNumber,
@@ -139,7 +168,7 @@ export function registerCompletionProvider() {
         startColumn: word.startColumn,
         endColumn: word.endColumn,
       };
-      
+
       // Basit birkaç kod tamamlama önerisi
       const suggestions = [
         {

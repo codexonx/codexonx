@@ -5,11 +5,7 @@ const prisma = new PrismaClient();
 
 type TokenType = 'RESET_PASSWORD' | 'VERIFY_EMAIL';
 
-export const generateToken = async (
-  userId: string,
-  type: TokenType,
-  expiresIn: string = '1d'
-) => {
+export const generateToken = async (userId: string, type: TokenType, expiresIn: string = '1d') => {
   // Generate random token
   const token = randomBytes(32).toString('hex');
 
@@ -17,7 +13,7 @@ export const generateToken = async (
   const expiresAt = new Date();
   const timeValue = parseInt(expiresIn.substring(0, expiresIn.length - 1));
   const timeUnit = expiresIn.substring(expiresIn.length - 1);
-  
+
   switch (timeUnit) {
     case 'h': // hours
       expiresAt.setHours(expiresAt.getHours() + timeValue);
@@ -26,7 +22,7 @@ export const generateToken = async (
       expiresAt.setDate(expiresAt.getDate() + timeValue);
       break;
     case 'w': // weeks
-      expiresAt.setDate(expiresAt.getDate() + (timeValue * 7));
+      expiresAt.setDate(expiresAt.getDate() + timeValue * 7);
       break;
     default:
       expiresAt.setHours(expiresAt.getHours() + 24); // default: 24 hours
@@ -36,8 +32,8 @@ export const generateToken = async (
   await prisma.token.deleteMany({
     where: {
       userId,
-      type
-    }
+      type,
+    },
   });
 
   // Create token in database
@@ -46,8 +42,8 @@ export const generateToken = async (
       token,
       type,
       expiresAt,
-      userId
-    }
+      userId,
+    },
   });
 
   return tokenRecord;

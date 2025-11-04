@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 
 /**
  * Media query hook
- * 
+ *
  * Bu hook, verilen media query'nin mevcut durumunu takip eder
- * 
+ *
  * @param query CSS media query string (örn. '(min-width: 768px)')
  * @returns Media query'nin eşleşip eşleşmediğini belirten boolean değer
  */

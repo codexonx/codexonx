@@ -35,23 +35,20 @@ const resources = {
 export const setupI18n = async (): Promise<void> => {
   // Kaydedilmiş dil tercihini al
   const savedLanguage = getLanguagePreference();
-  
+
   // Kaydedilmiş dil geçerliyse kullan, yoksa varsayılanı
-  const initialLanguage = savedLanguage && SUPPORTED_LANGUAGES.includes(savedLanguage)
-    ? savedLanguage
-    : DEFAULT_LANGUAGE;
-  
-  await i18n
-    .use(initReactI18next)
-    .init({
-      resources,
-      lng: initialLanguage,
-      fallbackLng: DEFAULT_LANGUAGE,
-      compatibilityJSON: 'v3', // React Native için gerekli
-      interpolation: {
-        escapeValue: false, // React zaten güvenli çıkış yapıyor
-      },
-    });
+  const initialLanguage =
+    savedLanguage && SUPPORTED_LANGUAGES.includes(savedLanguage) ? savedLanguage : DEFAULT_LANGUAGE;
+
+  await i18n.use(initReactI18next).init({
+    resources,
+    lng: initialLanguage,
+    fallbackLng: DEFAULT_LANGUAGE,
+    compatibilityJSON: 'v3', // React Native için gerekli
+    interpolation: {
+      escapeValue: false, // React zaten güvenli çıkış yapıyor
+    },
+  });
 };
 
 /**
@@ -61,7 +58,7 @@ export const changeLanguage = async (language: string): Promise<void> => {
   if (!SUPPORTED_LANGUAGES.includes(language)) {
     throw new Error(`Desteklenmeyen dil: ${language}`);
   }
-  
+
   await i18n.changeLanguage(language);
   saveLanguagePreference(language);
 };

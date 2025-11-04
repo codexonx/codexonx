@@ -20,7 +20,7 @@ interface NavItem {
 export default function MobileNavBar() {
   const pathname = usePathname();
   const { t } = useI18n();
-  
+
   // Navigasyon öğeleri
   const navItems: NavItem[] = [
     {
@@ -48,10 +48,10 @@ export default function MobileNavBar() {
       active: pathname === '/settings',
     },
   ];
-  
+
   return (
     <nav className="mobile-nav">
-      {navItems.map((item) => {
+      {navItems.map(item => {
         // Lucide ikonlarını ad üzerinden çağıralım
         const Icon = Icons[item.iconName];
         return (
@@ -59,7 +59,7 @@ export default function MobileNavBar() {
             key={item.href}
             href={item.href}
             className={cn('mobile-nav-item', {
-              'active': item.active,
+              active: item.active,
             })}
           >
             <div className="mobile-nav-icon">

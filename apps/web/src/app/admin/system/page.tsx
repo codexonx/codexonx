@@ -1,18 +1,25 @@
-"use client";
+'use client';
 
 // @ts-nocheck
 // TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve Radix UI/Lucide
 // arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
 
-import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { 
-  AlertCircle, 
-  Check, 
+import React, { useState, useEffect } from 'react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  AlertCircle,
+  Check,
   CheckCircle,
   Database,
   Download,
@@ -22,9 +29,9 @@ import {
   Server,
   Settings,
   Shield,
-  X
-} from "lucide-react";
-import { CXLogo } from "@/components/ui/cx-logo";
+  X,
+} from 'lucide-react';
+import { CXLogo } from '@/components/ui/cx-logo';
 
 // Sistem bilgileri için tip tanımlamaları
 interface SystemInfo {
@@ -46,16 +53,16 @@ interface SystemInfo {
   database: {
     version: string;
     connections: number;
-    status: "healthy" | "warning" | "error";
+    status: 'healthy' | 'warning' | 'error';
   };
   services: {
     name: string;
-    status: "up" | "down" | "warning";
+    status: 'up' | 'down' | 'warning';
     lastCheck: string;
     responseTime: number;
   }[];
   logs: {
-    level: "info" | "warn" | "error";
+    level: 'info' | 'warn' | 'error';
     message: string;
     timestamp: string;
     service: string;
@@ -65,14 +72,14 @@ interface SystemInfo {
     date: string;
     size: string;
     type: string;
-    status: "completed" | "in_progress" | "failed";
+    status: 'completed' | 'in_progress' | 'failed';
   }[];
 }
 
 export default function SystemPage() {
   const [systemInfo, setSystemInfo] = useState<SystemInfo | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState('overview');
 
   // Veri yükleme simülasyonu
   useEffect(() => {
@@ -82,111 +89,111 @@ export default function SystemPage() {
         // Şimdilik simüle edilmiş veri kullanıyoruz
         setTimeout(() => {
           const mockSystemInfo: SystemInfo = {
-            version: "1.0.0",
-            uptime: "5 gün, 3 saat, 12 dakika",
-            environment: "production",
+            version: '1.0.0',
+            uptime: '5 gün, 3 saat, 12 dakika',
+            environment: 'production',
             memory: {
-              total: "16 GB",
-              used: "8.2 GB",
-              free: "7.8 GB",
+              total: '16 GB',
+              used: '8.2 GB',
+              free: '7.8 GB',
               percentage: 51,
             },
             disk: {
-              total: "500 GB",
-              used: "210 GB",
-              free: "290 GB",
+              total: '500 GB',
+              used: '210 GB',
+              free: '290 GB',
               percentage: 42,
             },
             database: {
-              version: "PostgreSQL 14.5",
+              version: 'PostgreSQL 14.5',
               connections: 24,
-              status: "healthy",
+              status: 'healthy',
             },
             services: [
               {
-                name: "API Gateway",
-                status: "up",
-                lastCheck: "2023-06-15T15:30:00Z",
+                name: 'API Gateway',
+                status: 'up',
+                lastCheck: '2023-06-15T15:30:00Z',
                 responseTime: 120,
               },
               {
-                name: "Auth Service",
-                status: "up",
-                lastCheck: "2023-06-15T15:30:00Z",
+                name: 'Auth Service',
+                status: 'up',
+                lastCheck: '2023-06-15T15:30:00Z',
                 responseTime: 95,
               },
               {
-                name: "Payment Processor",
-                status: "warning",
-                lastCheck: "2023-06-15T15:28:00Z",
+                name: 'Payment Processor',
+                status: 'warning',
+                lastCheck: '2023-06-15T15:28:00Z',
                 responseTime: 350,
               },
               {
-                name: "Email Service",
-                status: "up",
-                lastCheck: "2023-06-15T15:29:00Z",
+                name: 'Email Service',
+                status: 'up',
+                lastCheck: '2023-06-15T15:29:00Z',
                 responseTime: 180,
               },
               {
-                name: "Storage Service",
-                status: "up",
-                lastCheck: "2023-06-15T15:30:00Z",
+                name: 'Storage Service',
+                status: 'up',
+                lastCheck: '2023-06-15T15:30:00Z',
                 responseTime: 110,
               },
             ],
             logs: [
               {
-                level: "error",
-                message: "Database connection timeout",
-                timestamp: "2023-06-15T14:25:30Z",
-                service: "Auth Service",
+                level: 'error',
+                message: 'Database connection timeout',
+                timestamp: '2023-06-15T14:25:30Z',
+                service: 'Auth Service',
               },
               {
-                level: "warn",
-                message: "High API rate limit reached for user: user_123",
-                timestamp: "2023-06-15T14:20:15Z",
-                service: "API Gateway",
+                level: 'warn',
+                message: 'High API rate limit reached for user: user_123',
+                timestamp: '2023-06-15T14:20:15Z',
+                service: 'API Gateway',
               },
               {
-                level: "info",
-                message: "System backup completed successfully",
-                timestamp: "2023-06-15T14:00:00Z",
-                service: "Backup Service",
+                level: 'info',
+                message: 'System backup completed successfully',
+                timestamp: '2023-06-15T14:00:00Z',
+                service: 'Backup Service',
               },
               {
-                level: "info",
-                message: "New user registered: user_456",
-                timestamp: "2023-06-15T13:45:22Z",
-                service: "Auth Service",
+                level: 'info',
+                message: 'New user registered: user_456',
+                timestamp: '2023-06-15T13:45:22Z',
+                service: 'Auth Service',
               },
               {
-                level: "warn",
-                message: "Payment processing delayed",
-                timestamp: "2023-06-15T13:30:10Z",
-                service: "Payment Processor",
+                level: 'warn',
+                message: 'Payment processing delayed',
+                timestamp: '2023-06-15T13:30:10Z',
+                service: 'Payment Processor',
               },
             ],
             backups: [
               {
-                id: "bak_123456",
-                date: "2023-06-15T12:00:00Z",
-                size: "1.2 GB",
-                type: "Tam Yedek",
-                status: "completed",
+                id: 'bak_123456',
+                date: '2023-06-15T12:00:00Z',
+                size: '1.2 GB',
+                type: 'Tam Yedek',
+                status: 'completed',
               },
               {
-                id: "bak_123455",
-                date: "2023-06-14T12:00:00Z",
-                size: "1.1 GB",
-                type: "Tam Yedek",
-                status: "completed",
+                id: 'bak_123455',
+                date: '2023-06-14T12:00:00Z',
+                size: '1.1 GB',
+                type: 'Tam Yedek',
+                status: 'completed',
               },
               {
-                id: "bak_123454",
-                date: "2023-06-13T12:00:00Z",
-                size: "1.3 GB",
-                type: "Tam Yedek",
-                status: "completed",
+                id: 'bak_123454',
+                date: '2023-06-13T12:00:00Z',
+                size: '1.3 GB',
+                type: 'Tam Yedek',
+                status: 'completed',
               },
             ],
           };
@@ -195,7 +202,7 @@ export default function SystemPage() {
           setLoading(false);
         }, 1000);
       } catch (error) {
-        console.error("Sistem bilgisi yükleme hatası:", error);
+        console.error('Sistem bilgisi yükleme hatası:', error);
         setLoading(false);
       }
     };
@@ -205,12 +212,12 @@ export default function SystemPage() {
 
   // Tarih formatı
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString("tr-TR", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Date(dateString).toLocaleString('tr-TR', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   };
 
@@ -234,7 +241,9 @@ export default function SystemPage() {
           <TabsTrigger value="services">Servisler</TabsTrigger>
           <TabsTrigger value="logs">Loglar</TabsTrigger>
           <TabsTrigger value="backups">Yedekler</TabsTrigger>
-          <TabsTrigger value="settings" className="hidden lg:block">Ayarlar</TabsTrigger>
+          <TabsTrigger value="settings" className="hidden lg:block">
+            Ayarlar
+          </TabsTrigger>
         </TabsList>
 
         {/* Genel Bakış Sekmesi */}
@@ -279,7 +288,9 @@ export default function SystemPage() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Kullanılan</span>
-                    <span className="text-sm">{systemInfo?.memory.used} / {systemInfo?.memory.total}</span>
+                    <span className="text-sm">
+                      {systemInfo?.memory.used} / {systemInfo?.memory.total}
+                    </span>
                   </div>
                   <Progress value={systemInfo?.memory.percentage} className="h-2" />
                 </div>
@@ -304,7 +315,9 @@ export default function SystemPage() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Kullanılan</span>
-                    <span className="text-sm">{systemInfo?.disk.used} / {systemInfo?.disk.total}</span>
+                    <span className="text-sm">
+                      {systemInfo?.disk.used} / {systemInfo?.disk.total}
+                    </span>
                   </div>
                   <Progress value={systemInfo?.disk.percentage} className="h-2" />
                 </div>
@@ -327,9 +340,7 @@ export default function SystemPage() {
                 <Database className="mr-2 h-5 w-5" />
                 Veritabanı Durumu
               </CardTitle>
-              <CardDescription>
-                Veritabanı bağlantı ve performans bilgileri
-              </CardDescription>
+              <CardDescription>Veritabanı bağlantı ve performans bilgileri</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -344,12 +355,18 @@ export default function SystemPage() {
                 <div className="space-y-2">
                   <div className="text-sm font-medium">Durum</div>
                   <div>
-                    {systemInfo?.database.status === "healthy" ? (
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                    {systemInfo?.database.status === 'healthy' ? (
+                      <Badge
+                        variant="outline"
+                        className="bg-green-50 text-green-700 border-green-200"
+                      >
                         <Check className="mr-1 h-3 w-3" /> Sağlıklı
                       </Badge>
-                    ) : systemInfo?.database.status === "warning" ? (
-                      <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+                    ) : systemInfo?.database.status === 'warning' ? (
+                      <Badge
+                        variant="outline"
+                        className="bg-amber-50 text-amber-700 border-amber-200"
+                      >
                         <AlertCircle className="mr-1 h-3 w-3" /> Uyarı
                       </Badge>
                     ) : (
@@ -370,9 +387,7 @@ export default function SystemPage() {
                 <Shield className="mr-2 h-5 w-5" />
                 Kuruluş Bilgileri
               </CardTitle>
-              <CardDescription>
-                Sistem kurulum ve lisans bilgileri
-              </CardDescription>
+              <CardDescription>Sistem kurulum ve lisans bilgileri</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-center py-6">
@@ -415,15 +430,20 @@ export default function SystemPage() {
             <CardContent>
               <div className="space-y-4">
                 {systemInfo?.services.map((service, index) => (
-                  <div key={index} className="flex items-center justify-between border-b pb-3 last:border-0">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between border-b pb-3 last:border-0"
+                  >
                     <div className="flex items-center">
-                      <div className={`mr-3 h-2.5 w-2.5 rounded-full ${
-                        service.status === "up" 
-                          ? "bg-green-500" 
-                          : service.status === "warning" 
-                            ? "bg-amber-500" 
-                            : "bg-red-500"
-                      }`} />
+                      <div
+                        className={`mr-3 h-2.5 w-2.5 rounded-full ${
+                          service.status === 'up'
+                            ? 'bg-green-500'
+                            : service.status === 'warning'
+                              ? 'bg-amber-500'
+                              : 'bg-red-500'
+                        }`}
+                      />
                       <div>
                         <p className="font-medium">{service.name}</p>
                         <p className="text-xs text-muted-foreground">
@@ -432,13 +452,13 @@ export default function SystemPage() {
                       </div>
                     </div>
                     <div className="flex items-center">
-                      <Badge 
+                      <Badge
                         variant={
-                          service.responseTime < 200 
-                            ? "success" 
-                            : service.responseTime < 300 
-                              ? "outline" 
-                              : "warning"
+                          service.responseTime < 200
+                            ? 'success'
+                            : service.responseTime < 300
+                              ? 'outline'
+                              : 'warning'
                         }
                         className="mr-2"
                       >
@@ -466,9 +486,7 @@ export default function SystemPage() {
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>Sistem Logları</CardTitle>
-                <CardDescription>
-                  Son sistem olayları ve hata kayıtları
-                </CardDescription>
+                <CardDescription>Son sistem olayları ve hata kayıtları</CardDescription>
               </div>
               <Button variant="outline" className="flex items-center" size="sm">
                 <FileText className="mr-1 h-4 w-4" />
@@ -481,33 +499,29 @@ export default function SystemPage() {
                   <div
                     key={index}
                     className={`rounded-lg p-3 text-sm ${
-                      log.level === "error"
-                        ? "bg-red-50 border-l-4 border-red-600"
-                        : log.level === "warn"
-                        ? "bg-amber-50 border-l-4 border-amber-600"
-                        : "bg-blue-50 border-l-4 border-blue-600"
+                      log.level === 'error'
+                        ? 'bg-red-50 border-l-4 border-red-600'
+                        : log.level === 'warn'
+                          ? 'bg-amber-50 border-l-4 border-amber-600'
+                          : 'bg-blue-50 border-l-4 border-blue-600'
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-medium">
-                        {log.service}
-                      </span>
+                      <span className="font-medium">{log.service}</span>
                       <Badge
                         variant={
-                          log.level === "error"
-                            ? "destructive"
-                            : log.level === "warn"
-                            ? "warning"
-                            : "info"
+                          log.level === 'error'
+                            ? 'destructive'
+                            : log.level === 'warn'
+                              ? 'warning'
+                              : 'info'
                         }
                       >
                         {log.level}
                       </Badge>
                     </div>
                     <p className="mt-1">{log.message}</p>
-                    <p className="mt-1 text-xs opacity-70">
-                      {formatDate(log.timestamp)}
-                    </p>
+                    <p className="mt-1 text-xs opacity-70">{formatDate(log.timestamp)}</p>
                   </div>
                 ))}
               </div>
@@ -526,9 +540,7 @@ export default function SystemPage() {
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>Sistem Yedekleri</CardTitle>
-                <CardDescription>
-                  Otomatik ve manuel sistem yedekleriniz
-                </CardDescription>
+                <CardDescription>Otomatik ve manuel sistem yedekleriniz</CardDescription>
               </div>
               <Button className="flex items-center" size="sm">
                 <HardDrive className="mr-1 h-4 w-4" />
@@ -556,16 +568,25 @@ export default function SystemPage() {
                         <td className="py-3 px-4">{backup.size}</td>
                         <td className="py-3 px-4">{backup.type}</td>
                         <td className="py-3 px-4">
-                          {backup.status === "completed" ? (
-                            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                          {backup.status === 'completed' ? (
+                            <Badge
+                              variant="outline"
+                              className="bg-green-50 text-green-700 border-green-200"
+                            >
                               <Check className="mr-1 h-3 w-3" /> Tamamlandı
                             </Badge>
-                          ) : backup.status === "in_progress" ? (
-                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                          ) : backup.status === 'in_progress' ? (
+                            <Badge
+                              variant="outline"
+                              className="bg-blue-50 text-blue-700 border-blue-200"
+                            >
                               <Server className="mr-1 h-3 w-3 animate-pulse" /> İşlemde
                             </Badge>
                           ) : (
-                            <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+                            <Badge
+                              variant="outline"
+                              className="bg-red-50 text-red-700 border-red-200"
+                            >
                               <X className="mr-1 h-3 w-3" /> Başarısız
                             </Badge>
                           )}
@@ -589,9 +610,7 @@ export default function SystemPage() {
           <Card>
             <CardHeader>
               <CardTitle>Sistem Ayarları</CardTitle>
-              <CardDescription>
-                Gelişmiş yapılandırma seçenekleri
-              </CardDescription>
+              <CardDescription>Gelişmiş yapılandırma seçenekleri</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
@@ -600,7 +619,7 @@ export default function SystemPage() {
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
                       <label className="block text-sm font-medium mb-1">Yedekleme Sıklığı</label>
-                      <select 
+                      <select
                         className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
                         title="Yedekleme Sıklığı"
                         aria-label="Yedekleme Sıklığı"
@@ -612,7 +631,7 @@ export default function SystemPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1">Yedek Saklama Süresi</label>
-                      <select 
+                      <select
                         className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
                         title="Yedek Saklama Süresi"
                         aria-label="Yedek Saklama Süresi"
@@ -624,13 +643,13 @@ export default function SystemPage() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <h3 className="text-md font-medium">Log Ayarları</h3>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
                       <label className="block text-sm font-medium mb-1">Log Seviyesi</label>
-                      <select 
+                      <select
                         className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
                         title="Log Seviyesi"
                         aria-label="Log Seviyesi"
@@ -643,7 +662,7 @@ export default function SystemPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1">Log Rotasyonu</label>
-                      <select 
+                      <select
                         className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
                         title="Log Rotasyonu"
                         aria-label="Log Rotasyonu"
@@ -655,13 +674,15 @@ export default function SystemPage() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <h3 className="text-md font-medium">Güvenlik Ayarları</h3>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
-                      <label className="block text-sm font-medium mb-1">İki Faktörlü Doğrulama</label>
-                      <select 
+                      <label className="block text-sm font-medium mb-1">
+                        İki Faktörlü Doğrulama
+                      </label>
+                      <select
                         className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
                         title="İki Faktörlü Doğrulama"
                         aria-label="İki Faktörlü Doğrulama"
@@ -672,9 +693,11 @@ export default function SystemPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-1">Oturum Süresi (dakika)</label>
-                      <input 
-                        type="number" 
+                      <label className="block text-sm font-medium mb-1">
+                        Oturum Süresi (dakika)
+                      </label>
+                      <input
+                        type="number"
                         className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
                         defaultValue="60"
                         min="5"

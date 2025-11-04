@@ -15,7 +15,7 @@ export enum ActivityType {
   SEARCH = 'search',
   PURCHASE = 'purchase',
   SESSION_START = 'session_start',
-  SESSION_END = 'session_end'
+  SESSION_END = 'session_end',
 }
 
 // Aktivite kaydı arayüzü
@@ -65,7 +65,8 @@ class AnalyticsService {
       sessionId: this.sessionId,
       userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
       locale: typeof navigator !== 'undefined' ? navigator.language : undefined,
-      timezone: typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : undefined,
+      timezone:
+        typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : undefined,
       referrer: typeof document !== 'undefined' ? document.referrer : undefined,
       firstSeen: Date.now(),
     };
@@ -295,7 +296,7 @@ class AnalyticsService {
     if (typeof navigator === 'undefined' || typeof window === 'undefined') return;
 
     const ua = navigator.userAgent;
-    
+
     // Platform algılama
     let platform = 'unknown';
     if (/Android/i.test(ua)) platform = 'android';
@@ -334,43 +335,49 @@ class AnalyticsService {
     if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
     // Tıklama olaylarını izle
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', e => {
       // Sadece belirli elementleri izle
       const target = e.target as HTMLElement;
-      if (target && (
-        target.tagName === 'BUTTON' ||
-        target.tagName === 'A' ||
-        target.closest('button') ||
-        target.closest('a') ||
-        target.hasAttribute('data-analytics')
-      )) {
+      if (
+        target &&
+        (target.tagName === 'BUTTON' ||
+          target.tagName === 'A' ||
+          target.closest('button') ||
+          target.closest('a') ||
+          target.hasAttribute('data-analytics'))
+      ) {
         let element = target;
         if (!target.hasAttribute('data-analytics')) {
           element = target.closest('[data-analytics]') || target;
         }
 
-        const analyticsId = element.getAttribute('data-analytics') || element.id || element.tagName.toLowerCase();
+        const analyticsId =
+          element.getAttribute('data-analytics') || element.id || element.tagName.toLowerCase();
         const href = element.tagName === 'A' ? (element as HTMLAnchorElement).href : undefined;
-        
+
         this.trackClick(analyticsId, { href });
       }
     });
 
     // Form gönderimlerini izle
-    document.addEventListener('submit', (e) => {
+    document.addEventListener('submit', e => {
       const form = e.target as HTMLFormElement;
       const formId = form.id || form.getAttribute('name') || 'unknown-form';
-      
+
       // Hassas verileri içermeyecek şekilde basit form bilgilerini topla
       const formData: Record<string, any> = {};
       if (form.elements) {
         Array.from(form.elements).forEach((element: any) => {
-          if (element.name && element.type !== 'password' && !element.name.toLowerCase().includes('password')) {
+          if (
+            element.name &&
+            element.type !== 'password' &&
+            !element.name.toLowerCase().includes('password')
+          ) {
             formData[element.name] = element.type === 'checkbox' ? element.checked : element.value;
           }
         });
       }
-      
+
       this.trackFormSubmit(formId, formData);
     });
   }
@@ -380,7 +387,7 @@ class AnalyticsService {
    */
   private startFlushTimer(): void {
     if (typeof window === 'undefined') return;
-    
+
     this.flushTimer = setInterval(() => {
       this.flush();
     }, this.flushInterval);
@@ -403,11 +410,11 @@ class AnalyticsService {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
     const timestamp = new Date().getTime().toString(36);
-    
+
     for (let i = 0; i < 10; i++) {
       result += characters.charAt(Math.floor(Math.random() * characters.length));
     }
-    
+
     return `${timestamp}-${result}`;
   }
 }

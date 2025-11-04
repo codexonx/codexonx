@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import "@/styles/statistics.css";
-import { useRouter } from "next/navigation";
-import { useI18n } from "@/contexts/i18n-context";
-import { Button } from "@/components/ui/button";
-import { ProgressBar } from "@/components/ui/progress-bar";
+import { useState, useEffect } from 'react';
+import '@/styles/statistics.css';
+import { useRouter } from 'next/navigation';
+import { useI18n } from '@/contexts/i18n-context';
+import { Button } from '@/components/ui/button';
+import { ProgressBar } from '@/components/ui/progress-bar';
 import {
   Card,
   CardContent,
@@ -13,7 +13,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   ChevronDown,
   Download,
@@ -24,19 +24,19 @@ import {
   Share2,
   Loader2,
   BarChart,
-} from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
+} from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
 
 interface StatisticsReportProps {
-  period?: "daily" | "weekly" | "monthly" | "quarterly" | "yearly";
+  period?: 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly';
   startDate?: Date;
   endDate?: Date;
   projectId?: string;
-  onExport?: (format: "pdf" | "csv" | "excel" | "json") => void;
+  onExport?: (format: 'pdf' | 'csv' | 'excel' | 'json') => void;
 }
 
 export function StatisticsReport({
-  period = "monthly",
+  period = 'monthly',
   startDate,
   endDate,
   projectId,
@@ -44,9 +44,9 @@ export function StatisticsReport({
 }: StatisticsReportProps) {
   const router = useRouter();
   const { t } = useI18n();
-  
+
   const [isLoading, setIsLoading] = useState(true);
-  const [exportFormat, setExportFormat] = useState<"pdf" | "csv" | "excel" | "json">("pdf");
+  const [exportFormat, setExportFormat] = useState<'pdf' | 'csv' | 'excel' | 'json'>('pdf');
   const [exportLoading, setExportLoading] = useState(false);
   const [reportData, setReportData] = useState<any>(null);
 
@@ -79,18 +79,18 @@ export function StatisticsReport({
             revenueGrowth: 15.7, // %
           },
           topEndpoints: [
-            { path: "/api/users", count: 4532, avgTime: 215 },
-            { path: "/api/projects", count: 3281, avgTime: 342 },
-            { path: "/api/analytics", count: 2145, avgTime: 528 },
-            { path: "/api/auth/login", count: 1876, avgTime: 189 },
-            { path: "/api/payments", count: 653, avgTime: 412 },
+            { path: '/api/users', count: 4532, avgTime: 215 },
+            { path: '/api/projects', count: 3281, avgTime: 342 },
+            { path: '/api/analytics', count: 2145, avgTime: 528 },
+            { path: '/api/auth/login', count: 1876, avgTime: 189 },
+            { path: '/api/payments', count: 653, avgTime: 412 },
           ],
           errorBreakdown: [
-            { code: 404, description: "Not Found", count: 124 },
-            { code: 401, description: "Unauthorized", count: 67 },
-            { code: 500, description: "Internal Server Error", count: 31 },
-            { code: 429, description: "Too Many Requests", count: 18 },
-            { code: 400, description: "Bad Request", count: 2 },
+            { code: 404, description: 'Not Found', count: 124 },
+            { code: 401, description: 'Unauthorized', count: 67 },
+            { code: 500, description: 'Internal Server Error', count: 31 },
+            { code: 429, description: 'Too Many Requests', count: 18 },
+            { code: 400, description: 'Bad Request', count: 2 },
           ],
           dailyStats: Array(30)
             .fill(0)
@@ -98,7 +98,7 @@ export function StatisticsReport({
               const date = new Date();
               date.setDate(date.getDate() - (29 - i));
               return {
-                date: date.toISOString().split("T")[0],
+                date: date.toISOString().split('T')[0],
                 requests: Math.floor(Math.random() * 600) + 200,
                 users: Math.floor(Math.random() * 100) + 50,
                 errors: Math.floor(Math.random() * 15),
@@ -106,16 +106,16 @@ export function StatisticsReport({
               };
             }),
           userLocation: [
-            { country: "Türkiye", count: 425, percentage: 48.7 },
-            { country: "ABD", count: 137, percentage: 15.7 },
-            { country: "Almanya", count: 86, percentage: 9.9 },
-            { country: "İngiltere", count: 72, percentage: 8.2 },
-            { country: "Diğer", count: 153, percentage: 17.5 },
+            { country: 'Türkiye', count: 425, percentage: 48.7 },
+            { country: 'ABD', count: 137, percentage: 15.7 },
+            { country: 'Almanya', count: 86, percentage: 9.9 },
+            { country: 'İngiltere', count: 72, percentage: 8.2 },
+            { country: 'Diğer', count: 153, percentage: 17.5 },
           ],
           deviceBreakdown: [
-            { type: "Desktop", count: 502, percentage: 57.5 },
-            { type: "Mobile", count: 284, percentage: 32.5 },
-            { type: "Tablet", count: 87, percentage: 10.0 },
+            { type: 'Desktop', count: 502, percentage: 57.5 },
+            { type: 'Mobile', count: 284, percentage: 32.5 },
+            { type: 'Tablet', count: 87, percentage: 10.0 },
           ],
           periodRange: {
             start: startDate || getPeriodStartDate(period),
@@ -125,7 +125,7 @@ export function StatisticsReport({
 
         setReportData(data);
       } catch (error) {
-        console.error("Rapor verileri yüklenirken hata oluştu:", error);
+        console.error('Rapor verileri yüklenirken hata oluştu:', error);
       } finally {
         setIsLoading(false);
       }
@@ -137,18 +137,18 @@ export function StatisticsReport({
   // Dönemi alınabilir başlığa çevir
   const getPeriodTitle = (p: string) => {
     switch (p) {
-      case "daily":
-        return "Günlük";
-      case "weekly":
-        return "Haftalık";
-      case "monthly":
-        return "Aylık";
-      case "quarterly":
-        return "Üç Aylık";
-      case "yearly":
-        return "Yıllık";
+      case 'daily':
+        return 'Günlük';
+      case 'weekly':
+        return 'Haftalık';
+      case 'monthly':
+        return 'Aylık';
+      case 'quarterly':
+        return 'Üç Aylık';
+      case 'yearly':
+        return 'Yıllık';
       default:
-        return "Özel";
+        return 'Özel';
     }
   };
 
@@ -156,18 +156,18 @@ export function StatisticsReport({
   const getPeriodStartDate = (p: string) => {
     const now = new Date();
     switch (p) {
-      case "daily":
+      case 'daily':
         return new Date(now.setHours(0, 0, 0, 0));
-      case "weekly":
+      case 'weekly':
         const day = now.getDay();
         const diff = day === 0 ? 6 : day - 1; // Pazartesi gününe ayarla
         return new Date(now.setDate(now.getDate() - diff));
-      case "monthly":
+      case 'monthly':
         return new Date(now.getFullYear(), now.getMonth(), 1);
-      case "quarterly":
+      case 'quarterly':
         const quarter = Math.floor(now.getMonth() / 3);
         return new Date(now.getFullYear(), quarter * 3, 1);
-      case "yearly":
+      case 'yearly':
         return new Date(now.getFullYear(), 0, 1);
       default:
         return now;
@@ -188,7 +188,7 @@ export function StatisticsReport({
         console.log(`${exportFormat.toUpperCase()} formatında dışa aktarma işlemi tamamlandı`);
       }
     } catch (error) {
-      console.error("Dışa aktarma hatası:", error);
+      console.error('Dışa aktarma hatası:', error);
     } finally {
       setExportLoading(false);
     }
@@ -196,10 +196,10 @@ export function StatisticsReport({
 
   // Tarih formatı
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat("tr-TR", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
+    return new Intl.DateTimeFormat('tr-TR', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
     }).format(date);
   };
 
@@ -219,11 +219,7 @@ export function StatisticsReport({
       <div className="flex h-96 items-center justify-center">
         <div className="text-center">
           <p className="text-muted-foreground">Rapor verileri bulunamadı</p>
-          <Button
-            variant="outline"
-            onClick={() => window.location.reload()}
-            className="mt-4"
-          >
+          <Button variant="outline" onClick={() => window.location.reload()} className="mt-4">
             Yeniden Dene
           </Button>
         </div>
@@ -247,7 +243,7 @@ export function StatisticsReport({
             <select
               className="h-9 rounded-md border border-input bg-background px-3 text-sm"
               value={exportFormat}
-              onChange={(e) => setExportFormat(e.target.value as any)}
+              onChange={e => setExportFormat(e.target.value as any)}
               title="Dışa Aktarma Formatı"
               aria-label="Dışa Aktarma Formatı"
             >
@@ -257,12 +253,7 @@ export function StatisticsReport({
               <option value="json">JSON Dosyası</option>
             </select>
 
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={exportLoading}
-              onClick={handleExport}
-            >
+            <Button variant="outline" size="sm" disabled={exportLoading} onClick={handleExport}>
               {exportLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
@@ -277,7 +268,7 @@ export function StatisticsReport({
             Paylaş
           </Button>
 
-          <Button variant="outline" size="sm" onClick={() => router.push("/admin/analytics")}>
+          <Button variant="outline" size="sm" onClick={() => router.push('/admin/analytics')}>
             <BarChart className="h-4 w-4 mr-2" />
             Analitiklere Git
           </Button>
@@ -297,12 +288,7 @@ export function StatisticsReport({
             <div className="flex items-center pt-1 text-xs">
               {reportData.trends.requestsGrowth >= 0 ? (
                 <span className="flex items-center text-green-500">
-                  <svg
-                    className="h-3 w-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
+                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -314,12 +300,7 @@ export function StatisticsReport({
                 </span>
               ) : (
                 <span className="flex items-center text-red-500">
-                  <svg
-                    className="h-3 w-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
+                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -334,7 +315,7 @@ export function StatisticsReport({
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Benzersiz Kullanıcı</CardTitle>
@@ -346,12 +327,7 @@ export function StatisticsReport({
             <div className="flex items-center pt-1 text-xs">
               {reportData.trends.usersGrowth >= 0 ? (
                 <span className="flex items-center text-green-500">
-                  <svg
-                    className="h-3 w-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
+                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -363,12 +339,7 @@ export function StatisticsReport({
                 </span>
               ) : (
                 <span className="flex items-center text-red-500">
-                  <svg
-                    className="h-3 w-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
+                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -383,15 +354,13 @@ export function StatisticsReport({
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Ortalama Yanıt Süresi</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {reportData.summary.avgResponseTime} ms
-            </div>
+            <div className="text-2xl font-bold">{reportData.summary.avgResponseTime} ms</div>
             <div className="flex items-center pt-1 text-xs">
               <span className="text-muted-foreground">
                 P95: {reportData.summary.p95ResponseTime} ms
@@ -399,24 +368,17 @@ export function StatisticsReport({
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Gelir</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {formatCurrency(reportData.summary.revenue)}
-            </div>
+            <div className="text-2xl font-bold">{formatCurrency(reportData.summary.revenue)}</div>
             <div className="flex items-center pt-1 text-xs">
               {reportData.trends.revenueGrowth >= 0 ? (
                 <span className="flex items-center text-green-500">
-                  <svg
-                    className="h-3 w-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
+                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -428,12 +390,7 @@ export function StatisticsReport({
                 </span>
               ) : (
                 <span className="flex items-center text-red-500">
-                  <svg
-                    className="h-3 w-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
+                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -470,15 +427,15 @@ export function StatisticsReport({
               <tbody>
                 {reportData.topEndpoints.map((endpoint: any, index: number) => {
                   const percentage = (endpoint.count / reportData.summary.totalRequests) * 100;
-                  
+
                   return (
                     <tr key={index} className="border-b last:border-0 hover:bg-muted/50">
                       <td className="py-3 px-4 font-mono text-xs">{endpoint.path}</td>
                       <td className="py-3 px-4">{endpoint.count.toLocaleString()}</td>
                       <td className="py-3 px-4">{endpoint.avgTime} ms</td>
                       <td className="py-3 px-4">
-                        <ProgressBar 
-                          percentage={percentage} 
+                        <ProgressBar
+                          percentage={percentage}
                           variant="primary"
                           showLabel
                           labelPosition="right"
@@ -514,23 +471,31 @@ export function StatisticsReport({
               <tbody>
                 {reportData.errorBreakdown.map((error: any, index: number) => {
                   const percentage = (error.count / reportData.summary.failedRequests) * 100;
-                  
+
                   return (
                     <tr key={index} className="border-b last:border-0 hover:bg-muted/50">
                       <td className="py-3 px-4">
-                        <span className={`inline-block rounded px-2 py-1 text-xs 
-                          ${error.code >= 500 ? 'bg-red-100 text-red-800' : 
-                            error.code >= 400 ? 'bg-amber-100 text-amber-800' : 
-                              'bg-blue-100 text-blue-800'}`}>
+                        <span
+                          className={`inline-block rounded px-2 py-1 text-xs 
+                          ${
+                            error.code >= 500
+                              ? 'bg-red-100 text-red-800'
+                              : error.code >= 400
+                                ? 'bg-amber-100 text-amber-800'
+                                : 'bg-blue-100 text-blue-800'
+                          }`}
+                        >
                           {error.code}
                         </span>
                       </td>
                       <td className="py-3 px-4">{error.description}</td>
                       <td className="py-3 px-4">{error.count}</td>
                       <td className="py-3 px-4">
-                        <ProgressBar 
-                          percentage={percentage} 
-                          variant={error.code >= 500 ? 'error' : error.code >= 400 ? 'warning' : 'info'}
+                        <ProgressBar
+                          percentage={percentage}
+                          variant={
+                            error.code >= 500 ? 'error' : error.code >= 400 ? 'warning' : 'info'
+                          }
                           showLabel
                           labelPosition="right"
                           label={`%${percentage.toFixed(1)}`}
@@ -569,8 +534,8 @@ export function StatisticsReport({
                       <td className="py-3 px-4">{location.country}</td>
                       <td className="py-3 px-4">{location.count}</td>
                       <td className="py-3 px-4">
-                        <ProgressBar 
-                          percentage={location.percentage} 
+                        <ProgressBar
+                          percentage={location.percentage}
                           variant="secondary"
                           showLabel
                           labelPosition="right"
@@ -607,8 +572,8 @@ export function StatisticsReport({
                       <td className="py-3 px-4">{device.type}</td>
                       <td className="py-3 px-4">{device.count}</td>
                       <td className="py-3 px-4">
-                        <ProgressBar 
-                          percentage={device.percentage} 
+                        <ProgressBar
+                          percentage={device.percentage}
                           variant="accent"
                           showLabel
                           labelPosition="right"
@@ -638,14 +603,14 @@ export function StatisticsReport({
                 {formatCurrency(reportData.summary.revenue)}
               </div>
             </div>
-            
+
             <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-md">
               <div className="text-sm text-muted-foreground mb-1">Tahmini Maliyet</div>
               <div className="text-xl font-bold text-red-700 dark:text-red-500">
                 {formatCurrency(reportData.summary.costEstimate)}
               </div>
             </div>
-            
+
             <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
               <div className="text-sm text-muted-foreground mb-1">Net Kâr</div>
               <div className="text-xl font-bold text-blue-700 dark:text-blue-500">
@@ -655,7 +620,7 @@ export function StatisticsReport({
           </div>
         </CardContent>
         <CardFooter className="border-t pt-4">
-          <Button variant="outline" onClick={() => router.push("/admin/finances")}>
+          <Button variant="outline" onClick={() => router.push('/admin/finances')}>
             <FileSpreadsheet className="h-4 w-4 mr-2" />
             Detaylı Finansal Rapor
           </Button>

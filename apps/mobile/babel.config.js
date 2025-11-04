@@ -18,10 +18,10 @@ module.exports = {
           '@navigation': './src/navigation',
           '@config': './src/config',
           '@i18n': './src/i18n',
-          '@types': './src/types'
-        }
-      }
+          '@types': './src/types',
+        },
+      },
     ],
-    'react-native-reanimated/plugin'
-  ]
+    'react-native-reanimated/plugin',
+  ],
 };

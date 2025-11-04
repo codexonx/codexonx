@@ -1,22 +1,29 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useApi } from "@/hooks/use-api";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useApi } from '@/hooks/use-api';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
 
 export function LoginForm() {
   const router = useRouter();
   const { login, isLoading, error } = useApi();
-  
+
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -24,37 +31,37 @@ export function LoginForm() {
   // Form değişikliklerini takip et
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
     setFormError(null);
   };
 
   // Form submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Form doğrulama
     if (!formData.email) {
-      setFormError("Email adresi gereklidir.");
+      setFormError('Email adresi gereklidir.');
       return;
     }
-    
+
     if (!formData.password) {
-      setFormError("Şifre gereklidir.");
+      setFormError('Şifre gereklidir.');
       return;
     }
-    
+
     // Login işlemi
     const result = await login(
       formData.email,
       formData.password,
-      (data) => {
+      data => {
         // Token'ı localStorage'a kaydet
         localStorage.setItem('auth_token', data.token);
-        
+
         // Kullanıcıyı dashboard'a yönlendir
         router.push('/admin');
       },
-      (error) => {
+      error => {
         setFormError(error);
       }
     );
@@ -64,9 +71,7 @@ export function LoginForm() {
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold">Giriş Yap</CardTitle>
-        <CardDescription>
-          Hesabınıza giriş yaparak platformu kullanmaya başlayın
-        </CardDescription>
+        <CardDescription>Hesabınıza giriş yaparak platformu kullanmaya başlayın</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
@@ -77,7 +82,7 @@ export function LoginForm() {
               <span>{formError || error}</span>
             </div>
           )}
-          
+
           {/* Email */}
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
@@ -92,7 +97,7 @@ export function LoginForm() {
               required
             />
           </div>
-          
+
           {/* Şifre */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
@@ -105,7 +110,7 @@ export function LoginForm() {
               <Input
                 id="password"
                 name="password"
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={handleChange}
@@ -137,11 +142,11 @@ export function LoginForm() {
                 Giriş yapılıyor
               </>
             ) : (
-              "Giriş Yap"
+              'Giriş Yap'
             )}
           </Button>
           <div className="text-center text-sm">
-            Henüz hesabınız yok mu?{" "}
+            Henüz hesabınız yok mu?{' '}
             <Link href="/register" className="text-primary hover:underline font-medium">
               Kayıt Ol
             </Link>

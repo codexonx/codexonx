@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
 // @ts-nocheck
 // TypeScript hatalarını görmezden geliyoruz
 
-import React from "react";
+import React from 'react';
 import {
   Line,
   LineChart as RechartsLineChart,
@@ -13,7 +13,7 @@ import {
   YAxis,
   CartesianGrid,
   Legend,
-} from "recharts";
+} from 'recharts';
 
 interface LineChartProps {
   data: any[];
@@ -26,38 +26,28 @@ interface LineChartProps {
   showLegend?: boolean;
   showXAxis?: boolean;
   showYAxis?: boolean;
-  curveType?: "basis" | "linear" | "natural" | "monotone" | "step" | "stepAfter" | "stepBefore";
+  curveType?: 'basis' | 'linear' | 'natural' | 'monotone' | 'step' | 'stepAfter' | 'stepBefore';
 }
 
 export function LineChart({
   data,
   dataKeys,
   colors,
-  xAxisKey = "name",
+  xAxisKey = 'name',
   height = 300,
   showGrid = true,
   showTooltip = true,
   showLegend = true,
   showXAxis = true,
   showYAxis = true,
-  curveType = "monotone",
+  curveType = 'monotone',
 }: LineChartProps) {
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <RechartsLineChart
-        data={data}
-        margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
-      >
+      <RechartsLineChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
         {showGrid && <CartesianGrid strokeDasharray="3 3" vertical={false} />}
-        {showXAxis && <XAxis 
-          dataKey={xAxisKey} 
-          tickLine={false} 
-          axisLine={false} 
-        />}
-        {showYAxis && <YAxis 
-          tickLine={false} 
-          axisLine={false} 
-        />}
+        {showXAxis && <XAxis dataKey={xAxisKey} tickLine={false} axisLine={false} />}
+        {showYAxis && <YAxis tickLine={false} axisLine={false} />}
         {showTooltip && <Tooltip />}
         {showLegend && <Legend />}
         {dataKeys.map((key, index) => (

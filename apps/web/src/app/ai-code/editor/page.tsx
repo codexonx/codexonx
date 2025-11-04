@@ -1,17 +1,31 @@
-"use client";
+'use client';
 
 // @ts-nocheck
 // TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
 // arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
 
-import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { ChevronRight, Folder, File, Settings, MessageSquare, Terminal, X, Search, Plus, PanelLeft, Code, Save, PlayCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Link from "next/link";
-import MonacoEditor, { setupMonaco } from "../components/monaco-editor";
-import { simulateAIResponse } from "../components/ai-api";
+import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import {
+  ChevronRight,
+  Folder,
+  File,
+  Settings,
+  MessageSquare,
+  Terminal,
+  X,
+  Search,
+  Plus,
+  PanelLeft,
+  Code,
+  Save,
+  PlayCircle,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Link from 'next/link';
+import MonacoEditor, { setupMonaco } from '../components/monaco-editor';
+import { simulateAIResponse } from '../components/ai-api';
 
 // Monaco editör kurulumunu başlat
 setupMonaco();
@@ -19,94 +33,98 @@ setupMonaco();
 export default function EditorPage() {
   // Dosya yönetimi state'leri
   const [files, setFiles] = useState([
-    { 
-      id: "1", 
-      name: "main.js", 
-      content: "// JavaScript dosyası\nconsole.log('Merhaba Dünya!');\n\n// Bir fonksiyon tanımlayalım\nfunction selamla(isim) {\n  return `Merhaba, ${isim}!`;\n}\n\n// Fonksiyonu çağıralım\nconst mesaj = selamla('Kullanıcı');\nconsole.log(mesaj);" 
+    {
+      id: '1',
+      name: 'main.js',
+      content:
+        "// JavaScript dosyası\nconsole.log('Merhaba Dünya!');\n\n// Bir fonksiyon tanımlayalım\nfunction selamla(isim) {\n  return `Merhaba, ${isim}!`;\n}\n\n// Fonksiyonu çağıralım\nconst mesaj = selamla('Kullanıcı');\nconsole.log(mesaj);",
     },
-    { 
-      id: "2", 
-      name: "style.css", 
-      content: "/* CSS Dosyası */\nbody {\n  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n  margin: 0;\n  padding: 20px;\n  background-color: #f5f5f5;\n  color: #333;\n}\n\nh1 {\n  color: #2c3e50;\n  border-bottom: 2px solid #3498db;\n  padding-bottom: 10px;\n}\n\np {\n  line-height: 1.6;\n}" 
+    {
+      id: '2',
+      name: 'style.css',
+      content:
+        "/* CSS Dosyası */\nbody {\n  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n  margin: 0;\n  padding: 20px;\n  background-color: #f5f5f5;\n  color: #333;\n}\n\nh1 {\n  color: #2c3e50;\n  border-bottom: 2px solid #3498db;\n  padding-bottom: 10px;\n}\n\np {\n  line-height: 1.6;\n}",
     },
-    { 
-      id: "3", 
-      name: "index.html", 
-      content: "<!DOCTYPE html>\n<html lang=\"tr\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>AI Code</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <h1>Merhaba Dünya!</h1>\n  <p>Bu bir örnek HTML dosyasıdır.</p>\n  \n  <script src=\"main.js\"></script>\n</body>\n</html>" 
+    {
+      id: '3',
+      name: 'index.html',
+      content:
+        '<!DOCTYPE html>\n<html lang="tr">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>AI Code</title>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n  <h1>Merhaba Dünya!</h1>\n  <p>Bu bir örnek HTML dosyasıdır.</p>\n  \n  <script src="main.js"></script>\n</body>\n</html>',
     },
   ]);
-  
+
   const [activeFile, setActiveFile] = useState(files[0]);
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
-  const [activeTab, setActiveTab] = useState("editor");
+  const [input, setInput] = useState('');
+  const [activeTab, setActiveTab] = useState('editor');
   const [isLoading, setIsLoading] = useState(false);
-  const [codeOutput, setCodeOutput] = useState("");
+  const [codeOutput, setCodeOutput] = useState('');
   const [editorReady, setEditorReady] = useState(false);
 
   // Monaco editör referansı
   const editorRef = useRef(null);
 
   // Mesaj giriş alanı değişikliği
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     setInput(e.target.value);
   };
 
   // Mesaj gönderme işlemi
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     if (!input.trim()) return;
-    
-    const userMessage = { role: "user", content: input };
+
+    const userMessage = { role: 'user', content: input };
     setMessages([...messages, userMessage]);
-    setInput("");
+    setInput('');
     setIsLoading(true);
-    
+
     try {
       // AI yanıtını simüle et
       const aiResponse = await simulateAIResponse(input, activeFile);
-      setMessages(prevMessages => [...prevMessages, { role: "assistant", content: aiResponse }]);
+      setMessages(prevMessages => [...prevMessages, { role: 'assistant', content: aiResponse }]);
     } catch (error) {
-      setMessages(prevMessages => [...prevMessages, { 
-        role: "assistant", 
-        content: "Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin." 
-      }]);
+      setMessages(prevMessages => [
+        ...prevMessages,
+        {
+          role: 'assistant',
+          content: 'Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.',
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
   };
 
   // Dosya içeriğini güncelleme
-  const updateFileContent = (newContent) => {
+  const updateFileContent = newContent => {
     const updatedFile = { ...activeFile, content: newContent };
     setActiveFile(updatedFile);
-    
-    const updatedFiles = files.map(file => 
-      file.id === activeFile.id ? updatedFile : file
-    );
-    
+
+    const updatedFiles = files.map(file => (file.id === activeFile.id ? updatedFile : file));
+
     setFiles(updatedFiles);
   };
-  
+
   // Kodu çalıştırma
   const runCode = () => {
-    setActiveTab("terminal");
+    setActiveTab('terminal');
     setIsLoading(true);
-    
+
     setTimeout(() => {
       try {
-        let output = "";
-        
-        if (activeFile.name.endsWith(".js")) {
+        let output = '';
+
+        if (activeFile.name.endsWith('.js')) {
           // JavaScript kodunu çalıştır
           const originalConsoleLog = console.log;
           const logs = [];
-          
+
           console.log = (...args) => {
             logs.push(args.join(' '));
             originalConsoleLog(...args);
           };
-          
+
           try {
             // Eval yerine Function kullanarak daha güvenli çalıştırma
             const func = new Function(activeFile.content);
@@ -114,17 +132,17 @@ export default function EditorPage() {
           } catch (error) {
             logs.push(`Hata: ${error.message}`);
           }
-          
+
           console.log = originalConsoleLog;
           output = logs.join('\n');
-        } else if (activeFile.name.endsWith(".html")) {
-          output = "HTML dosyası tarayıcıda görüntülenebilir.";
-        } else if (activeFile.name.endsWith(".css")) {
-          output = "CSS dosyası HTML ile birlikte kullanılabilir.";
+        } else if (activeFile.name.endsWith('.html')) {
+          output = 'HTML dosyası tarayıcıda görüntülenebilir.';
+        } else if (activeFile.name.endsWith('.css')) {
+          output = 'CSS dosyası HTML ile birlikte kullanılabilir.';
         } else {
           output = `${activeFile.name} dosya türü için çalıştırma simülasyonu henüz eklenmedi.`;
         }
-        
+
         setCodeOutput(output);
       } catch (error) {
         setCodeOutput(`Çalıştırma hatası: ${error.message}`);
@@ -133,25 +151,25 @@ export default function EditorPage() {
       }
     }, 800);
   };
-  
+
   // Yeni dosya ekleme
   const addNewFile = () => {
-    const fileName = prompt("Yeni dosya adını giriniz:");
+    const fileName = prompt('Yeni dosya adını giriniz:');
     if (!fileName) return;
-    
+
     const newFileId = `file-${Date.now()}`;
     const newFile = {
       id: newFileId,
       name: fileName,
-      content: `// ${fileName} dosyası\n\n`
+      content: `// ${fileName} dosyası\n\n`,
     };
-    
+
     setFiles([...files, newFile]);
     setActiveFile(newFile);
   };
-  
+
   // Editör hazır olduğunda
-  const handleEditorDidMount = (editor) => {
+  const handleEditorDidMount = editor => {
     editorRef.current = editor;
     setEditorReady(true);
   };
@@ -176,7 +194,7 @@ export default function EditorPage() {
       </header>
 
       {/* Main Content */}
-      <motion.div 
+      <motion.div
         className="flex-1 flex overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -194,9 +212,9 @@ export default function EditorPage() {
             </Button>
           </div>
           <div className="flex-1 overflow-auto p-2">
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               className="justify-start text-slate-400 hover:text-slate-300"
               onClick={addNewFile}
               title="Yeni dosya ekle"
@@ -228,14 +246,14 @@ export default function EditorPage() {
             onValueChange={setActiveTab}
           >
             <TabsList className="bg-slate-900 border-b border-slate-800 p-0 h-auto rounded-none">
-              <TabsTrigger 
-                value="editor" 
+              <TabsTrigger
+                value="editor"
                 className="px-4 py-3 rounded-none data-[state=active]:bg-slate-950 data-[state=active]:border-b-2 data-[state=active]:border-blue-500 data-[state=active]:shadow-none transition-none"
               >
                 <Code className="w-4 h-4 mr-2" /> Kod Editörü
               </TabsTrigger>
-              <TabsTrigger 
-                value="terminal" 
+              <TabsTrigger
+                value="terminal"
                 className="px-4 py-3 rounded-none data-[state=active]:bg-slate-950 data-[state=active]:border-b-2 data-[state=active]:border-blue-500 data-[state=active]:shadow-none transition-none"
               >
                 <Terminal className="w-4 h-4 mr-2" /> Terminal
@@ -268,7 +286,7 @@ export default function EditorPage() {
                           wordWrap: 'on',
                           automaticLayout: true,
                           lineNumbers: 'on',
-                          tabSize: 2
+                          tabSize: 2,
                         }}
                         height="100%"
                         width="100%"
@@ -289,7 +307,7 @@ export default function EditorPage() {
                     {activeFile.name} - {getLanguageForFile(activeFile.name)}
                   </div>
                   <div className="flex gap-3">
-                    <Button 
+                    <Button
                       size="sm"
                       variant="outline"
                       className="h-7 px-2 text-xs flex items-center gap-1 border-slate-700 text-slate-300"
@@ -297,7 +315,7 @@ export default function EditorPage() {
                     >
                       <Code className="w-3.5 h-3.5" /> Editör
                     </Button>
-                    <Button 
+                    <Button
                       size="sm"
                       className="h-7 px-2 text-xs flex items-center gap-1 bg-blue-600 hover:bg-blue-700"
                       onClick={runCode}
@@ -318,24 +336,26 @@ export default function EditorPage() {
                 </div>
                 <div className="flex-1 overflow-auto p-3 space-y-4">
                   {messages.map(message => (
-                    <div 
-                      key={message.role === 'assistant' ? 'assistant' : message.content} 
+                    <div
+                      key={message.role === 'assistant' ? 'assistant' : message.content}
                       className={`flex ${message.role === 'assistant' ? 'justify-start' : 'justify-end'}`}
                     >
-                      <div 
+                      <div
                         className={`rounded-lg px-3 py-2 max-w-[80%] ${
-                          message.role === 'assistant' ? 'bg-slate-800 text-slate-200' : 'bg-blue-600 text-white'
+                          message.role === 'assistant'
+                            ? 'bg-slate-800 text-slate-200'
+                            : 'bg-blue-600 text-white'
                         }`}
                       >
-                        <div className="prose prose-sm prose-invert" dangerouslySetInnerHTML={{ __html: formatMessage(message.content) }} />
+                        <div
+                          className="prose prose-sm prose-invert"
+                          dangerouslySetInnerHTML={{ __html: formatMessage(message.content) }}
+                        />
                       </div>
                     </div>
                   ))}
                 </div>
-                <form 
-                  className="border-t border-slate-800 p-3 flex gap-2"
-                  onSubmit={handleSubmit}
-                >
+                <form className="border-t border-slate-800 p-3 flex gap-2" onSubmit={handleSubmit}>
                   <input
                     type="text"
                     value={input}
@@ -345,9 +365,9 @@ export default function EditorPage() {
                     aria-label="AI asistana mesaj gönder"
                     title="AI asistana mesaj gönder"
                   />
-                  <Button 
-                    type="submit" 
-                    size="icon" 
+                  <Button
+                    type="submit"
+                    size="icon"
                     className="bg-blue-600 hover:bg-blue-700"
                     title="Mesajı gönder"
                     aria-label="Mesajı gönder"
@@ -359,7 +379,10 @@ export default function EditorPage() {
               </div>
             </TabsContent>
 
-            <TabsContent value="terminal" className="flex-1 m-0 bg-slate-950 p-3 font-mono text-sm text-green-400 overflow-auto">
+            <TabsContent
+              value="terminal"
+              className="flex-1 m-0 bg-slate-950 p-3 font-mono text-sm text-green-400 overflow-auto"
+            >
               {isLoading ? (
                 <div className="flex items-center justify-center h-full">
                   <div className="text-center">
@@ -370,13 +393,21 @@ export default function EditorPage() {
               ) : (
                 <>
                   <div className="mb-1">
-                    $ {activeFile.name.endsWith(".js") ? `node ${activeFile.name}` : 
-                       activeFile.name.endsWith(".html") ? `serve ${activeFile.name}` : 
-                       activeFile.name.endsWith(".css") ? `cat ${activeFile.name}` : 
-                       `cat ${activeFile.name}`}
+                    ${' '}
+                    {activeFile.name.endsWith('.js')
+                      ? `node ${activeFile.name}`
+                      : activeFile.name.endsWith('.html')
+                        ? `serve ${activeFile.name}`
+                        : activeFile.name.endsWith('.css')
+                          ? `cat ${activeFile.name}`
+                          : `cat ${activeFile.name}`}
                   </div>
-                  <div className="mb-3 whitespace-pre-wrap">{codeOutput || "Kodu çalıştırmak için 'Çalıştır' düğmesine tıklayın."}</div>
-                  <div className="text-slate-400">Diğer dosyaları görmek için sol paneldeki dosya gezginini kullanabilirsiniz.</div>
+                  <div className="mb-3 whitespace-pre-wrap">
+                    {codeOutput || "Kodu çalıştırmak için 'Çalıştır' düğmesine tıklayın."}
+                  </div>
+                  <div className="text-slate-400">
+                    Diğer dosyaları görmek için sol paneldeki dosya gezginini kullanabilirsiniz.
+                  </div>
                   <div className="mt-3 flex items-center text-slate-300">
                     <span className="mr-2">$</span>
                     <div className="w-2 h-5 bg-slate-300 animate-pulse"></div>
@@ -391,43 +422,43 @@ export default function EditorPage() {
   );
 
   // Kod blokları için escape HTML
-  const escapeHtml = (unsafe) => {
+  const escapeHtml = unsafe => {
     return unsafe
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   };
 
   // AI mesajlarının içeriğini biçimlendirme
-  const formatMessage = (content) => {
+  const formatMessage = content => {
     return content.replace(/```(.*?)\n([\s\S]*?)```/g, (match, language, code) => {
       return `<pre class="bg-slate-800 p-3 rounded-md overflow-x-auto mt-2 mb-2"><code class="language-${language}">${escapeHtml(code)}</code></pre>`;
     });
   };
-  
+
   // Dosya diline göre Monaco dili belirle
-  const getLanguageForFile = (fileName) => {
+  const getLanguageForFile = fileName => {
     const extension = fileName.split('.').pop().toLowerCase();
     const languageMap = {
-      'js': 'javascript',
-      'jsx': 'javascript',
-      'ts': 'typescript',
-      'tsx': 'typescript',
-      'html': 'html',
-      'css': 'css',
-      'json': 'json',
-      'md': 'markdown',
-      'py': 'python',
-      'php': 'php',
-      'java': 'java',
-      'c': 'c',
-      'cpp': 'cpp',
-      'go': 'go',
-      'rs': 'rust'
+      js: 'javascript',
+      jsx: 'javascript',
+      ts: 'typescript',
+      tsx: 'typescript',
+      html: 'html',
+      css: 'css',
+      json: 'json',
+      md: 'markdown',
+      py: 'python',
+      php: 'php',
+      java: 'java',
+      c: 'c',
+      cpp: 'cpp',
+      go: 'go',
+      rs: 'rust',
     };
-    
+
     return languageMap[extension] || 'plaintext';
   };
 }

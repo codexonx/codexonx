@@ -14,17 +14,17 @@ setupI18n();
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
   const { initialized, initializeApp } = useAuthStore();
-  
+
   // Uygulama başlangıcında token kontrolü ve kullanıcı verilerini yükleme
   useEffect(() => {
     const setup = async () => {
       // Saklı token varsa kullanıcı durumunu yenile
       await initializeApp();
     };
-    
+
     setup();
   }, [initializeApp]);
-  
+
   // Uygulama henüz yüklenmediyse veya splash screen'i gösteriyorsak buradan dönebiliriz
   if (!initialized) {
     return null; // Splash screen veya yükleme göstergesi burada gösterilebilir

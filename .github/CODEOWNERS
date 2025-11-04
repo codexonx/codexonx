@@ -1,0 +1,31 @@
+# Codexonx AI Platform Code Owners
+# Bu dosya, farklı kod parçaları için otomatik olarak kimlerin review edeceğini belirler
+
+# Varsayılan sahipler
+*                 @codexonx/maintainers
+
+# Frontend ekibi
+/apps/web/        @codexonx/frontend-team
+/packages/ui/      @codexonx/frontend-team
+*.css             @codexonx/frontend-team
+*.scss            @codexonx/frontend-team
+
+# Backend ekibi
+/apps/server/     @codexonx/backend-team
+/packages/api-types/ @codexonx/backend-team
+*.ts              @codexonx/backend-team
+
+# AI ekibi
+/apps/web/src/app/ai-code/    @codexonx/ai-team
+/apps/server/src/controllers/ai-code.ts  @codexonx/ai-team
+/apps/server/src/routes/ai-code.routes.ts @codexonx/ai-team
+
+# DevOps ekibi
+/.github/         @codexonx/devops-team
+/terraform/       @codexonx/devops-team
+docker*           @codexonx/devops-team
+*.yml             @codexonx/devops-team
+*.yaml            @codexonx/devops-team
+
+# Dokümantasyon
+*.md              @codexonx/docs-team

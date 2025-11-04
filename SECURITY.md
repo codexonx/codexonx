@@ -4,14 +4,14 @@
 
 Aşağıdaki sürümler güvenlik güncellemeleri ve yamalarıyla desteklenmektedir:
 
-| Versiyon | Destekleniyor          |
-| -------- | ---------------------- |
-| 1.0.x    | :white_check_mark:     |
-| < 1.0    | :x:                    |
+| Versiyon | Destekleniyor      |
+| -------- | ------------------ |
+| 1.0.x    | :white_check_mark: |
+| < 1.0    | :x:                |
 
 ## Güvenlik Açığı Bildirme
 
-Projede bir güvenlik açığı tespit ederseniz, lütfen bunu bir GitHub issue'su olarak değil, doğrudan e-posta ile bildirin. 
+Projede bir güvenlik açığı tespit ederseniz, lütfen bunu bir GitHub issue'su olarak değil, doğrudan e-posta ile bildirin.
 Güvenlik açıklarını [security@codexonx.com](mailto:security@codexonx.com) adresine göndermeniz önemlidir.
 
 ## Güvenlik Açığı Yanıt Süreci
@@ -25,7 +25,7 @@ Güvenlik açığı bildirimi aldığımızda:
 
 ## Açık Kaynak Yazılım Bileşenlerinin Güvenliği
 
-Projede kullanılan açık kaynak yazılım bileşenlerinin güvenlik açıkları düzenli olarak kontrol edilmektedir. 
+Projede kullanılan açık kaynak yazılım bileşenlerinin güvenlik açıkları düzenli olarak kontrol edilmektedir.
 Bu kontroller GitHub Security Alerts ve npm audit aracılığıyla otomatik olarak gerçekleştirilmektedir.
 
 ## Güvenlik Önlemleri

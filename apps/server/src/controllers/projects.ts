@@ -9,28 +9,28 @@ const prisma = new PrismaClient();
 // Validation schemas
 const projectSchema = z.object({
   name: z.string().min(2, 'Proje adı en az 2 karakter olmalıdır'),
-  description: z.string().optional()
+  description: z.string().optional(),
 });
 
 // Get all projects for current user
-export const getProjects = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getProjects = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    if (!req.user) {
+      return next(new AppError('Kullanıcı bilgisi bulunamadı', 401));
+    }
+
     const projects = await prisma.project.findMany({
       where: {
-        userId: req.user.id
-      }
+        userId: req.user.id,
+      },
     });
 
     res.status(200).json({
       status: 'success',
       results: projects.length,
       data: {
-        projects
-      }
+        projects,
+      },
     });
   } catch (err) {
     next(err);
@@ -38,25 +38,25 @@ export const getProjects = async (
 };
 
 // Get single project
-export const getProject = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getProject = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
 
     const project = await prisma.project.findUnique({
       where: {
-        id
-      }
+        id,
+      },
     });
 
     if (!project) {
       return next(new AppError('Proje bulunamadı', 404));
     }
 
-    // Check if user owns the project
+    // Check if user exists and owns the project
+    if (!req.user) {
+      return next(new AppError('Kullanıcı bilgisi bulunamadı', 401));
+    }
+
     if (project.userId !== req.user.id && req.user.role !== 'ADMIN') {
       return next(new AppError('Bu projeye erişim yetkiniz yok', 403));
     }
@@ -64,8 +64,8 @@ export const getProject = async (
     res.status(200).json({
       status: 'success',
       data: {
-        project
-      }
+        project,
+      },
     });
   } catch (err) {
     next(err);
@@ -73,28 +73,28 @@ export const getProject = async (
 };
 
 // Create new project
-export const createProject = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const createProject = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, description } = projectSchema.parse(req.body);
+
+    if (!req.user) {
+      return next(new AppError('Kullanıcı bilgisi bulunamadı', 401));
+    }
 
     const project = await prisma.project.create({
       data: {
         name,
         description,
         userId: req.user.id,
-        apiKey: uuidv4()
-      }
+        apiKey: uuidv4(),
+      },
     });
 
     res.status(201).json({
       status: 'success',
       data: {
-        project
-      }
+        project,
+      },
     });
   } catch (err) {
     next(err);
@@ -102,11 +102,7 @@ export const createProject = async (
 };
 
 // Update project
-export const updateProject = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const updateProject = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const { name, description } = projectSchema.parse(req.body);
@@ -114,15 +110,19 @@ export const updateProject = async (
     // Find project first to check ownership
     const existingProject = await prisma.project.findUnique({
       where: {
-        id
-      }
+        id,
+      },
     });
 
     if (!existingProject) {
       return next(new AppError('Proje bulunamadı', 404));
     }
 
-    // Check if user owns the project
+    // Check if user exists and owns the project
+    if (!req.user) {
+      return next(new AppError('Kullanıcı bilgisi bulunamadı', 401));
+    }
+
     if (existingProject.userId !== req.user.id && req.user.role !== 'ADMIN') {
       return next(new AppError('Bu projeyi düzenleme yetkiniz yok', 403));
     }
@@ -130,19 +130,19 @@ export const updateProject = async (
     // Update project
     const project = await prisma.project.update({
       where: {
-        id
+        id,
       },
       data: {
         name,
-        description
-      }
+        description,
+      },
     });
 
     res.status(200).json({
       status: 'success',
       data: {
-        project
-      }
+        project,
+      },
     });
   } catch (err) {
     next(err);
@@ -150,26 +150,26 @@ export const updateProject = async (
 };
 
 // Delete project
-export const deleteProject = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const deleteProject = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
 
     // Find project first to check ownership
     const existingProject = await prisma.project.findUnique({
       where: {
-        id
-      }
+        id,
+      },
     });
 
     if (!existingProject) {
       return next(new AppError('Proje bulunamadı', 404));
     }
 
-    // Check if user owns the project
+    // Check if user exists and owns the project
+    if (!req.user) {
+      return next(new AppError('Kullanıcı bilgisi bulunamadı', 401));
+    }
+
     if (existingProject.userId !== req.user.id && req.user.role !== 'ADMIN') {
       return next(new AppError('Bu projeyi silme yetkiniz yok', 403));
     }
@@ -177,13 +177,13 @@ export const deleteProject = async (
     // Delete project
     await prisma.project.delete({
       where: {
-        id
-      }
+        id,
+      },
     });
 
     res.status(204).json({
       status: 'success',
-      data: null
+      data: null,
     });
   } catch (err) {
     next(err);
@@ -191,26 +191,26 @@ export const deleteProject = async (
 };
 
 // Regenerate API key
-export const regenerateApiKey = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const regenerateApiKey = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
 
     // Find project first to check ownership
     const existingProject = await prisma.project.findUnique({
       where: {
-        id
-      }
+        id,
+      },
     });
 
     if (!existingProject) {
       return next(new AppError('Proje bulunamadı', 404));
     }
 
-    // Check if user owns the project
+    // Check if user exists and owns the project
+    if (!req.user) {
+      return next(new AppError('Kullanıcı bilgisi bulunamadı', 401));
+    }
+
     if (existingProject.userId !== req.user.id && req.user.role !== 'ADMIN') {
       return next(new AppError('Bu projenin API anahtarını yenileme yetkiniz yok', 403));
     }
@@ -218,18 +218,18 @@ export const regenerateApiKey = async (
     // Update project with new API key
     const project = await prisma.project.update({
       where: {
-        id
+        id,
       },
       data: {
-        apiKey: uuidv4()
-      }
+        apiKey: uuidv4(),
+      },
     });
 
     res.status(200).json({
       status: 'success',
       data: {
-        project
-      }
+        project,
+      },
     });
   } catch (err) {
     next(err);

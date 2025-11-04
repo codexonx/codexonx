@@ -15,9 +15,9 @@ export const handleApiError = async (response: Response): Promise<Error> => {
 
 // API isteği gönderme (genel amaçlı)
 export const apiRequest = async <T>(
-  url: string, 
-  method: string = 'GET', 
-  body?: any, 
+  url: string,
+  method: string = 'GET',
+  body?: any,
   headers?: HeadersInit
 ): Promise<T> => {
   const options: RequestInit = {
@@ -101,7 +101,7 @@ export const apiRequestWithRetry = async <T>(
       return await apiRequest<T>(url, method, body, headers);
     } catch (error) {
       lastError = error as Error;
-      
+
       // Son deneme değilse bekle
       if (attempt < maxRetries - 1) {
         await new Promise(resolve => setTimeout(resolve, retryDelay * (attempt + 1)));

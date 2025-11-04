@@ -1,9 +1,9 @@
 import express from 'express';
-import { 
+import {
   createCustomer,
   createPaymentIntent,
   getPrices,
-  handleWebhook
+  handleWebhook,
 } from '../controllers/payments';
 import { authenticate } from '../middlewares/auth';
 

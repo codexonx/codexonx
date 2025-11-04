@@ -33,17 +33,20 @@ Bu dokümantasyon, Codexonx platformunun dağıtım sürecini adım adım açık
 ## Yerel Geliştirme Ortamı
 
 1. Projeyi klonlayın:
+
    ```bash
    git clone https://github.com/codexonx/codexonx-platform.git
    cd codexonx-platform
    ```
 
 2. Bağımlılıkları yükleyin:
+
    ```bash
    npm install
    ```
 
 3. `.env` dosyalarını oluşturun:
+
    ```bash
    cp apps/server/.env.example apps/server/.env
    cp apps/web/.env.example apps/web/.env
@@ -52,6 +55,7 @@ Bu dokümantasyon, Codexonx platformunun dağıtım sürecini adım adım açık
 4. `.env` dosyalarını düzenleyin ve gerekli ortam değişkenlerini ayarlayın.
 
 5. Veritabanını ayarlayın:
+
    ```bash
    cd apps/server
    npx prisma migrate dev
@@ -64,18 +68,21 @@ Bu dokümantasyon, Codexonx platformunun dağıtım sürecini adım adım açık
    ```
 
 Uygulama şu adreslerde çalışacaktır:
+
 - Frontend: `http://localhost:3000`
 - Backend: `http://localhost:3001`
 
 ## Docker ile Dağıtım
 
 1. Projeyi klonlayın:
+
    ```bash
    git clone https://github.com/codexonx/codexonx-platform.git
    cd codexonx-platform
    ```
 
 2. `.env` dosyalarını oluşturun:
+
    ```bash
    cp apps/server/.env.example apps/server/.env
    cp apps/web/.env.example apps/web/.env
@@ -84,6 +91,7 @@ Uygulama şu adreslerde çalışacaktır:
 3. `.env` dosyalarını düzenleyin ve gerekli ortam değişkenlerini ayarlayın.
 
 4. Docker Compose ile uygulamayı başlatın:
+
    ```bash
    docker-compose up -d
    ```
@@ -117,6 +125,7 @@ Bu proje, GitHub Actions kullanarak CI/CD pipeline'ı ile otomatik dağıtım ya
 ### Dağıtım Süreci
 
 1. `main` branch'e kod gönderin:
+
    ```bash
    git push origin main
    ```
@@ -132,11 +141,13 @@ Bu proje, GitHub Actions kullanarak CI/CD pipeline'ı ile otomatik dağıtım ya
 ## Terraform ile Altyapı Kurulumu
 
 1. `terraform` dizinine gidin:
+
    ```bash
    cd terraform
    ```
 
 2. `terraform.tfvars` dosyasını oluşturun:
+
    ```bash
    cp terraform.tfvars.example terraform.tfvars
    ```
@@ -144,6 +155,7 @@ Bu proje, GitHub Actions kullanarak CI/CD pipeline'ı ile otomatik dağıtım ya
 3. `terraform.tfvars` dosyasını düzenleyin ve gerekli değişkenleri ayarlayın.
 
 4. Terraform'u başlatın ve planı görüntüleyin:
+
    ```bash
    terraform init
    terraform plan
@@ -184,6 +196,7 @@ Bu uygulama, Nginx veya Caddy ile birlikte SSL/TLS yapılandırması ile çalı�
 ### Nginx ile SSL/TLS Yapılandırması
 
 1. Nginx yapılandırma dosyası örneği:
+
    ```nginx
    server {
        listen 80;
@@ -226,11 +239,13 @@ CI/CD pipeline'ındaki hata durumunda otomatik geri alma işlemi gerçekleştiri
 ### Manuel Geri Alma
 
 1. Önceki Docker imajını çekin:
+
    ```bash
    docker-compose pull [version]
    ```
 
 2. Uygulamayı yeniden başlatın:
+
    ```bash
    docker-compose down
    docker-compose up -d

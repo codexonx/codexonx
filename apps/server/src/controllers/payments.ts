@@ -29,11 +29,11 @@ const subscriptionSchema = z.object({
 export const createCustomer = async (req: Request, res: Response) => {
   try {
     const { email, name } = req.body;
-    
+
     if (!email || !name) {
       return res.status(400).json({ error: 'Email ve isim gereklidir' });
     }
-    
+
     const customer = await stripe.customers.create({
       email,
       name,
@@ -41,7 +41,7 @@ export const createCustomer = async (req: Request, res: Response) => {
         userId: req.user?.id || '',
       },
     });
-    
+
     return res.status(201).json({
       success: true,
       data: {
@@ -62,13 +62,13 @@ export const createCustomer = async (req: Request, res: Response) => {
 export const createPaymentIntent = async (req: Request, res: Response) => {
   try {
     const validationResult = paymentSchema.safeParse(req.body);
-    
+
     if (!validationResult.success) {
       return res.status(400).json({ error: validationResult.error.errors });
     }
-    
+
     const { amount, currency, description, paymentMethod, customerId } = validationResult.data;
-    
+
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount * 100, // Stripe kuruş bazında çalışır
       currency,
@@ -81,7 +81,7 @@ export const createPaymentIntent = async (req: Request, res: Response) => {
         allow_redirects: 'always',
       },
     });
-    
+
     return res.status(200).json({
       success: true,
       clientSecret: paymentIntent.client_secret,
@@ -100,23 +100,23 @@ export const createPaymentIntent = async (req: Request, res: Response) => {
 export const createSubscription = async (req: Request, res: Response) => {
   try {
     const validationResult = subscriptionSchema.safeParse(req.body);
-    
+
     if (!validationResult.success) {
       return res.status(400).json({ error: validationResult.error.errors });
     }
-    
+
     const { customerId, priceId } = validationResult.data;
-    
+
     const subscription = await stripe.subscriptions.create({
       customer: customerId,
       items: [{ price: priceId }],
       payment_behavior: 'default_incomplete',
       expand: ['latest_invoice.payment_intent'],
     });
-    
+
     // @ts-ignore - Tip hatası olarak görünüyor, ancak Stripe API bu şekilde döndürüyor
     const clientSecret = subscription.latest_invoice?.payment_intent?.client_secret;
-    
+
     return res.status(201).json({
       success: true,
       subscriptionId: subscription.id,
@@ -135,13 +135,13 @@ export const createSubscription = async (req: Request, res: Response) => {
 export const cancelSubscription = async (req: Request, res: Response) => {
   try {
     const { subscriptionId } = req.params;
-    
+
     if (!subscriptionId) {
       return res.status(400).json({ error: 'Abonelik ID gereklidir' });
     }
-    
+
     const canceledSubscription = await stripe.subscriptions.cancel(subscriptionId);
-    
+
     return res.status(200).json({
       success: true,
       status: canceledSubscription.status,
@@ -159,18 +159,14 @@ export const cancelSubscription = async (req: Request, res: Response) => {
 export const handleWebhook = async (req: Request, res: Response) => {
   const sig = req.headers['stripe-signature'];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-  
+
   if (!sig || !webhookSecret) {
     return res.status(400).json({ error: 'Webhook imzası veya secret eksik' });
   }
-  
+
   try {
-    const event = stripe.webhooks.constructEvent(
-      req.body,
-      sig as string,
-      webhookSecret
-    );
-    
+    const event = stripe.webhooks.constructEvent(req.body, sig as string, webhookSecret);
+
     // Webhook olay türüne göre işlem
     switch (event.type) {
       case 'payment_intent.succeeded':
@@ -179,25 +175,25 @@ export const handleWebhook = async (req: Request, res: Response) => {
         console.log('Başarılı ödeme:', paymentIntent.id);
         // TODO: Veritabanına başarılı ödeme bilgisini kaydet
         break;
-        
+
       case 'invoice.payment_succeeded':
         // Fatura ödemesi başarılı olduğunda
         const invoice = event.data.object as Stripe.Invoice;
         console.log('Fatura ödendi:', invoice.id);
         // TODO: Abonelik durumunu güncelle
         break;
-        
+
       case 'customer.subscription.deleted':
         // Abonelik iptal edildiğinde
         const subscription = event.data.object as Stripe.Subscription;
         console.log('Abonelik iptal edildi:', subscription.id);
         // TODO: Kullanıcı abonelik durumunu güncelle
         break;
-        
+
       default:
         console.log(`Bilinmeyen olay tipi: ${event.type}`);
     }
-    
+
     return res.status(200).json({ received: true });
   } catch (error: any) {
     console.error('Webhook işleme hatası:', error);
@@ -214,7 +210,7 @@ export const getPrices = async (req: Request, res: Response) => {
       active: true,
       expand: ['data.product'],
     });
-    
+
     return res.status(200).json({
       success: true,
       data: prices.data,

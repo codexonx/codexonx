@@ -8,6 +8,7 @@ import { I18nProvider } from '@/contexts/i18n-context';
 import { AuthProvider } from '@/contexts/auth-context';
 import RegisterServiceWorker from './register-sw';
 import { FloatingFeedback } from '@/components/feedback/floating-feedback';
+import { ChakraUIProvider } from '@/providers/chakra-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,11 +30,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="tr" suppressHydrationWarning>
       <body className={inter.className}>
@@ -45,10 +42,12 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <AuthProvider>
-              <RegisterServiceWorker />
-              {children}
-              <Toaster />
-              <FloatingFeedback />
+              <ChakraUIProvider>
+                <RegisterServiceWorker />
+                {children}
+                <Toaster />
+                <FloatingFeedback />
+              </ChakraUIProvider>
             </AuthProvider>
           </ThemeProvider>
         </I18nProvider>

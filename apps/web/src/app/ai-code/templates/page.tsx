@@ -1,172 +1,177 @@
-"use client";
+'use client';
 
 // @ts-nocheck
 // TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
 // arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { 
-  Code, 
-  FileCode, 
-  Search, 
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import {
+  Code,
+  FileCode,
+  Search,
   FolderPlus,
   Star,
   ExternalLink,
   Filter,
   ChevronDown,
-  Clock
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import Link from "next/link";
+  Clock,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import Link from 'next/link';
 
 // Şablon kategorileri
 const categories = [
-  { id: "all", name: "Tüm Şablonlar" },
-  { id: "frontend", name: "Frontend" },
-  { id: "backend", name: "Backend" },
-  { id: "fullstack", name: "Full Stack" },
-  { id: "mobile", name: "Mobil" },
-  { id: "data", name: "Veri Bilimi" },
+  { id: 'all', name: 'Tüm Şablonlar' },
+  { id: 'frontend', name: 'Frontend' },
+  { id: 'backend', name: 'Backend' },
+  { id: 'fullstack', name: 'Full Stack' },
+  { id: 'mobile', name: 'Mobil' },
+  { id: 'data', name: 'Veri Bilimi' },
 ];
 
 // Demo şablonlar
 const templates = [
   {
-    id: "react-todo",
-    name: "React Todo Uygulaması",
-    description: "Temel CRUD işlemlerini içeren başlangıç seviyesi bir React uygulaması. Context API ile state yönetimi içerir.",
-    category: "frontend",
-    language: "typescript",
-    level: "başlangıç",
+    id: 'react-todo',
+    name: 'React Todo Uygulaması',
+    description:
+      'Temel CRUD işlemlerini içeren başlangıç seviyesi bir React uygulaması. Context API ile state yönetimi içerir.',
+    category: 'frontend',
+    language: 'typescript',
+    level: 'başlangıç',
     stars: 245,
-    author: "AICodeX",
-    lastUpdated: "1 hafta önce"
+    author: 'AICodeX',
+    lastUpdated: '1 hafta önce',
   },
   {
-    id: "express-api",
-    name: "Express.js REST API",
+    id: 'express-api',
+    name: 'Express.js REST API',
     description: "MongoDB bağlantısı ve temel CRUD endpoint'leri ile RESTful API şablonu.",
-    category: "backend",
-    language: "javascript",
-    level: "orta",
+    category: 'backend',
+    language: 'javascript',
+    level: 'orta',
     stars: 189,
-    author: "AICodeX",
-    lastUpdated: "2 gün önce"
+    author: 'AICodeX',
+    lastUpdated: '2 gün önce',
   },
   {
-    id: "next-blog",
-    name: "Next.js Blog",
-    description: "SEO dostu, markdown destekli statik blog sitesi. Tailwind CSS ile stil verilmiş.",
-    category: "frontend",
-    language: "typescript",
-    level: "orta",
+    id: 'next-blog',
+    name: 'Next.js Blog',
+    description: 'SEO dostu, markdown destekli statik blog sitesi. Tailwind CSS ile stil verilmiş.',
+    category: 'frontend',
+    language: 'typescript',
+    level: 'orta',
     stars: 321,
-    author: "AICodeX",
-    lastUpdated: "3 gün önce"
+    author: 'AICodeX',
+    lastUpdated: '3 gün önce',
   },
   {
-    id: "flask-api",
-    name: "Flask API",
-    description: "SQLAlchemy ORM ile Python Flask API başlangıç şablonu.",
-    category: "backend",
-    language: "python",
-    level: "başlangıç",
+    id: 'flask-api',
+    name: 'Flask API',
+    description: 'SQLAlchemy ORM ile Python Flask API başlangıç şablonu.',
+    category: 'backend',
+    language: 'python',
+    level: 'başlangıç',
     stars: 156,
-    author: "AICodeX",
-    lastUpdated: "1 ay önce"
+    author: 'AICodeX',
+    lastUpdated: '1 ay önce',
   },
   {
-    id: "react-native-app",
-    name: "React Native Mobil Uygulama",
-    description: "Navigasyon, tema desteği ve temel ekranlar içeren React Native uygulama şablonu.",
-    category: "mobile",
-    language: "typescript",
-    level: "orta",
+    id: 'react-native-app',
+    name: 'React Native Mobil Uygulama',
+    description: 'Navigasyon, tema desteği ve temel ekranlar içeren React Native uygulama şablonu.',
+    category: 'mobile',
+    language: 'typescript',
+    level: 'orta',
     stars: 287,
-    author: "AICodeX",
-    lastUpdated: "2 hafta önce"
+    author: 'AICodeX',
+    lastUpdated: '2 hafta önce',
   },
   {
-    id: "mern-stack",
-    name: "MERN Stack Uygulama",
-    description: "MongoDB, Express, React ve Node.js ile tam bir full stack web uygulaması.",
-    category: "fullstack",
-    language: "javascript",
-    level: "ileri",
+    id: 'mern-stack',
+    name: 'MERN Stack Uygulama',
+    description: 'MongoDB, Express, React ve Node.js ile tam bir full stack web uygulaması.',
+    category: 'fullstack',
+    language: 'javascript',
+    level: 'ileri',
     stars: 412,
-    author: "AICodeX",
-    lastUpdated: "1 gün önce"
+    author: 'AICodeX',
+    lastUpdated: '1 gün önce',
   },
   {
-    id: "data-analysis",
-    name: "Veri Analiz Notebook",
-    description: "Pandas, NumPy ve Matplotlib ile veri analizi ve görselleştirme için Jupyter notebook şablonu.",
-    category: "data",
-    language: "python",
-    level: "orta",
+    id: 'data-analysis',
+    name: 'Veri Analiz Notebook',
+    description:
+      'Pandas, NumPy ve Matplotlib ile veri analizi ve görselleştirme için Jupyter notebook şablonu.',
+    category: 'data',
+    language: 'python',
+    level: 'orta',
     stars: 198,
-    author: "AICodeX",
-    lastUpdated: "1 hafta önce"
+    author: 'AICodeX',
+    lastUpdated: '1 hafta önce',
   },
   {
-    id: "django-web",
-    name: "Django Web Uygulaması",
-    description: "Kullanıcı yetkilendirme, admin paneli ve temel CRUD işlevleri içeren Django web uygulaması.",
-    category: "backend",
-    language: "python",
-    level: "orta",
+    id: 'django-web',
+    name: 'Django Web Uygulaması',
+    description:
+      'Kullanıcı yetkilendirme, admin paneli ve temel CRUD işlevleri içeren Django web uygulaması.',
+    category: 'backend',
+    language: 'python',
+    level: 'orta',
     stars: 231,
-    author: "AICodeX",
-    lastUpdated: "2 hafta önce"
-  }
+    author: 'AICodeX',
+    lastUpdated: '2 hafta önce',
+  },
 ];
 
 // Dil ikonları ve renkleri
 const languageColors = {
-  typescript: "text-blue-400",
-  javascript: "text-yellow-400",
-  python: "text-green-500",
-  html: "text-orange-500",
-  css: "text-blue-500"
+  typescript: 'text-blue-400',
+  javascript: 'text-yellow-400',
+  python: 'text-green-500',
+  html: 'text-orange-500',
+  css: 'text-blue-500',
 };
 
 // Zorluk seviyesi
 const levelBadges = {
-  "başlangıç": "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-  "orta": "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
-  "ileri": "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400"
+  başlangıç: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+  orta: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+  ileri: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
 };
 
 export default function TemplatesPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
-  const [activeSort, setActiveSort] = useState("popular");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeSort, setActiveSort] = useState('popular');
   const [showFilters, setShowFilters] = useState(false);
 
   // Şablonları filtrele
   const filteredTemplates = templates.filter(template => {
     // Kategori filtresi
-    if (activeCategory !== "all" && template.category !== activeCategory) {
+    if (activeCategory !== 'all' && template.category !== activeCategory) {
       return false;
     }
-    
+
     // Arama filtresi
-    if (searchTerm && 
-        !template.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
-        !template.description.toLowerCase().includes(searchTerm.toLowerCase())) {
+    if (
+      searchTerm &&
+      !template.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !template.description.toLowerCase().includes(searchTerm.toLowerCase())
+    ) {
       return false;
     }
-    
+
     return true;
   });
 
   // Şablonları sırala
   const sortedTemplates = [...filteredTemplates].sort((a, b) => {
-    if (activeSort === "popular") {
+    if (activeSort === 'popular') {
       return b.stars - a.stars;
-    } else if (activeSort === "newest") {
+    } else if (activeSort === 'newest') {
       // Bu demo için sadece alfabetik sıralama yapalım
       return a.name.localeCompare(b.name);
     }
@@ -190,22 +195,24 @@ export default function TemplatesPage() {
                 placeholder="Şablon ara..."
                 className="pl-10 bg-slate-900 border-slate-700 text-white"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
               />
             </div>
-            
+
             <div className="flex gap-2">
               <div className="relative">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="border-slate-700 bg-slate-900"
                   onClick={() => setShowFilters(!showFilters)}
                 >
                   <Filter className="w-4 h-4 mr-2" />
                   Filtreler
-                  <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${showFilters ? "rotate-180" : ""}`} />
+                  <ChevronDown
+                    className={`w-4 h-4 ml-2 transition-transform ${showFilters ? 'rotate-180' : ''}`}
+                  />
                 </Button>
-                
+
                 {showFilters && (
                   <div className="absolute right-0 top-full mt-2 w-64 bg-slate-900 border border-slate-700 rounded-md shadow-lg z-10">
                     <div className="p-3 border-b border-slate-800">
@@ -217,10 +224,12 @@ export default function TemplatesPage() {
                             id="sort-popular"
                             name="sort"
                             className="mr-2"
-                            checked={activeSort === "popular"}
-                            onChange={() => setActiveSort("popular")}
+                            checked={activeSort === 'popular'}
+                            onChange={() => setActiveSort('popular')}
                           />
-                          <label htmlFor="sort-popular" className="text-sm">Popüler</label>
+                          <label htmlFor="sort-popular" className="text-sm">
+                            Popüler
+                          </label>
                         </div>
                         <div className="flex items-center">
                           <input
@@ -228,25 +237,25 @@ export default function TemplatesPage() {
                             id="sort-newest"
                             name="sort"
                             className="mr-2"
-                            checked={activeSort === "newest"}
-                            onChange={() => setActiveSort("newest")}
+                            checked={activeSort === 'newest'}
+                            onChange={() => setActiveSort('newest')}
                           />
-                          <label htmlFor="sort-newest" className="text-sm">En Yeni</label>
+                          <label htmlFor="sort-newest" className="text-sm">
+                            En Yeni
+                          </label>
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="p-3">
                       <h3 className="text-sm font-medium">Dil</h3>
                       <div className="mt-2 space-y-1">
-                        {["typescript", "javascript", "python"].map(lang => (
+                        {['typescript', 'javascript', 'python'].map(lang => (
                           <div key={lang} className="flex items-center">
-                            <input
-                              type="checkbox"
-                              id={`lang-${lang}`}
-                              className="mr-2"
-                            />
-                            <label htmlFor={`lang-${lang}`} className="text-sm capitalize">{lang}</label>
+                            <input type="checkbox" id={`lang-${lang}`} className="mr-2" />
+                            <label htmlFor={`lang-${lang}`} className="text-sm capitalize">
+                              {lang}
+                            </label>
                           </div>
                         ))}
                       </div>
@@ -254,7 +263,7 @@ export default function TemplatesPage() {
                   </div>
                 )}
               </div>
-              
+
               <Button className="bg-blue-600 hover:bg-blue-700">
                 <FolderPlus className="w-4 h-4 mr-2" />
                 Şablon Yükle
@@ -262,7 +271,7 @@ export default function TemplatesPage() {
             </div>
           </div>
         </header>
-        
+
         {/* Kategori Sekmeleri */}
         <div className="flex overflow-x-auto scrollbar-hide space-x-2 pb-2 mb-6">
           {categories.map(category => (
@@ -271,8 +280,8 @@ export default function TemplatesPage() {
               onClick={() => setActiveCategory(category.id)}
               className={`px-4 py-2 rounded-full whitespace-nowrap ${
                 activeCategory === category.id
-                  ? "bg-blue-600 text-white"
-                  : "bg-slate-800 text-gray-300 hover:bg-slate-700"
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-800 text-gray-300 hover:bg-slate-700'
               }`}
             >
               {category.name}
@@ -291,7 +300,7 @@ export default function TemplatesPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sortedTemplates.map((template) => (
+            {sortedTemplates.map(template => (
               <TemplateCard key={template.id} template={template} />
             ))}
           </div>
@@ -312,14 +321,14 @@ function TemplateCard({ template }) {
       <div className="p-5">
         <div className="flex items-start justify-between">
           <div className="flex items-center">
-            <div className={`w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center mr-3 ${languageColors[template.language]}`}>
+            <div
+              className={`w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center mr-3 ${languageColors[template.language]}`}
+            >
               <Code className="w-5 h-5" />
             </div>
             <div>
               <h3 className="text-lg font-medium hover:text-blue-400 transition-colors">
-                <Link href={`/ai-code/editor?template=${template.id}`}>
-                  {template.name}
-                </Link>
+                <Link href={`/ai-code/editor?template=${template.id}`}>{template.name}</Link>
               </h3>
               <div className="flex items-center mt-1">
                 <span className={`text-xs px-2 py-0.5 rounded-full ${levelBadges[template.level]}`}>
@@ -330,7 +339,7 @@ function TemplateCard({ template }) {
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center">
             <div className="flex items-center mr-2">
               <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
@@ -339,9 +348,7 @@ function TemplateCard({ template }) {
           </div>
         </div>
 
-        <p className="text-gray-400 text-sm my-3 line-clamp-2">
-          {template.description}
-        </p>
+        <p className="text-gray-400 text-sm my-3 line-clamp-2">{template.description}</p>
 
         <div className="flex justify-between items-center mt-4 pt-3 border-t border-slate-800">
           <div className="flex items-center text-xs text-gray-500">
@@ -350,8 +357,8 @@ function TemplateCard({ template }) {
           </div>
 
           <div className="flex gap-2">
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               variant="ghost"
               className="text-xs text-gray-400 hover:text-white"
               title="Önizleme"
@@ -359,12 +366,12 @@ function TemplateCard({ template }) {
               <ExternalLink className="w-3.5 h-3.5 mr-1" />
               Önizleme
             </Button>
-            <Button 
+            <Button
               size="sm"
               className="bg-blue-600 hover:bg-blue-700 text-xs"
               title="Şablonla başla"
             >
-              <FolderPlus className="w-3.5 h-3.5 mr-1" /> 
+              <FolderPlus className="w-3.5 h-3.5 mr-1" />
               Kullan
             </Button>
           </div>

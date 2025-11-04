@@ -1,19 +1,30 @@
-"use client";
+'use client';
 
 // @ts-nocheck
 // TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
 // arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
 
-import React, { useState, useRef, useEffect } from "react";
-import { Send, Cpu, User, X, Loader, ChevronDown, ChevronUp, Save, Clipboard, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/use-toast";
-import { sendChatMessage } from "./ai-api";
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  Send,
+  Cpu,
+  User,
+  X,
+  Loader,
+  ChevronDown,
+  ChevronUp,
+  Save,
+  Clipboard,
+  Check,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from '@/components/ui/use-toast';
+import { sendChatMessage } from './ai-api';
 
 type Message = {
   id: string;
-  role: "system" | "user" | "assistant";
+  role: 'system' | 'user' | 'assistant';
   content: string;
   timestamp: Date;
 };
@@ -24,26 +35,26 @@ interface AIChatProps {
   onSuggestionSelect?: (suggestion: string) => void;
 }
 
-export const AIChat = ({ 
-  initialMessages = [], 
+export const AIChat = ({
+  initialMessages = [],
   onNewAssistantMessage,
-  onSuggestionSelect
+  onSuggestionSelect,
 }: AIChatProps) => {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  
+
   // Kod önerileri - gerçek uygulamada bu dinamik olabilir
   const codeSuggestions = [
-    "React komponentine state ekle",
-    "Asenkron veri çekme için useEffect kullanımı",
-    "Bu kodu optimize etmek için önerilerin neler?",
-    "Bu TypeScript hatasını nasıl çözebilirim?",
-    "Bu fonksiyonu daha kısa nasıl yazabilirim?"
+    'React komponentine state ekle',
+    'Asenkron veri çekme için useEffect kullanımı',
+    'Bu kodu optimize etmek için önerilerin neler?',
+    'Bu TypeScript hatasını nasıl çözebilirim?',
+    'Bu fonksiyonu daha kısa nasıl yazabilirim?',
   ];
 
   // Yeni mesaj geldiğinde otomatik kaydırma
@@ -52,7 +63,7 @@ export const AIChat = ({
   }, [messages]);
 
   const scrollToBottom = () => {
-    endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
+    endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -61,7 +72,7 @@ export const AIChat = ({
 
   // Enter tuşuna basıldığında mesaj gönderme
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
     }
@@ -73,28 +84,26 @@ export const AIChat = ({
     // Kullanıcı mesajını ekle
     const userMessage: Message = {
       id: Date.now().toString(),
-      role: "user",
+      role: 'user',
       content: input,
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
     setIsLoading(true);
 
     try {
       // AI API'sine istek gönder
-      const systemMessages: Message[] = messages.filter(
-        (msg) => msg.role === "system"
-      );
-      
+      const systemMessages: Message[] = messages.filter(msg => msg.role === 'system');
+
       const allMessages = [
         ...systemMessages,
         ...messages.slice(-10), // Son 10 mesajı kullan (context window için)
         userMessage,
       ];
-      
-      const apiMessages = allMessages.map((msg) => ({
+
+      const apiMessages = allMessages.map(msg => ({
         role: msg.role,
         content: msg.content,
       }));
@@ -104,24 +113,23 @@ export const AIChat = ({
       // AI yanıtını ekle
       const assistantMessage: Message = {
         id: Date.now().toString(),
-        role: "assistant",
+        role: 'assistant',
         content: response.message,
         timestamp: new Date(),
       };
 
-      setMessages((prev) => [...prev, assistantMessage]);
+      setMessages(prev => [...prev, assistantMessage]);
 
       // Callback'i çağır (varsa)
       if (onNewAssistantMessage) {
         onNewAssistantMessage(response.message);
       }
-      
     } catch (error) {
-      console.error("AI yanıtı alınamadı:", error);
+      console.error('AI yanıtı alınamadı:', error);
       toast({
-        title: "Hata",
-        description: "AI yanıtı alınırken bir hata oluştu. Lütfen tekrar deneyin.",
-        variant: "destructive",
+        title: 'Hata',
+        description: 'AI yanıtı alınırken bir hata oluştu. Lütfen tekrar deneyin.',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -135,7 +143,7 @@ export const AIChat = ({
   const handleSuggestionClick = (suggestion: string) => {
     setInput(suggestion);
     inputRef.current?.focus();
-    
+
     if (onSuggestionSelect) {
       onSuggestionSelect(suggestion);
     }
@@ -147,14 +155,14 @@ export const AIChat = ({
 
   const handleCopyConversation = () => {
     const conversationText = messages
-      .map((msg) => `${msg.role === "user" ? "Soru" : "AI"}: ${msg.content}`)
-      .join("\n\n");
+      .map(msg => `${msg.role === 'user' ? 'Soru' : 'AI'}: ${msg.content}`)
+      .join('\n\n');
 
     navigator.clipboard.writeText(conversationText);
     setIsCopied(true);
     toast({
-      title: "Konuşma kopyalandı",
-      description: "Konuşma metni panoya kopyalandı.",
+      title: 'Konuşma kopyalandı',
+      description: 'Konuşma metni panoya kopyalandı.',
     });
 
     setTimeout(() => {
@@ -164,12 +172,12 @@ export const AIChat = ({
 
   const handleSaveConversation = () => {
     const conversationText = messages
-      .map((msg) => `${msg.role === "user" ? "Soru" : "AI"}: ${msg.content}`)
-      .join("\n\n");
+      .map(msg => `${msg.role === 'user' ? 'Soru' : 'AI'}: ${msg.content}`)
+      .join('\n\n');
 
-    const blob = new Blob([conversationText], { type: "text/plain" });
+    const blob = new Blob([conversationText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
     a.download = `aichat_${new Date().toISOString().slice(0, 10)}.txt`;
     document.body.appendChild(a);
@@ -178,25 +186,25 @@ export const AIChat = ({
     URL.revokeObjectURL(url);
 
     toast({
-      title: "Konuşma kaydedildi",
-      description: "Konuşma metni dosyaya kaydedildi.",
+      title: 'Konuşma kaydedildi',
+      description: 'Konuşma metni dosyaya kaydedildi.',
     });
   };
 
   // Mesajları formatla ve kod bloklarını işaretle
   const formatMessage = (content: string) => {
     return content.replace(/```(.*?)\n([\s\S]*?)```/g, (match, language, code) => {
-      return `<div class="bg-slate-800 rounded-md p-2 my-2 overflow-auto"><pre><code class="language-${language || "javascript"}">${escapeHtml(code)}</code></pre></div>`;
+      return `<div class="bg-slate-800 rounded-md p-2 my-2 overflow-auto"><pre><code class="language-${language || 'javascript'}">${escapeHtml(code)}</code></pre></div>`;
     });
   };
 
   const escapeHtml = (unsafe: string) => {
     return unsafe
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   };
 
   return (
@@ -208,9 +216,9 @@ export const AIChat = ({
           <span>AI Asistanı</span>
         </div>
         <div className="flex items-center gap-1">
-          <Button 
-            size="sm" 
-            variant="ghost" 
+          <Button
+            size="sm"
+            variant="ghost"
             className="h-7 w-7 p-0"
             onClick={handleSaveConversation}
             title="Konuşmayı kaydet"
@@ -218,9 +226,9 @@ export const AIChat = ({
             <Save className="h-4 w-4" />
             <span className="sr-only">Konuşmayı kaydet</span>
           </Button>
-          <Button 
-            size="sm" 
-            variant="ghost" 
+          <Button
+            size="sm"
+            variant="ghost"
             className="h-7 w-7 p-0"
             onClick={handleCopyConversation}
             title="Konuşmayı kopyala"
@@ -232,19 +240,15 @@ export const AIChat = ({
             )}
             <span className="sr-only">Konuşmayı kopyala</span>
           </Button>
-          <Button 
-            size="sm" 
-            variant="ghost" 
+          <Button
+            size="sm"
+            variant="ghost"
             className="h-7 w-7 p-0"
             onClick={toggleExpanded}
-            title={isExpanded ? "Daralt" : "Genişlet"}
+            title={isExpanded ? 'Daralt' : 'Genişlet'}
           >
-            {isExpanded ? (
-              <ChevronDown className="h-4 w-4" />
-            ) : (
-              <ChevronUp className="h-4 w-4" />
-            )}
-            <span className="sr-only">{isExpanded ? "Daralt" : "Genişlet"}</span>
+            {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+            <span className="sr-only">{isExpanded ? 'Daralt' : 'Genişlet'}</span>
           </Button>
         </div>
       </div>
@@ -260,23 +264,21 @@ export const AIChat = ({
                 <p className="text-sm">Kodlama konusunda size nasıl yardımcı olabilirim?</p>
               </div>
             ) : (
-              messages.map((message) => (
+              messages.map(message => (
                 <div
                   key={message.id}
-                  className={`flex ${
-                    message.role === "user" ? "justify-end" : "justify-start"
-                  }`}
+                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  {message.role !== "user" && (
+                  {message.role !== 'user' && (
                     <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center mr-2 flex-shrink-0">
                       <Cpu className="w-4 h-4 text-white" />
                     </div>
                   )}
                   <div
                     className={`rounded-lg px-4 py-2 max-w-[85%] ${
-                      message.role === "user"
-                        ? "bg-blue-600 text-white"
-                        : "bg-slate-800 text-slate-200"
+                      message.role === 'user'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-slate-800 text-slate-200'
                     }`}
                   >
                     <div
@@ -286,7 +288,7 @@ export const AIChat = ({
                       }}
                     />
                   </div>
-                  {message.role === "user" && (
+                  {message.role === 'user' && (
                     <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center ml-2 flex-shrink-0">
                       <User className="w-4 h-4 text-white" />
                     </div>
@@ -315,7 +317,7 @@ export const AIChat = ({
             <div className="px-4 pb-3">
               <p className="text-xs text-slate-500 mb-2">Örnek sorular:</p>
               <div className="flex flex-wrap gap-2">
-                {codeSuggestions.map((suggestion) => (
+                {codeSuggestions.map(suggestion => (
                   <button
                     key={suggestion}
                     className="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs py-1 px-3 rounded-full transition-colors"
@@ -345,7 +347,7 @@ export const AIChat = ({
                 type="submit"
                 size="icon"
                 className={`h-10 w-10 ${
-                  isLoading ? "bg-slate-700" : "bg-blue-600 hover:bg-blue-700"
+                  isLoading ? 'bg-slate-700' : 'bg-blue-600 hover:bg-blue-700'
                 }`}
                 onClick={handleSubmit}
                 disabled={isLoading || !input.trim()}

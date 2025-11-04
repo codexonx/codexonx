@@ -1,11 +1,11 @@
 import express from 'express';
-import { 
+import {
   getSubscriptions,
   getSubscription,
   createSubscription,
   updateSubscription,
   cancelSubscription,
-  checkActiveSubscription
+  checkActiveSubscription,
 } from '../controllers/subscriptions';
 import { authenticate } from '../middlewares/auth';
 

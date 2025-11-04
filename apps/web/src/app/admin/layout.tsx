@@ -1,26 +1,19 @@
-"use client";
+// Admin layout server component - burada metadata tanımlanabilir
+import React from 'react';
 
-// @ts-nocheck
-// TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve Radix UI/Lucide
-// arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
-
-import React from "react";
-import { AdminLayout as Layout } from "@/components/admin/admin-layout";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Codexonx Admin Panel",
-  description: "Codexonx yönetim paneli",
+// Metadata tanımını burada yapıyoruz (server component kısmı)
+export const metadata = {
+  title: 'Codexonx Admin Panel',
+  description: 'Codexonx yönetim paneli',
 };
 
+// Admin Client Wrapper'a yönlendiriyoruz
+import AdminClientWrapper from '@/components/admin/admin-client-wrapper';
+
 type AdminLayoutProps = {
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  return (
-    <Layout>
-      {children}
-    </Layout>
-  );
+  return <AdminClientWrapper>{children}</AdminClientWrapper>;
 }

@@ -14,6 +14,7 @@ import userRoutes from './routes/users';
 import projectRoutes from './routes/projects';
 import subscriptionRoutes from './routes/subscriptions';
 import paymentRoutes from './routes/payments';
+import aiCodeRoutes from './routes/ai-code.routes';
 
 // Import middlewares
 import { errorHandler } from './middlewares/errorHandler';
@@ -24,10 +25,12 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    credentials: true,
+  })
+);
 app.use(helmet());
 app.use(morgan('dev'));
 
@@ -40,6 +43,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/ai', aiCodeRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

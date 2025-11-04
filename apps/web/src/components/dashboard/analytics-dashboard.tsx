@@ -1,17 +1,11 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useApi } from "@/hooks/use-api";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { useState, useEffect } from 'react';
+import { useApi } from '@/hooks/use-api';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 // Veri Tipleri
 interface DataPoint {
@@ -60,9 +54,9 @@ import {
   LineChart,
   BarChart,
   PieChart,
-} from "lucide-react";
-import { useI18n } from "@/contexts/i18n-context";
-import { formatCurrency } from "@/lib/utils";
+} from 'lucide-react';
+import { useI18n } from '@/contexts/i18n-context';
+import { formatCurrency } from '@/lib/utils';
 
 // Chart bileşenleri (react-chartjs-2 veya recharts kullanılabilir)
 import {
@@ -79,7 +73,7 @@ import {
   PieChart as RePieChart,
   Pie,
   Cell,
-} from "recharts";
+} from 'recharts';
 
 interface AnalyticsProps {
   initialData?: any;
@@ -87,10 +81,10 @@ interface AnalyticsProps {
 
 export function AnalyticsDashboard({ initialData }: AnalyticsProps) {
   const { t } = useI18n();
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const { callApi, isLoading, error } = useApi();
-  
-  const [timeframe, setTimeframe] = useState<"day" | "week" | "month" | "year">("month");
+
+  const [timeframe, setTimeframe] = useState<'day' | 'week' | 'month' | 'year'>('month');
   const [stats, setStats] = useState<AnalyticsData>({
     summary: {
       totalUsers: 0,
@@ -123,7 +117,7 @@ export function AnalyticsDashboard({ initialData }: AnalyticsProps) {
       try {
         // API çağrısını simüle ediyoruz
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         const currentDate = new Date();
         const timeframeData = generateTimeframeData(timeframe, currentDate);
 
@@ -131,32 +125,32 @@ export function AnalyticsDashboard({ initialData }: AnalyticsProps) {
           date,
           value: Math.floor(Math.random() * 50) + 20,
         }));
-        
+
         const projectData: ProjectDataPoint[] = timeframeData.map(date => ({
           date,
           active: Math.floor(Math.random() * 30) + 10,
           inactive: Math.floor(Math.random() * 20) + 5,
         }));
-        
+
         const revenueData: DataPoint[] = timeframeData.map(date => ({
           date,
           value: Math.floor(Math.random() * 5000) + 1000,
         }));
-        
+
         const subscriptionDistribution: ChartDataItem[] = [
           { name: 'Ücretsiz', value: 320 },
           { name: 'Başlangıç', value: 180 },
           { name: 'Pro', value: 250 },
           { name: 'Kurumsal', value: 122 },
         ];
-        
+
         const trafficSources: ChartDataItem[] = [
           { name: 'Doğrudan', value: 45 },
           { name: 'Organik Arama', value: 30 },
           { name: 'Referans', value: 15 },
           { name: 'Sosyal Medya', value: 10 },
         ];
-        
+
         const userGeoDistribution: ChartDataItem[] = [
           { name: 'Türkiye', value: 55 },
           { name: 'ABD', value: 15 },
@@ -185,7 +179,7 @@ export function AnalyticsDashboard({ initialData }: AnalyticsProps) {
           userGeoDistribution,
         });
       } catch (error) {
-        console.error("Analytics verileri yüklenemedi", error);
+        console.error('Analytics verileri yüklenemedi', error);
       }
     };
 
@@ -196,11 +190,11 @@ export function AnalyticsDashboard({ initialData }: AnalyticsProps) {
   const generateTimeframeData = (timeframe: string, endDate: Date): string[] => {
     const dates: string[] = [];
     const end = new Date(endDate);
-    
+
     let dataPoints = 0;
     let dateIncrement = 0;
-    
-    switch(timeframe) {
+
+    switch (timeframe) {
       case 'day':
         dataPoints = 24;
         dateIncrement = 1 / 24; // Gün içinde saatlik
@@ -221,11 +215,11 @@ export function AnalyticsDashboard({ initialData }: AnalyticsProps) {
         dataPoints = 30;
         dateIncrement = 1;
     }
-    
+
     for (let i = dataPoints - 1; i >= 0; i--) {
       const date = new Date(end);
-      date.setDate(date.getDate() - (i * dateIncrement));
-      
+      date.setDate(date.getDate() - i * dateIncrement);
+
       let dateStr = '';
       if (timeframe === 'day') {
         dateStr = date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
@@ -234,22 +228,22 @@ export function AnalyticsDashboard({ initialData }: AnalyticsProps) {
       } else {
         dateStr = date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' });
       }
-      
+
       dates.push(dateStr);
     }
-    
+
     return dates;
   };
 
   // Grafik renkleri
   const COLORS = ['#4f46e5', '#06b6d4', '#7c3aed', '#ec4899', '#f59e0b'];
-  
+
   // İstatistik kartı
   const StatCard = ({ title, value, growth, icon: Icon, colorClass }: any) => (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <div className={`rounded-md p-2 ${colorClass || "bg-primary/10"}`}>
+        <div className={`rounded-md p-2 ${colorClass || 'bg-primary/10'}`}>
           <Icon className="h-4 w-4 text-primary" />
         </div>
       </CardHeader>
@@ -262,7 +256,7 @@ export function AnalyticsDashboard({ initialData }: AnalyticsProps) {
             ) : (
               <ArrowDown className="mr-1 h-3 w-3 text-red-500" />
             )}
-            <span className={growth >= 0 ? "text-green-500" : "text-red-500"}>
+            <span className={growth >= 0 ? 'text-green-500' : 'text-red-500'}>
               {Math.abs(growth)}%
             </span>
             <span className="text-muted-foreground ml-2">geçen döneme göre</span>
@@ -276,7 +270,7 @@ export function AnalyticsDashboard({ initialData }: AnalyticsProps) {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-2">
         <h2 className="text-3xl font-bold tracking-tight">{t('analytics.title')}</h2>
-        
+
         <div className="flex items-center gap-2">
           <Tabs defaultValue={timeframe} onValueChange={(v: any) => setTimeframe(v)}>
             <TabsList>
@@ -291,25 +285,25 @@ export function AnalyticsDashboard({ initialData }: AnalyticsProps) {
 
       {/* İstatistik Kartları */}
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard 
+        <StatCard
           title={t('analytics.totalUsers')}
           value={stats.summary.totalUsers}
           growth={stats.summary.userGrowth}
           icon={Users}
         />
-        <StatCard 
+        <StatCard
           title={t('analytics.activeProjects')}
           value={stats.summary.activeProjects}
           growth={stats.summary.projectGrowth}
           icon={Package}
         />
-        <StatCard 
+        <StatCard
           title={t('analytics.revenue')}
           value={formatCurrency(stats.summary.revenue)}
           growth={stats.summary.revenueGrowth}
           icon={CreditCard}
         />
-        <StatCard 
+        <StatCard
           title={t('analytics.activeSubscriptions')}
           value={stats.summary.activeSubscriptions}
           icon={Activity}
@@ -322,9 +316,7 @@ export function AnalyticsDashboard({ initialData }: AnalyticsProps) {
         <Card>
           <CardHeader>
             <CardTitle>{t('analytics.userChart')}</CardTitle>
-            <CardDescription>
-              {t('analytics.userChartDescription')}
-            </CardDescription>
+            <CardDescription>{t('analytics.userChartDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -334,10 +326,10 @@ export function AnalyticsDashboard({ initialData }: AnalyticsProps) {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line 
-                  type="monotone" 
-                  dataKey="value" 
-                  stroke="#4f46e5" 
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#4f46e5"
                   name={t('analytics.users')}
                   strokeWidth={2}
                   dot={{ r: 2 }}
@@ -352,9 +344,7 @@ export function AnalyticsDashboard({ initialData }: AnalyticsProps) {
         <Card>
           <CardHeader>
             <CardTitle>{t('analytics.revenueChart')}</CardTitle>
-            <CardDescription>
-              {t('analytics.revenueChartDescription')}
-            </CardDescription>
+            <CardDescription>{t('analytics.revenueChartDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -362,15 +352,9 @@ export function AnalyticsDashboard({ initialData }: AnalyticsProps) {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
-                <Tooltip 
-                  formatter={(value: any) => formatCurrency(value)}
-                />
+                <Tooltip formatter={(value: any) => formatCurrency(value)} />
                 <Legend />
-                <Bar 
-                  dataKey="value" 
-                  fill="#4f46e5" 
-                  name={t('analytics.revenue')} 
-                />
+                <Bar dataKey="value" fill="#4f46e5" name={t('analytics.revenue')} />
               </ReBarChart>
             </ResponsiveContainer>
           </CardContent>

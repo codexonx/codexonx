@@ -9,11 +9,11 @@ import { authOptions } from '@/lib/auth';
 export async function createCheckoutSession(priceId: string) {
   // Auth kontrolü
   const session = await getServerSession(authOptions);
-  
+
   if (!session?.user?.email) {
     return redirect('/auth/login?from=/pricing');
   }
-  
+
   // Checkout session oluştur
   const checkoutSession = await stripe.checkout.sessions.create({
     mode: 'subscription',
@@ -21,20 +21,20 @@ export async function createCheckoutSession(priceId: string) {
     line_items: [
       {
         price: priceId,
-        quantity: 1
-      }
+        quantity: 1,
+      },
     ],
     success_url: absoluteUrl('/dashboard?success=true'),
     cancel_url: absoluteUrl('/pricing?canceled=true'),
     metadata: {
-      userId: session.user.id || ''
-    }
+      userId: session.user.id || '',
+    },
   });
-  
+
   // Redirect to checkout
   if (!checkoutSession.url) {
     throw new Error('Ödeme sayfası oluşturulamadı');
   }
-  
+
   return redirect(checkoutSession.url);
 }

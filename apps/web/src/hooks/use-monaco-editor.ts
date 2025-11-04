@@ -22,7 +22,7 @@ export function useMonacoEditor(options: MonacoEditorOptions = {}) {
   useEffect(() => {
     // Monaco Editor'ü yükleme ve kurma
     let editor: any = null;
-    
+
     async function loadMonaco() {
       // Script yükleme ve Monaco yükleme fonksiyonu
       const loadScript = (src: string) => {
@@ -44,12 +44,12 @@ export function useMonacoEditor(options: MonacoEditorOptions = {}) {
 
           // Monaco'yu yapılandır
           (window as any).require.config({
-            paths: { vs: 'https://unpkg.com/monaco-editor@0.33.0/min/vs' }
+            paths: { vs: 'https://unpkg.com/monaco-editor@0.33.0/min/vs' },
           });
 
           // Monaco'yu yükle
-          await new Promise<void>((resolve) => {
-            (window as any).require(['vs/editor/editor.main'], function() {
+          await new Promise<void>(resolve => {
+            (window as any).require(['vs/editor/editor.main'], function () {
               resolve();
             });
           });
@@ -70,8 +70,8 @@ export function useMonacoEditor(options: MonacoEditorOptions = {}) {
             lineNumbersMinChars: 3,
             scrollbar: {
               verticalScrollbarSize: 12,
-              horizontalScrollbarSize: 12
-            }
+              horizontalScrollbarSize: 12,
+            },
           });
 
           setEditorInstance(editor);
@@ -103,6 +103,6 @@ export function useMonacoEditor(options: MonacoEditorOptions = {}) {
   return {
     editorContainer,
     editorInstance,
-    isEditorReady
+    isEditorReady,
   };
 }

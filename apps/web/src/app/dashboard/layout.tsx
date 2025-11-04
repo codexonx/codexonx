@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { ReactNode, useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { 
-  Code, 
-  Settings, 
-  LogOut, 
-  Menu, 
-  X, 
-  Home, 
-  FileCode, 
-  Terminal, 
+import { ReactNode, useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import {
+  Code,
+  Settings,
+  LogOut,
+  Menu,
+  X,
+  Home,
+  FileCode,
+  Terminal,
   Layers,
-  Users
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+  Users,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -25,21 +25,21 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-  
+
   const navItems = [
-    { href: "/dashboard", label: "Ana Sayfa", icon: Home },
-    { href: "/dashboard/projects", label: "Projeler", icon: Layers },
-    { href: "/dashboard/editor", label: "Kod Editörü", icon: FileCode },
-    { href: "/dashboard/terminal", label: "Terminal", icon: Terminal },
-    { href: "/dashboard/community", label: "Topluluk", icon: Users },
+    { href: '/dashboard', label: 'Ana Sayfa', icon: Home },
+    { href: '/dashboard/projects', label: 'Projeler', icon: Layers },
+    { href: '/dashboard/editor', label: 'Kod Editörü', icon: FileCode },
+    { href: '/dashboard/terminal', label: 'Terminal', icon: Terminal },
+    { href: '/dashboard/community', label: 'Topluluk', icon: Users },
   ];
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       {/* Sidebar - Mobile */}
-      <div 
+      <div
         className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-background shadow-lg transition-transform duration-200 ease-in-out lg:hidden ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div className="flex h-full flex-col">
@@ -48,9 +48,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <Code className="h-5 w-5 text-primary" />
               <span className="font-semibold">CodeXONX</span>
             </Link>
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setSidebarOpen(false)}
               className="ml-auto"
             >
@@ -60,18 +60,18 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
           <nav className="flex-1 overflow-y-auto py-4">
             <ul className="px-2">
-              {navItems.map((item) => {
+              {navItems.map(item => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
-                
+
                 return (
                   <li key={item.href} className="mb-1">
-                    <Link 
+                    <Link
                       href={item.href}
                       className={`flex items-center rounded-lg px-3 py-2 text-sm transition-colors ${
-                        isActive 
-                          ? "bg-primary text-primary-foreground" 
-                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                        isActive
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                       }`}
                     >
                       <Icon className={`mr-2 h-4 w-4`} />
@@ -113,18 +113,18 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
           <nav className="flex-1 overflow-y-auto py-4">
             <ul className="px-2">
-              {navItems.map((item) => {
+              {navItems.map(item => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
-                
+
                 return (
                   <li key={item.href} className="mb-1">
-                    <Link 
+                    <Link
                       href={item.href}
                       className={`flex items-center rounded-lg px-3 py-2 text-sm transition-colors ${
-                        isActive 
-                          ? "bg-primary text-primary-foreground" 
-                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                        isActive
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                       }`}
                     >
                       <Icon className={`mr-2 h-4 w-4`} />
@@ -160,9 +160,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* Navbar */}
         <header className="border-b">
           <div className="flex h-14 items-center px-4">
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="lg:hidden"
             >
@@ -179,11 +179,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
           </div>
         </header>
-        
+
         {/* Main Content */}
-        <main className="flex-1 overflow-auto p-4 md:p-6">
-          {children}
-        </main>
+        <main className="flex-1 overflow-auto p-4 md:p-6">{children}</main>
       </div>
     </div>
   );

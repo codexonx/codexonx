@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { 
-  Search, 
-  Plus, 
+import { useState, useEffect } from 'react';
+import {
+  Search,
+  Plus,
   Edit,
   Trash2,
   MoreHorizontal,
@@ -11,17 +11,17 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  SlidersHorizontal
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+  SlidersHorizontal,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // Kullanıcı veri tipi
 type User = {
   id: string;
   name: string;
   email: string;
-  role: "USER" | "ADMIN";
-  status: "ACTIVE" | "INACTIVE";
+  role: 'USER' | 'ADMIN';
+  status: 'ACTIVE' | 'INACTIVE';
   createdAt: string;
 };
 
@@ -29,10 +29,10 @@ export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
-  
+
   // Simüle edilmiş kullanıcı verileri
   useEffect(() => {
     const fetchUsers = async () => {
@@ -43,11 +43,9 @@ export default function UsersPage() {
             id: `user-${index + 1}`,
             name: `Kullanıcı ${index + 1}`,
             email: `user${index + 1}@example.com`,
-            role: index % 10 === 0 ? "ADMIN" : "USER",
-            status: index % 5 === 0 ? "INACTIVE" : "ACTIVE",
-            createdAt: new Date(
-              Date.now() - Math.floor(Math.random() * 10000000000)
-            ).toISOString(),
+            role: index % 10 === 0 ? 'ADMIN' : 'USER',
+            status: index % 5 === 0 ? 'INACTIVE' : 'ACTIVE',
+            createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString(),
           }));
 
           setUsers(mockUsers);
@@ -55,7 +53,7 @@ export default function UsersPage() {
           setIsLoading(false);
         }, 1000);
       } catch (error) {
-        console.error("Kullanıcı veri hatası:", error);
+        console.error('Kullanıcı veri hatası:', error);
         setIsLoading(false);
       }
     };
@@ -65,11 +63,11 @@ export default function UsersPage() {
 
   // Arama işlevi
   useEffect(() => {
-    if (searchQuery.trim() === "") {
+    if (searchQuery.trim() === '') {
       setFilteredUsers(users);
     } else {
       const filtered = users.filter(
-        (user) =>
+        user =>
           user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           user.email.toLowerCase().includes(searchQuery.toLowerCase())
       );
@@ -91,10 +89,10 @@ export default function UsersPage() {
 
   // Tarih formatı
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("tr-TR", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+    return new Date(dateString).toLocaleDateString('tr-TR', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     });
   };
 
@@ -125,7 +123,7 @@ export default function UsersPage() {
             placeholder="İsim veya e-posta ile ara..."
             className="pl-10 h-10 w-full rounded-md border border-input bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
           />
         </div>
         <Button variant="outline" className="flex items-center gap-2">
@@ -161,7 +159,7 @@ export default function UsersPage() {
               </tr>
             </thead>
             <tbody className="[&_tr:last-child]:border-0">
-              {currentItems.map((user) => (
+              {currentItems.map(user => (
                 <tr
                   key={user.id}
                   className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
@@ -171,23 +169,23 @@ export default function UsersPage() {
                   <td className="p-4 align-middle">
                     <span
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        user.role === "ADMIN"
-                          ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300"
-                          : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+                        user.role === 'ADMIN'
+                          ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300'
+                          : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
                       }`}
                     >
-                      {user.role === "ADMIN" ? "Admin" : "Kullanıcı"}
+                      {user.role === 'ADMIN' ? 'Admin' : 'Kullanıcı'}
                     </span>
                   </td>
                   <td className="p-4 align-middle">
                     <span
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        user.status === "ACTIVE"
-                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                          : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
+                        user.status === 'ACTIVE'
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                          : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
                       }`}
                     >
-                      {user.status === "ACTIVE" ? (
+                      {user.status === 'ACTIVE' ? (
                         <>
                           <Check className="mr-1 h-3 w-3" />
                           Aktif
@@ -200,9 +198,7 @@ export default function UsersPage() {
                       )}
                     </span>
                   </td>
-                  <td className="p-4 align-middle">
-                    {formatDate(user.createdAt)}
-                  </td>
+                  <td className="p-4 align-middle">{formatDate(user.createdAt)}</td>
                   <td className="p-4 text-right align-middle">
                     <div className="flex items-center justify-end gap-2">
                       <Button variant="ghost" size="icon">
@@ -228,7 +224,7 @@ export default function UsersPage() {
         {/* Sayfalama */}
         <div className="flex items-center justify-between border-t px-4 py-4">
           <div className="text-sm text-muted-foreground">
-            {filteredUsers.length} sonuçtan {indexOfFirstItem + 1} -{" "}
+            {filteredUsers.length} sonuçtan {indexOfFirstItem + 1} -{' '}
             {Math.min(indexOfLastItem, filteredUsers.length)} arası gösteriliyor
           </div>
           <div className="flex items-center space-x-2">
@@ -243,7 +239,7 @@ export default function UsersPage() {
             </Button>
             {Array.from({ length: Math.min(totalPages, 5) }).map((_, i) => {
               let pageNum: number;
-              
+
               // Sayfa düğmelerini ortalamalı gösterme
               if (totalPages <= 5) {
                 pageNum = i + 1;
@@ -254,12 +250,12 @@ export default function UsersPage() {
               } else {
                 pageNum = currentPage - 2 + i;
               }
-              
+
               if (pageNum > 0 && pageNum <= totalPages) {
                 return (
                   <Button
                     key={pageNum}
-                    variant={currentPage === pageNum ? "default" : "outline"}
+                    variant={currentPage === pageNum ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => handlePageChange(pageNum)}
                   >

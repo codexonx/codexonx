@@ -8,11 +8,14 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 // CORS ayarları - güvenlik için production'da domain'i belirtin
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://codexonx.com', 'https://www.codexonx.com']
-    : '*'
-}));
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? ['https://codexonx.com', 'https://www.codexonx.com']
+        : '*',
+  })
+);
 
 // JSON body parsing
 app.use(express.json());
@@ -30,9 +33,24 @@ app.get('/api/version', (req, res) => {
 // Örnek API endpoint
 app.get('/api/projects', (req, res) => {
   res.json([
-    { id: 1, name: 'Web Uygulaması', description: 'React ve Next.js ile geliştirilmiş web uygulaması', language: 'typescript' },
-    { id: 2, name: 'API Servisi', description: 'Node.js ve Express ile REST API', language: 'javascript' },
-    { id: 3, name: 'ML Algoritması', description: 'Python ile makine öğrenimi modeli', language: 'python' }
+    {
+      id: 1,
+      name: 'Web Uygulaması',
+      description: 'React ve Next.js ile geliştirilmiş web uygulaması',
+      language: 'typescript',
+    },
+    {
+      id: 2,
+      name: 'API Servisi',
+      description: 'Node.js ve Express ile REST API',
+      language: 'javascript',
+    },
+    {
+      id: 3,
+      name: 'ML Algoritması',
+      description: 'Python ile makine öğrenimi modeli',
+      language: 'python',
+    },
   ]);
 });
 

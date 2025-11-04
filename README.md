@@ -1,22 +1,25 @@
-# Codexonx Platform
+# Codexonx AI Kod Platform
 
-Codexonx Platform, yazılım projelerinizi kolay bir şekilde yönetmenizi sağlayan güçlü ve modern bir web uygulamasıdır. API anahtarları yönetimi, proje takibi, kullanıcı yönetimi ve abonelik tabanlı ödeme sistemleri gibi birçok özelliği entegre bir arayüzde sunar.
+Codexonx AI Kod Platform, yapay zeka destekli kod yazma, düzenleme ve geliştirme özellikleri sunan modern bir web platformudur. Proje yönetimi, AI destekli kod tamamlama, hata ayıklama, kod optimizasyonu ve otomatik dokumıntasyon gibi geliştiricilerin iş akışını hızlandıran birçok özelliği entegre bir arayüzde sunar.
 
 ## Özellikler
 
-- 👤 **Kullanıcı Yönetimi**: Kayıt, giriş, profil yönetimi, rol tabanlı yetkilendirme
-- 🔑 **API Anahtarı Yönetimi**: API anahtarı oluşturma, yenileme ve izleme
-- 📊 **Analitik Paneli**: API kullanımı ve performans analizleri
-- 💰 **Abonelik Sistemi**: Farklı özelliklere sahip ödeme planları ve entegrasyonları
-- 🛡️ **Gelişmiş Güvenlik**: HTTPS, JWT, rate limiting, IP filtreleme
-- 🚀 **Ölçeklenebilir Mimari**: Yüksek trafik ve kullanıcı sayısını destekleyecek yapı
+- 🤖 **AI Destekli Kod Yazma**: Doğal dilde komutlarla kod oluşturma ve düzenleme
+- ✨ **Kod Tamamlama**: Akıllı kod tamamlama ve öneriler
+- 👷 **Kod Analizi**: Kod kalite analizi, güvenlik taramaları ve optimizasyon önerileri
+- 💡 **Kod Açıklama**: Varolan kodların açıklamalarını ve dokümantasyonunu otomatik oluşturma
+- 💾 **Proje Yönetimi**: Kodlarınızı düzenli tutmak için proje ve dosya yönetimi
+- 🚀 **Terminal Entegrasyonu**: Kod yazma ortamından doğrudan terminal komutları çalıştırma
+- 🔗 **GitHub Entegrasyonu**: GitHub projelerinizle doğrudan bağlantı
+- 👤 **Kişiselleştirme**: Kod stil tercihlerinize ve programlama alışkanlıklarınıza göre uyarlanabilir
 
 ## Teknoloji Yığını
 
 ### Frontend
 
-- **Framework**: Next.js 14
-- **UI**: Tailwind CSS, shadcn/ui bileşenleri
+- **Framework**: Next.js 14.2+
+- **UI**: Tailwind CSS 3.4+, shadcn/ui bileşenleri
+- **Kod Editörü**: Monaco Editor (VS Code motoru)
 - **State Management**: Zustand
 - **Veri Yönetimi**: TanStack Query
 - **Kimlik Doğrulama**: NextAuth.js
@@ -25,10 +28,19 @@ Codexonx Platform, yazılım projelerinizi kolay bir şekilde yönetmenizi sağl
 
 - **Runtime**: Node.js 18+
 - **API Framework**: Express.js
+- **AI Entegrasyonu**: OpenAI API & Kendi Özel AI Modellerimiz
 - **Veritabanı ORM**: Prisma
 - **Veritabanı**: PostgreSQL 15
 - **Doğrulama**: Zod, JWT
 - **İletişim**: RESTful API + WebSocket
+
+### AI Özellikleri
+
+- **Dil Desteği**: JavaScript, TypeScript, Python, Java, C#, Go, Ruby ve daha fazlası
+- **Framework Bilgisi**: React, Vue, Angular, Express, Django, Flask ve daha fazlası
+- **Kod Analizi**: Statik kod analizi, kod kalite değerlendirme
+- **Güvenlik Tarama**: Güvenlik açıkları ve risk tespiti
+- **Test Oluşturma**: Birim testleri ve entegrasyon testleri oluşturma
 
 ### DevOps
 
@@ -41,14 +53,16 @@ Codexonx Platform, yazılım projelerinizi kolay bir şekilde yönetmenizi sağl
 
 Bu bir monorepo projesidir ve şu bileşenleri içerir:
 
-```
+```bash
 ├── apps/
 │   ├── server/          # Backend API (Express.js + TypeScript)
-│   └── web/             # Frontend uygulaması (Next.js)
+│   ├── web/             # Frontend uygulaması (Next.js)
+│   └── mobile/          # Mobil uygulama (React Native)
 ├── packages/            # Paylaşılan kütüphaneler
 ├── terraform/           # Altyapı kodu
 ├── docker-compose.yml   # Konteyner yapılandırması
 ├── turbo.json           # Monorepo yapılandırması
+├── tools/               # Yardımcı scriptler ve araçlar
 └── package.json         # Ana paket yapılandırması
 ```
 
@@ -85,8 +99,9 @@ npm run dev
 ```
 
 Uygulama şu adreslerde çalışacaktır:
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:3001/api
+
+- Frontend: [http://localhost:3000](http://localhost:3000)
+- Backend API: [http://localhost:3001/api](http://localhost:3001/api)
 
 ### Docker ile Çalıştırma
 

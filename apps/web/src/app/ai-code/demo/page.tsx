@@ -1,21 +1,22 @@
-"use client";
+'use client';
 
 // @ts-nocheck
 // TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
 // arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
 
-import { useState, useEffect } from "react";
-import { ArrowLeft, Play, Pause, FastForward } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import Link from "next/link";
+import { useState, useEffect } from 'react';
+import { ArrowLeft, Play, Pause, FastForward } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 // Demo video adımları
 const demoSteps = [
   {
-    id: "step1",
-    title: "1. Soru Sorun",
-    description: "AI asistanınıza doğal dilde soru sorun. Örneğin: 'React'te bir form komponenti nasıl oluşturabilirim?'",
+    id: 'step1',
+    title: '1. Soru Sorun',
+    description:
+      "AI asistanınıza doğal dilde soru sorun. Örneğin: 'React'te bir form komponenti nasıl oluşturabilirim?'",
     code: `// Kullanıcı AI'a soru soruyor:
 // "React'te form validation yapan bir form komponenti oluştur"
 
@@ -152,12 +153,13 @@ Bu form komponenti şunları içeriyor:
 - Hata mesajları gösterme
 - Başarılı form gönderimi sonrası bildirim
 
-CSS stillerini eklemek için form-container, form-group, error ve error-text sınıfları için stil tanımlamaları ekleyebilirsiniz.`
+CSS stillerini eklemek için form-container, form-group, error ve error-text sınıfları için stil tanımlamaları ekleyebilirsiniz.`,
   },
   {
-    id: "step2",
-    title: "2. Kodu İyileştirin",
-    description: "AI'dan kodunuzu iyileştirmesini, optimize etmesini veya yeni özellikler eklemesini isteyin",
+    id: 'step2',
+    title: '2. Kodu İyileştirin',
+    description:
+      "AI'dan kodunuzu iyileştirmesini, optimize etmesini veya yeni özellikler eklemesini isteyin",
     code: `// Kullanıcı şunu soruyor:
 // "Bu formu Formik kütüphanesiyle nasıl yeniden yazabiliriz?"
 
@@ -282,12 +284,12 @@ veya
 yarn add formik yup
 \`\`\`
 
-Nasıl görünüyor? Bu yaklaşım form yönetimini çok daha temiz ve yönetilebilir hale getirir.`
+Nasıl görünüyor? Bu yaklaşım form yönetimini çok daha temiz ve yönetilebilir hale getirir.`,
   },
   {
-    id: "step3",
-    title: "3. Hatalar ve Sorunlar",
-    description: "Hata ayıklama ve sorun çözme konusunda yardım alın",
+    id: 'step3',
+    title: '3. Hatalar ve Sorunlar',
+    description: 'Hata ayıklama ve sorun çözme konusunda yardım alın',
     code: `// Kullanıcı şunu soruyor:
 // "Bu kodda bir hata var, form gönderildikten sonra 
 // başa dönmüyor. Nasıl düzeltebiliriz?"
@@ -417,15 +419,15 @@ function FormikValidationForm() {
 }
 \`\`\`
 
-Bu şekilde, form gönderildikten sonra ve kullanıcı "Tekrar Gönder" butonuna tıkladığında, form tam olarak sıfırlanacaktır.`
-  }
+Bu şekilde, form gönderildikten sonra ve kullanıcı "Tekrar Gönder" butonuna tıkladığında, form tam olarak sıfırlanacaktır.`,
+  },
 ];
 
 export default function DemoPage() {
   const [activeStep, setActiveStep] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [typedCode, setTypedCode] = useState("");
-  const [typedResponse, setTypedResponse] = useState("");
+  const [typedCode, setTypedCode] = useState('');
+  const [typedResponse, setTypedResponse] = useState('');
   const [typingCodeSpeed, setTypingCodeSpeed] = useState(20); // ms per character
   const [typingResponseSpeed, setTypingResponseSpeed] = useState(5); // ms per character
   const currentStep = demoSteps[activeStep];
@@ -434,12 +436,12 @@ export default function DemoPage() {
   useEffect(() => {
     let codeTimeouts: number[] = [];
     let responseTimeouts: number[] = [];
-    
+
     if (playing) {
       // Reset typed text
-      setTypedCode("");
-      setTypedResponse("");
-      
+      setTypedCode('');
+      setTypedResponse('');
+
       // Type code character by character
       const codeToType = currentStep.code;
       for (let i = 0; i < codeToType.length; i++) {
@@ -448,59 +450,62 @@ export default function DemoPage() {
         }, i * typingCodeSpeed);
         codeTimeouts.push(timeout);
       }
-      
+
       // After code is typed, start typing the response
       const responseToType = currentStep.aiResponse;
       const codeTypingTime = codeToType.length * typingCodeSpeed;
-      
+
       for (let i = 0; i < responseToType.length; i++) {
-        const timeout = window.setTimeout(() => {
-          setTypedResponse(responseToType.substring(0, i + 1));
-          
-          // When response is fully typed, go to next slide if not the last one
-          if (i === responseToType.length - 1 && activeStep < demoSteps.length - 1) {
-            setTimeout(() => {
-              setPlaying(false);
-              // Don't auto-advance to give user time to read
-            }, 3000);
-          }
-        }, codeTypingTime + (i * typingResponseSpeed));
+        const timeout = window.setTimeout(
+          () => {
+            setTypedResponse(responseToType.substring(0, i + 1));
+
+            // When response is fully typed, go to next slide if not the last one
+            if (i === responseToType.length - 1 && activeStep < demoSteps.length - 1) {
+              setTimeout(() => {
+                setPlaying(false);
+                // Don't auto-advance to give user time to read
+              }, 3000);
+            }
+          },
+          codeTypingTime + i * typingResponseSpeed
+        );
         responseTimeouts.push(timeout);
       }
     }
-    
+
     // Cleanup timeouts
     return () => {
       codeTimeouts.forEach(timeout => clearTimeout(timeout));
       responseTimeouts.forEach(timeout => clearTimeout(timeout));
     };
   }, [playing, activeStep, currentStep, typingCodeSpeed, typingResponseSpeed]);
-  
+
   // Handle next step
   const nextStep = () => {
     if (activeStep < demoSteps.length - 1) {
       setActiveStep(activeStep + 1);
       setPlaying(false);
-      setTypedCode("");
-      setTypedResponse("");
+      setTypedCode('');
+      setTypedResponse('');
     }
   };
-  
+
   // Handle previous step
   const prevStep = () => {
     if (activeStep > 0) {
       setActiveStep(activeStep - 1);
       setPlaying(false);
-      setTypedCode("");
-      setTypedResponse("");
+      setTypedCode('');
+      setTypedResponse('');
     }
   };
-  
+
   // Toggle play/pause
   const togglePlay = () => {
     setPlaying(!playing);
   };
-  
+
   // Skip to end of current step
   const skipToEnd = () => {
     setTypedCode(currentStep.code);
@@ -509,12 +514,12 @@ export default function DemoPage() {
   };
 
   // Format code with syntax highlighting
-  const formatCode = (code) => {
+  const formatCode = code => {
     return code.replace(/\/\/ (.*)/g, '<span class="text-green-400">// $1</span>');
   };
-  
+
   // Format AI response with syntax highlighting for code blocks
-  const formatResponse = (response) => {
+  const formatResponse = response => {
     return response.replace(/```(.*?)\n([\s\S]*?)```/g, (match, language, code) => {
       return `<div class="bg-slate-900 rounded-md p-4 my-4 overflow-auto">
                 <pre><code class="language-${language || 'javascript'}">${code}</code></pre>
@@ -526,11 +531,7 @@ export default function DemoPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white">
       <header className="container mx-auto px-4 py-6">
         <div className="flex items-center">
-          <Button 
-            variant="ghost" 
-            className="text-white"
-            asChild
-          >
+          <Button variant="ghost" className="text-white" asChild>
             <Link href="/ai-code">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Geri Dön
@@ -549,7 +550,7 @@ export default function DemoPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* User Code */}
-            <motion.div 
+            <motion.div
               className="bg-slate-900 rounded-lg overflow-hidden shadow-lg"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -565,29 +566,19 @@ export default function DemoPage() {
                   <span className="text-gray-400 text-sm">kod.js</span>
                 </div>
                 <div className="flex space-x-2">
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
-                    className="h-7 px-2"
-                    onClick={togglePlay}
-                  >
+                  <Button size="sm" variant="ghost" className="h-7 px-2" onClick={togglePlay}>
                     {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                   </Button>
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
-                    className="h-7 px-2"
-                    onClick={skipToEnd}
-                  >
+                  <Button size="sm" variant="ghost" className="h-7 px-2" onClick={skipToEnd}>
                     <FastForward className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
               <div className="p-4 font-mono text-sm overflow-auto h-96">
                 <pre>
-                  <code 
-                    className="text-gray-300" 
-                    dangerouslySetInnerHTML={{ __html: formatCode(typedCode) }} 
+                  <code
+                    className="text-gray-300"
+                    dangerouslySetInnerHTML={{ __html: formatCode(typedCode) }}
                   />
                   {!typedCode && !playing && (
                     <div className="text-gray-500 italic">
@@ -599,7 +590,7 @@ export default function DemoPage() {
             </motion.div>
 
             {/* AI Response */}
-            <motion.div 
+            <motion.div
               className="bg-slate-900 rounded-lg overflow-hidden shadow-lg"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -612,13 +603,13 @@ export default function DemoPage() {
                 </div>
               </div>
               <div className="p-4 overflow-auto h-96">
-                <div 
+                <div
                   className="prose prose-invert prose-sm max-w-none"
                   dangerouslySetInnerHTML={{ __html: formatResponse(typedResponse) }}
                 />
                 {!typedResponse && !playing && (
                   <div className="text-gray-500 italic">
-                    {typedCode ? "AI yanıt hazırlıyor..." : "Yanıtlar burada görünecek."}
+                    {typedCode ? 'AI yanıt hazırlıyor...' : 'Yanıtlar burada görünecek.'}
                   </div>
                 )}
                 {playing && typedCode && !typedResponse && (
@@ -632,52 +623,47 @@ export default function DemoPage() {
           </div>
 
           <div className="flex justify-between mt-8">
-            <Button 
-              variant="outline" 
-              onClick={prevStep} 
+            <Button
+              variant="outline"
+              onClick={prevStep}
               disabled={activeStep === 0}
               className="border-slate-700"
             >
               Önceki Adım
             </Button>
-            
+
             <div className="flex space-x-1">
               {demoSteps.map((step, idx) => (
                 <button
                   key={step.id}
                   className={`w-3 h-3 rounded-full ${
-                    idx === activeStep ? "bg-blue-500" : "bg-slate-700"
+                    idx === activeStep ? 'bg-blue-500' : 'bg-slate-700'
                   }`}
                   aria-label={`Adım ${idx + 1}: ${step.title}`}
                   title={`Adım ${idx + 1}: ${step.title}`}
                   onClick={() => {
                     setActiveStep(idx);
                     setPlaying(false);
-                    setTypedCode("");
-                    setTypedResponse("");
+                    setTypedCode('');
+                    setTypedResponse('');
                   }}
                 />
               ))}
             </div>
-            
-            <Button 
-              variant="outline" 
-              onClick={nextStep} 
+
+            <Button
+              variant="outline"
+              onClick={nextStep}
               disabled={activeStep === demoSteps.length - 1}
               className="border-slate-700"
             >
               Sonraki Adım
             </Button>
           </div>
-          
+
           <div className="mt-12 text-center">
-            <Button 
-              className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6"
-              asChild
-            >
-              <Link href="/ai-code/editor">
-                Şimdi Deneyin
-              </Link>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6" asChild>
+              <Link href="/ai-code/editor">Şimdi Deneyin</Link>
             </Button>
           </div>
         </div>

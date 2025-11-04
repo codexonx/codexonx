@@ -25,12 +25,14 @@ Codexonx platformunun React Native ile geliştirilmiş mobil uygulaması.
 ### Geliştirme Ortamının Hazırlanması
 
 1. Depoyu klonlayın:
+
    ```bash
    git clone https://github.com/codexonx/codexonx-platform.git
    cd codexonx-platform
    ```
 
 2. Bağımlılıkları yükleyin:
+
    ```bash
    yarn
    # veya
@@ -38,6 +40,7 @@ Codexonx platformunun React Native ile geliştirilmiş mobil uygulaması.
    ```
 
 3. iOS için pod'ları yükleyin (sadece macOS'ta):
+
    ```bash
    cd apps/mobile/ios && pod install
    ```
@@ -49,6 +52,7 @@ Codexonx platformunun React Native ile geliştirilmiş mobil uygulaması.
 ### Uygulamayı Çalıştırma
 
 iOS için:
+
 ```bash
 cd apps/mobile
 yarn ios
@@ -57,6 +61,7 @@ npm run ios
 ```
 
 Android için:
+
 ```bash
 cd apps/mobile
 yarn android

@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { 
-  Code, 
-  PlusCircle, 
-  Settings, 
-  Key, 
-  BarChart, 
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import {
+  Code,
+  PlusCircle,
+  Settings,
+  Key,
+  BarChart,
   LayoutGrid,
   LogOut,
-  ChevronDown
-} from "lucide-react";
+  ChevronDown,
+} from 'lucide-react';
 
 export default function WorkspacePage() {
   const [activeProject, setActiveProject] = useState<string | null>(null);
 
   // Mock data
   const projects = [
-    { id: "1", name: "API Projesi", apiKey: "pk_test_123456789", status: "active" },
-    { id: "2", name: "Web Uygulaması", apiKey: "pk_test_987654321", status: "active" }
+    { id: '1', name: 'API Projesi', apiKey: 'pk_test_123456789', status: 'active' },
+    { id: '2', name: 'Web Uygulaması', apiKey: 'pk_test_987654321', status: 'active' },
   ];
 
   return (
@@ -32,14 +32,22 @@ export default function WorkspacePage() {
           <span className="font-bold">Codexonx</span>
         </div>
         <nav className="flex-1 p-4 space-y-2">
-          <Link href="/workspace" className="flex items-center space-x-2 p-2 rounded-md bg-primary/10 text-primary font-medium">
+          <Link
+            href="/workspace"
+            className="flex items-center space-x-2 p-2 rounded-md bg-primary/10 text-primary font-medium"
+          >
             <LayoutGrid className="h-4 w-4" />
             <span>Dashboard</span>
           </Link>
           <div className="pt-4">
             <div className="flex items-center justify-between mb-2 text-sm font-medium text-muted-foreground">
               <span>PROJELERİM</span>
-              <Button variant="ghost" size="icon" title="Yeni proje ekle" aria-label="Yeni proje ekle">
+              <Button
+                variant="ghost"
+                size="icon"
+                title="Yeni proje ekle"
+                aria-label="Yeni proje ekle"
+              >
                 <PlusCircle className="h-4 w-4" />
               </Button>
             </div>
@@ -47,7 +55,7 @@ export default function WorkspacePage() {
               {projects.map(project => (
                 <button
                   key={project.id}
-                  className={`w-full flex items-center space-x-2 p-2 text-sm rounded-md hover:bg-primary/10 ${activeProject === project.id ? "bg-primary/5 font-medium" : ""}`}
+                  className={`w-full flex items-center space-x-2 p-2 text-sm rounded-md hover:bg-primary/10 ${activeProject === project.id ? 'bg-primary/5 font-medium' : ''}`}
                   onClick={() => setActiveProject(project.id)}
                   aria-label={`${project.name} projesini seç`}
                 >
@@ -129,7 +137,9 @@ export default function WorkspacePage() {
                 <thead>
                   <tr className="border-b bg-muted/50">
                     <th className="text-left p-4 font-medium text-muted-foreground">Proje Adı</th>
-                    <th className="text-left p-4 font-medium text-muted-foreground">API Anahtarı</th>
+                    <th className="text-left p-4 font-medium text-muted-foreground">
+                      API Anahtarı
+                    </th>
                     <th className="text-left p-4 font-medium text-muted-foreground">Durum</th>
                     <th className="text-right p-4 font-medium text-muted-foreground">İşlemler</th>
                   </tr>

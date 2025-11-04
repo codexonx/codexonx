@@ -1,6 +1,13 @@
 import request from 'supertest';
 import express from 'express';
-import { createProject, getProjects, getProject, updateProject, deleteProject, regenerateApiKey } from './projects';
+import {
+  createProject,
+  getProjects,
+  getProject,
+  updateProject,
+  deleteProject,
+  regenerateApiKey,
+} from './projects';
 import prisma from '../lib/prisma';
 
 // Mock prisma client
@@ -14,12 +21,12 @@ jest.mock('../lib/prisma', () => ({
   },
   user: {
     findUnique: jest.fn(),
-  }
+  },
 }));
 
 describe('Projects Controller', () => {
   let app: express.Application;
-  
+
   beforeAll(() => {
     app = express();
     app.use(express.json());
@@ -50,13 +57,11 @@ describe('Projects Controller', () => {
       (prisma.project.create as jest.Mock).mockResolvedValue(mockProject);
       (prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: 'user-1' });
 
-      const response = await request(app)
-        .post('/api/projects')
-        .send({
-          name: 'Test Project',
-          description: 'Test Description',
-          userId: 'user-1'
-        });
+      const response = await request(app).post('/api/projects').send({
+        name: 'Test Project',
+        description: 'Test Description',
+        userId: 'user-1',
+      });
 
       expect(response.status).toBe(201);
       expect(response.body).toEqual(mockProject);
@@ -64,9 +69,7 @@ describe('Projects Controller', () => {
     });
 
     it('should return 400 if required fields are missing', async () => {
-      const response = await request(app)
-        .post('/api/projects')
-        .send({});
+      const response = await request(app).post('/api/projects').send({});
 
       expect(response.status).toBe(400);
     });
@@ -74,13 +77,11 @@ describe('Projects Controller', () => {
     it('should return 404 if user not found', async () => {
       (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
 
-      const response = await request(app)
-        .post('/api/projects')
-        .send({
-          name: 'Test Project',
-          description: 'Test Description',
-          userId: 'non-existent-user'
-        });
+      const response = await request(app).post('/api/projects').send({
+        name: 'Test Project',
+        description: 'Test Description',
+        userId: 'non-existent-user',
+      });
 
       expect(response.status).toBe(404);
     });
@@ -106,7 +107,7 @@ describe('Projects Controller', () => {
           userId: 'user-1',
           createdAt: new Date(),
           updatedAt: new Date(),
-        }
+        },
       ];
 
       (prisma.project.findMany as jest.Mock).mockResolvedValue(mockProjects);
@@ -118,26 +119,26 @@ describe('Projects Controller', () => {
     });
 
     it('should filter projects by userId if provided', async () => {
-      const mockProjects = [{
-        id: '1',
-        name: 'Project 1',
-        description: 'Description 1',
-        apiKey: 'key_1',
-        userId: 'user-1',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }];
+      const mockProjects = [
+        {
+          id: '1',
+          name: 'Project 1',
+          description: 'Description 1',
+          apiKey: 'key_1',
+          userId: 'user-1',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ];
 
       (prisma.project.findMany as jest.Mock).mockResolvedValue(mockProjects);
 
-      const response = await request(app)
-        .get('/api/projects')
-        .query({ userId: 'user-1' });
+      const response = await request(app).get('/api/projects').query({ userId: 'user-1' });
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(mockProjects);
       expect(prisma.project.findMany).toHaveBeenCalledWith({
-        where: { userId: 'user-1' }
+        where: { userId: 'user-1' },
       });
     });
   });
@@ -188,15 +189,13 @@ describe('Projects Controller', () => {
         name: 'Test Project',
         description: 'Test Description',
       });
-      
+
       (prisma.project.update as jest.Mock).mockResolvedValue(mockUpdatedProject);
 
-      const response = await request(app)
-        .put('/api/projects/1')
-        .send({
-          name: 'Updated Project',
-          description: 'Updated Description'
-        });
+      const response = await request(app).put('/api/projects/1').send({
+        name: 'Updated Project',
+        description: 'Updated Description',
+      });
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(mockUpdatedProject);
@@ -205,11 +204,9 @@ describe('Projects Controller', () => {
     it('should return 404 if project not found', async () => {
       (prisma.project.findUnique as jest.Mock).mockResolvedValue(null);
 
-      const response = await request(app)
-        .put('/api/projects/non-existent')
-        .send({
-          name: 'Updated Project'
-        });
+      const response = await request(app).put('/api/projects/non-existent').send({
+        name: 'Updated Project',
+      });
 
       expect(response.status).toBe(404);
     });
@@ -221,7 +218,7 @@ describe('Projects Controller', () => {
         id: '1',
         name: 'Test Project',
       });
-      
+
       (prisma.project.delete as jest.Mock).mockResolvedValue({});
 
       const response = await request(app).delete('/api/projects/1');
@@ -245,7 +242,7 @@ describe('Projects Controller', () => {
         name: 'Test Project',
         apiKey: 'old_api_key',
       };
-      
+
       const mockUpdatedProject = {
         id: '1',
         name: 'Test Project',

@@ -1,92 +1,101 @@
-"use client";
+'use client';
 
 // @ts-nocheck
 // TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
 // arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { 
-  Plus, 
-  Folder, 
-  Code, 
-  Search, 
-  ArrowRight, 
-  FolderPlus, 
-  FileCode, 
-  Star, 
-  StarOff, 
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import {
+  Plus,
+  Folder,
+  Code,
+  Search,
+  ArrowRight,
+  FolderPlus,
+  FileCode,
+  Star,
+  StarOff,
   MoreHorizontal,
   Clock,
-  Settings2
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Link from "next/link";
+  Settings2,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Link from 'next/link';
 
 // Örnek proje verileri
 const demoProjects = [
   {
-    id: "proj-1",
-    name: "Web Uygulaması",
-    description: "React ve TypeScript ile geliştirilmiş bir web uygulaması",
-    lastUpdated: "Bugün",
+    id: 'proj-1',
+    name: 'Web Uygulaması',
+    description: 'React ve TypeScript ile geliştirilmiş bir web uygulaması',
+    lastUpdated: 'Bugün',
     favorite: true,
-    language: "typescript",
-    files: 12
+    language: 'typescript',
+    files: 12,
   },
   {
-    id: "proj-2",
-    name: "API Servisi",
-    description: "Node.js ve Express kullanılarak oluşturulmuş REST API",
-    lastUpdated: "Dün",
+    id: 'proj-2',
+    name: 'API Servisi',
+    description: 'Node.js ve Express kullanılarak oluşturulmuş REST API',
+    lastUpdated: 'Dün',
     favorite: false,
-    language: "javascript",
-    files: 8
+    language: 'javascript',
+    files: 8,
   },
   {
-    id: "proj-3",
-    name: "Veri Analizi",
-    description: "Python ve Pandas ile veri analizi projesi",
-    lastUpdated: "3 gün önce",
+    id: 'proj-3',
+    name: 'Veri Analizi',
+    description: 'Python ve Pandas ile veri analizi projesi',
+    lastUpdated: '3 gün önce',
     favorite: true,
-    language: "python",
-    files: 5
+    language: 'python',
+    files: 5,
   },
   {
-    id: "proj-4",
-    name: "E-ticaret Frontend",
+    id: 'proj-4',
+    name: 'E-ticaret Frontend',
     description: "Next.js ile oluşturulmuş e-ticaret sitesi frontend'i",
-    lastUpdated: "1 hafta önce",
+    lastUpdated: '1 hafta önce',
     favorite: false,
-    language: "typescript", 
-    files: 18
-  }
+    language: 'typescript',
+    files: 18,
+  },
 ];
 
 // Dil ikonları ve renkleri
 const languageColors = {
-  typescript: "text-blue-400",
-  javascript: "text-yellow-400",
-  python: "text-green-500",
-  html: "text-orange-500",
-  css: "text-blue-500"
+  typescript: 'text-blue-400',
+  javascript: 'text-yellow-400',
+  python: 'text-green-500',
+  html: 'text-orange-500',
+  css: 'text-blue-500',
 };
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState(demoProjects);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
-  const [newProjectName, setNewProjectName] = useState("");
-  const [newProjectDescription, setNewProjectDescription] = useState("");
-  const [newProjectLanguage, setNewProjectLanguage] = useState("typescript");
+  const [newProjectName, setNewProjectName] = useState('');
+  const [newProjectDescription, setNewProjectDescription] = useState('');
+  const [newProjectLanguage, setNewProjectLanguage] = useState('typescript');
 
   // Projeleri filtrele
-  const filteredProjects = projects.filter(project => 
-    project.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    project.description.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProjects = projects.filter(
+    project =>
+      project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Favorileri ve diğerlerini ayır
@@ -96,29 +105,31 @@ export default function ProjectsPage() {
   // Yeni proje oluştur
   const handleCreateProject = () => {
     if (!newProjectName.trim()) return;
-    
+
     const newProject = {
       id: `proj-${projects.length + 1}`,
       name: newProjectName,
-      description: newProjectDescription || "Açıklama yok",
-      lastUpdated: "Şimdi",
+      description: newProjectDescription || 'Açıklama yok',
+      lastUpdated: 'Şimdi',
       favorite: false,
       language: newProjectLanguage,
-      files: 0
+      files: 0,
     };
-    
+
     setProjects([...projects, newProject]);
     setNewProjectDialogOpen(false);
-    setNewProjectName("");
-    setNewProjectDescription("");
-    setNewProjectLanguage("typescript");
+    setNewProjectName('');
+    setNewProjectDescription('');
+    setNewProjectLanguage('typescript');
   };
 
   // Favori durumunu değiştir
-  const toggleFavorite = (id) => {
-    setProjects(projects.map(project => 
-      project.id === id ? { ...project, favorite: !project.favorite } : project
-    ));
+  const toggleFavorite = id => {
+    setProjects(
+      projects.map(project =>
+        project.id === id ? { ...project, favorite: !project.favorite } : project
+      )
+    );
   };
 
   return (
@@ -134,7 +145,7 @@ export default function ProjectsPage() {
                 placeholder="Projelerde ara..."
                 className="pl-10 bg-slate-900 border-slate-700 text-white"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
               />
             </div>
             <Dialog open={newProjectDialogOpen} onOpenChange={setNewProjectDialogOpen}>
@@ -161,7 +172,7 @@ export default function ProjectsPage() {
                       placeholder="Projenin adını girin"
                       className="bg-slate-800 border-slate-700 text-white"
                       value={newProjectName}
-                      onChange={(e) => setNewProjectName(e.target.value)}
+                      onChange={e => setNewProjectName(e.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
@@ -173,7 +184,7 @@ export default function ProjectsPage() {
                       placeholder="Proje açıklaması girin"
                       className="bg-slate-800 border-slate-700 text-white"
                       value={newProjectDescription}
-                      onChange={(e) => setNewProjectDescription(e.target.value)}
+                      onChange={e => setNewProjectDescription(e.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
@@ -184,7 +195,7 @@ export default function ProjectsPage() {
                       id="language"
                       className="w-full rounded-md bg-slate-800 border-slate-700 text-white px-3 py-2 text-sm"
                       value={newProjectLanguage}
-                      onChange={(e) => setNewProjectLanguage(e.target.value)}
+                      onChange={e => setNewProjectLanguage(e.target.value)}
                     >
                       <option value="typescript">TypeScript</option>
                       <option value="javascript">JavaScript</option>
@@ -194,15 +205,15 @@ export default function ProjectsPage() {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     onClick={() => setNewProjectDialogOpen(false)}
                     className="text-gray-300 hover:text-white"
                   >
                     İptal
                   </Button>
-                  <Button 
-                    onClick={handleCreateProject} 
+                  <Button
+                    onClick={handleCreateProject}
                     className="bg-blue-600 hover:bg-blue-700"
                     disabled={!newProjectName.trim()}
                   >
@@ -226,35 +237,35 @@ export default function ProjectsPage() {
               Favoriler
             </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="all" className="mt-6">
-            <ProjectList 
-              title="Favori Projeler" 
-              projects={favoriteProjects} 
+            <ProjectList
+              title="Favori Projeler"
+              projects={favoriteProjects}
               emptyMessage="Favori projeniz yok"
               toggleFavorite={toggleFavorite}
             />
-            <ProjectList 
-              title="Diğer Projeler" 
-              projects={otherProjects} 
+            <ProjectList
+              title="Diğer Projeler"
+              projects={otherProjects}
               emptyMessage="Hiç projeniz yok"
               toggleFavorite={toggleFavorite}
             />
           </TabsContent>
 
           <TabsContent value="recent" className="mt-6">
-            <ProjectList 
-              title="Son Kullanılanlar" 
-              projects={filteredProjects.slice(0, 2)} 
+            <ProjectList
+              title="Son Kullanılanlar"
+              projects={filteredProjects.slice(0, 2)}
               emptyMessage="Son kullanılan proje yok"
               toggleFavorite={toggleFavorite}
             />
           </TabsContent>
 
           <TabsContent value="favorites" className="mt-6">
-            <ProjectList 
-              title="Favori Projeler" 
-              projects={favoriteProjects} 
+            <ProjectList
+              title="Favori Projeler"
+              projects={favoriteProjects}
               emptyMessage="Favori projeniz yok"
               toggleFavorite={toggleFavorite}
             />
@@ -265,9 +276,7 @@ export default function ProjectsPage() {
           <div className="text-center py-12">
             <Folder className="w-16 h-16 mx-auto text-gray-600 mb-4" />
             <h2 className="text-xl font-medium text-white mb-2">Sonuç bulunamadı</h2>
-            <p className="text-gray-400">
-              "{searchTerm}" için eşleşen proje bulunamadı.
-            </p>
+            <p className="text-gray-400">"{searchTerm}" için eşleşen proje bulunamadı.</p>
           </div>
         )}
 
@@ -278,7 +287,7 @@ export default function ProjectsPage() {
             <p className="text-gray-400 mb-6">
               İlk projenizi oluşturarak AI ile kod yazmaya başlayın.
             </p>
-            <Button 
+            <Button
               className="bg-blue-600 hover:bg-blue-700"
               onClick={() => setNewProjectDialogOpen(true)}
             >
@@ -331,7 +340,7 @@ function ProjectList({ title, projects, emptyMessage, toggleFavorite }) {
     <div className="mb-8">
       <h2 className="text-xl font-bold mb-4">{title}</h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {projects.map((project) => (
+        {projects.map(project => (
           <motion.div
             key={project.id}
             initial={{ opacity: 0, y: 10 }}
@@ -341,14 +350,14 @@ function ProjectList({ title, projects, emptyMessage, toggleFavorite }) {
             <div className="p-5">
               <div className="flex justify-between items-start">
                 <div className="flex items-center">
-                  <div className={`w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center mr-3 ${languageColors[project.language]}`}>
+                  <div
+                    className={`w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center mr-3 ${languageColors[project.language]}`}
+                  >
                     <Code className="w-5 h-5" />
                   </div>
                   <div>
                     <h3 className="text-lg font-medium hover:text-blue-400 transition-colors">
-                      <Link href={`/ai-code/editor?project=${project.id}`}>
-                        {project.name}
-                      </Link>
+                      <Link href={`/ai-code/editor?project=${project.id}`}>{project.name}</Link>
                     </h3>
                     <p className="text-gray-400 text-sm">{project.description}</p>
                   </div>
@@ -359,7 +368,7 @@ function ProjectList({ title, projects, emptyMessage, toggleFavorite }) {
                     size="icon"
                     className="h-8 w-8 text-gray-400 hover:text-yellow-400"
                     onClick={() => toggleFavorite(project.id)}
-                    title={project.favorite ? "Favorilerden çıkar" : "Favorilere ekle"}
+                    title={project.favorite ? 'Favorilerden çıkar' : 'Favorilere ekle'}
                   >
                     {project.favorite ? (
                       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -386,7 +395,7 @@ function ProjectList({ title, projects, emptyMessage, toggleFavorite }) {
                   <FileCode className="w-3.5 h-3.5 mr-1" />
                   <span>{project.files} dosya</span>
                 </div>
-                <Link 
+                <Link
                   href={`/ai-code/editor?project=${project.id}`}
                   className="text-blue-500 hover:text-blue-400 text-sm flex items-center"
                 >
@@ -411,14 +420,16 @@ function TemplateCard({ title, description, language }) {
       className="bg-slate-900 border border-slate-800 rounded-lg hover:border-slate-700 transition-colors p-5"
     >
       <div className="flex items-center mb-3">
-        <div className={`w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center mr-2 ${languageColors[language]}`}>
+        <div
+          className={`w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center mr-2 ${languageColors[language]}`}
+        >
           <Code className="w-4 h-4" />
         </div>
         <h3 className="text-lg font-medium">{title}</h3>
       </div>
       <p className="text-gray-400 text-sm mb-4">{description}</p>
       <Button className="w-full bg-slate-800 hover:bg-slate-700 text-white">
-        <FolderPlus className="w-4 h-4 mr-2" /> 
+        <FolderPlus className="w-4 h-4 mr-2" />
         Bu Şablonla Başla
       </Button>
     </motion.div>

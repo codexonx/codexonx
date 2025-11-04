@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { 
-  Search, 
-  Plus, 
+import { useState, useEffect } from 'react';
+import {
+  Search,
+  Plus,
   Edit,
   Trash2,
   MoreHorizontal,
@@ -11,9 +11,9 @@ import {
   ChevronRight,
   SlidersHorizontal,
   ExternalLink,
-  BarChart
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+  BarChart,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // Proje veri tipi
 type Project = {
@@ -23,7 +23,7 @@ type Project = {
   ownerName: string;
   apiKey: string;
   description: string;
-  status: "ACTIVE" | "INACTIVE" | "SUSPENDED";
+  status: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
   usage: number;
   createdAt: string;
 };
@@ -32,10 +32,10 @@ export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
-  
+
   // Simüle edilmiş proje verileri
   useEffect(() => {
     const fetchProjects = async () => {
@@ -49,11 +49,9 @@ export default function ProjectsPage() {
             ownerName: `Kullanıcı ${(index % 7) + 1}`,
             apiKey: `pk_test_${Math.random().toString(36).substring(2, 15)}`,
             description: `Bu proje için açıklama metni. Proje #${index + 1}`,
-            status: index % 10 === 0 ? "SUSPENDED" : index % 5 === 0 ? "INACTIVE" : "ACTIVE",
+            status: index % 10 === 0 ? 'SUSPENDED' : index % 5 === 0 ? 'INACTIVE' : 'ACTIVE',
             usage: Math.floor(Math.random() * 10000),
-            createdAt: new Date(
-              Date.now() - Math.floor(Math.random() * 10000000000)
-            ).toISOString(),
+            createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString(),
           }));
 
           setProjects(mockProjects);
@@ -61,7 +59,7 @@ export default function ProjectsPage() {
           setIsLoading(false);
         }, 1000);
       } catch (error) {
-        console.error("Proje veri hatası:", error);
+        console.error('Proje veri hatası:', error);
         setIsLoading(false);
       }
     };
@@ -71,11 +69,11 @@ export default function ProjectsPage() {
 
   // Arama işlevi
   useEffect(() => {
-    if (searchQuery.trim() === "") {
+    if (searchQuery.trim() === '') {
       setFilteredProjects(projects);
     } else {
       const filtered = projects.filter(
-        (project) =>
+        project =>
           project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           project.ownerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
           project.description.toLowerCase().includes(searchQuery.toLowerCase())
@@ -98,13 +96,13 @@ export default function ProjectsPage() {
 
   // Tarih formatı
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("tr-TR", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+    return new Date(dateString).toLocaleDateString('tr-TR', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     });
   };
-  
+
   // API anahtarının bir kısmını gösterme
   const formatApiKey = (key: string) => {
     return `${key.substring(0, 8)}...`;
@@ -119,26 +117,26 @@ export default function ProjectsPage() {
   // Duruma göre stil belirleme
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case "ACTIVE":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
-      case "INACTIVE":
-        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300";
-      case "SUSPENDED":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
+      case 'ACTIVE':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      case 'INACTIVE':
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
+      case 'SUSPENDED':
+        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
       default:
-        return "bg-gray-100 text-gray-800";
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
   // Durumu Türkçe gösterme
   const getStatusText = (status: string) => {
     switch (status) {
-      case "ACTIVE":
-        return "Aktif";
-      case "INACTIVE":
-        return "Pasif";
-      case "SUSPENDED":
-        return "Askıya Alındı";
+      case 'ACTIVE':
+        return 'Aktif';
+      case 'INACTIVE':
+        return 'Pasif';
+      case 'SUSPENDED':
+        return 'Askıya Alındı';
       default:
         return status;
     }
@@ -171,7 +169,7 @@ export default function ProjectsPage() {
             placeholder="Proje adı veya açıklama ile ara..."
             className="pl-10 h-10 w-full rounded-md border border-input bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
           />
         </div>
         <Button variant="outline" className="flex items-center gap-2">
@@ -210,7 +208,7 @@ export default function ProjectsPage() {
               </tr>
             </thead>
             <tbody className="[&_tr:last-child]:border-0">
-              {currentItems.map((project) => (
+              {currentItems.map(project => (
                 <tr
                   key={project.id}
                   className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
@@ -236,12 +234,8 @@ export default function ProjectsPage() {
                       {getStatusText(project.status)}
                     </span>
                   </td>
-                  <td className="p-4 align-middle">
-                    {formatUsage(project.usage)}
-                  </td>
-                  <td className="p-4 align-middle">
-                    {formatDate(project.createdAt)}
-                  </td>
+                  <td className="p-4 align-middle">{formatUsage(project.usage)}</td>
+                  <td className="p-4 align-middle">{formatDate(project.createdAt)}</td>
                   <td className="p-4 text-right align-middle">
                     <div className="flex items-center justify-end gap-2">
                       <Button variant="ghost" size="icon" title="İstatistikleri Görüntüle">
@@ -271,7 +265,7 @@ export default function ProjectsPage() {
         {/* Sayfalama */}
         <div className="flex items-center justify-between border-t px-4 py-4">
           <div className="text-sm text-muted-foreground">
-            {filteredProjects.length} sonuçtan {indexOfFirstItem + 1} -{" "}
+            {filteredProjects.length} sonuçtan {indexOfFirstItem + 1} -{' '}
             {Math.min(indexOfLastItem, filteredProjects.length)} arası gösteriliyor
           </div>
           <div className="flex items-center space-x-2">
@@ -286,7 +280,7 @@ export default function ProjectsPage() {
             </Button>
             {Array.from({ length: Math.min(totalPages, 5) }).map((_, i) => {
               let pageNum: number;
-              
+
               // Sayfa düğmelerini ortalamalı gösterme
               if (totalPages <= 5) {
                 pageNum = i + 1;
@@ -297,12 +291,12 @@ export default function ProjectsPage() {
               } else {
                 pageNum = currentPage - 2 + i;
               }
-              
+
               if (pageNum > 0 && pageNum <= totalPages) {
                 return (
                   <Button
                     key={pageNum}
-                    variant={currentPage === pageNum ? "default" : "outline"}
+                    variant={currentPage === pageNum ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => handlePageChange(pageNum)}
                   >

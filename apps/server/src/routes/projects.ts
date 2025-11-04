@@ -1,11 +1,11 @@
 import express from 'express';
-import { 
-  getProjects, 
-  getProject, 
-  createProject, 
-  updateProject, 
+import {
+  getProjects,
+  getProject,
+  createProject,
+  updateProject,
   deleteProject,
-  regenerateApiKey
+  regenerateApiKey,
 } from '../controllers/projects';
 import { authenticate } from '../middlewares/auth';
 

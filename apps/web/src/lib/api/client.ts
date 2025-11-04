@@ -1,6 +1,6 @@
 /**
  * API İstemcisi
- * 
+ *
  * Bu modül, backend API'si ile iletişim için temel HTTP istemcisini sağlar.
  * Axios tabanlı bir HTTP istemcisi kullanarak API çağrıları yapar.
  */
@@ -32,7 +32,7 @@ export const createApiClient = (config: AxiosRequestConfig = {}): AxiosInstance 
 
   // İstek araya girici (interceptor)
   apiClient.interceptors.request.use(
-    (config) => {
+    config => {
       // Tarayıcı tarafında token varsa ekle
       if (typeof window !== 'undefined') {
         const token = localStorage.getItem('token');
@@ -42,17 +42,17 @@ export const createApiClient = (config: AxiosRequestConfig = {}): AxiosInstance 
       }
       return config;
     },
-    (error) => {
+    error => {
       return Promise.reject(error);
     }
   );
 
   // Yanıt araya girici (interceptor)
   apiClient.interceptors.response.use(
-    (response) => {
+    response => {
       return response.data;
     },
-    (error) => {
+    error => {
       if (error.response) {
         // Sunucu yanıtı var, ama hata kodu
         const { status, data } = error.response;

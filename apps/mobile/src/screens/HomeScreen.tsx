@@ -33,16 +33,16 @@ const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const { user } = useAuthStore();
-  
+
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [stats, setStats] = useState({
     activeProjects: 0,
     totalApiCalls: 0,
-    pendingTasks: 0
+    pendingTasks: 0,
   });
-  
+
   // Projeleri yükle
   useEffect(() => {
     fetchProjects();
@@ -57,12 +57,12 @@ const HomeScreen: React.FC = () => {
 
       // İstatistikleri güncelle
       const activeCount = data.filter(p => p.status === 'active').length;
-      
+
       // Simüle edilmiş istatistikler
       setStats({
         activeProjects: activeCount,
         totalApiCalls: Math.floor(Math.random() * 10000) + 5000,
-        pendingTasks: Math.floor(Math.random() * 20) + 5
+        pendingTasks: Math.floor(Math.random() * 20) + 5,
       });
     } catch (error) {
       console.error('Projeler yüklenirken hata:', error);
@@ -82,7 +82,7 @@ const HomeScreen: React.FC = () => {
   const navigateToProject = (project: Project) => {
     navigation.navigate('ProjectDetail', {
       id: project.id,
-      title: project.title
+      title: project.title,
     });
   };
 
@@ -103,7 +103,7 @@ const HomeScreen: React.FC = () => {
       );
     }
 
-    return projects.map((project) => (
+    return projects.map(project => (
       <TouchableOpacity
         key={project.id}
         style={styles.projectCard}
@@ -117,16 +117,16 @@ const HomeScreen: React.FC = () => {
               project.status === 'active'
                 ? styles.activeStatus
                 : project.status === 'completed'
-                ? styles.completedStatus
-                : styles.pendingStatus,
+                  ? styles.completedStatus
+                  : styles.pendingStatus,
             ]}
           >
             <Text style={styles.statusText}>
               {project.status === 'active'
                 ? t('projects.active')
                 : project.status === 'completed'
-                ? t('projects.completed')
-                : t('projects.pending')}
+                  ? t('projects.completed')
+                  : t('projects.pending')}
             </Text>
           </View>
         </View>
@@ -144,9 +144,7 @@ const HomeScreen: React.FC = () => {
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
         <View style={styles.header}>
           <Text style={styles.greeting}>
@@ -161,9 +159,7 @@ const HomeScreen: React.FC = () => {
             <Text style={styles.statLabel}>{t('dashboard.activeProjects')}</Text>
           </View>
           <View style={styles.statCard}>
-            <Text style={styles.statValue}>
-              {stats.totalApiCalls.toLocaleString()}
-            </Text>
+            <Text style={styles.statValue}>{stats.totalApiCalls.toLocaleString()}</Text>
             <Text style={styles.statLabel}>{t('dashboard.apiCalls')}</Text>
           </View>
           <View style={styles.statCard}>

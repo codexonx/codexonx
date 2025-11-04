@@ -50,7 +50,7 @@ export const errorHandler = (
   if (error.isOperational) {
     return res.status(error.statusCode).json({
       status: 'error',
-      message: error.message
+      message: error.message,
     });
   }
 
@@ -58,6 +58,6 @@ export const errorHandler = (
   console.error('Unknown error:', error);
   return res.status(500).json({
     status: 'error',
-    message: 'Something went wrong'
+    message: 'Something went wrong',
   });
 };

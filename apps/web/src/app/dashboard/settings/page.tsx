@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
 // @ts-nocheck
 // TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
 // arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   User,
   Bell,
@@ -19,26 +19,30 @@ import {
   Edit,
   Github,
   Twitter,
-  Linkedin
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+  Linkedin,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 // Basit bir Separator bileşeni tanımlıyoruz
 const Separator = ({ className, ...props }) => (
-  <div
-    className={cn("h-[1px] w-full bg-border", className)}
-    {...props}
-  />
+  <div className={cn('h-[1px] w-full bg-border', className)} {...props} />
 );
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export default function SettingsPage() {
-  const [theme, setTheme] = useState("system");
-  const [editorTheme, setEditorTheme] = useState("vs-dark");
+  const [theme, setTheme] = useState('system');
+  const [editorTheme, setEditorTheme] = useState('vs-dark');
   const [notifications, setNotifications] = useState({
     email: true,
     push: false,
@@ -46,46 +50,46 @@ export default function SettingsPage() {
     newsletter: false,
   });
   const [profile, setProfile] = useState({
-    name: "Kullanıcı Adı",
-    email: "kullanici@mail.com",
-    bio: "Yazılım geliştirici ve teknoloji meraklısı. Web, mobil ve AI projelerinde çalışıyorum.",
-    github: "kullanici",
-    twitter: "kullanici",
-    linkedin: "kullanici"
+    name: 'Kullanıcı Adı',
+    email: 'kullanici@mail.com',
+    bio: 'Yazılım geliştirici ve teknoloji meraklısı. Web, mobil ve AI projelerinde çalışıyorum.',
+    github: 'kullanici',
+    twitter: 'kullanici',
+    linkedin: 'kullanici',
   });
   const [editorSettings, setEditorSettings] = useState({
     fontSize: 14,
     tabSize: 2,
-    wordWrap: "on",
+    wordWrap: 'on',
     lineNumbers: true,
     autoSave: true,
     formatOnSave: true,
     minimap: false,
-    suggestions: true
+    suggestions: true,
   });
-  
+
   // Tema değiştirme
   const handleThemeChange = (newTheme: string) => {
     setTheme(newTheme);
     // Burada gerçekte tema değiştirme işlemi yapılacak
   };
-  
+
   // Profil güncelleme
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setProfile(prev => ({ ...prev, [name]: value }));
   };
-  
+
   // Editör ayarları güncelleme
   const handleEditorSettingChange = (setting: string, value: any) => {
     setEditorSettings(prev => ({ ...prev, [setting]: value }));
   };
-  
+
   // Bildirim ayarları değiştirme
   const handleNotificationChange = (type: string, checked: boolean) => {
     setNotifications(prev => ({ ...prev, [type]: checked }));
   };
-  
+
   return (
     <div className="space-y-6 pb-10">
       <div>
@@ -94,7 +98,7 @@ export default function SettingsPage() {
           Hesabınızı ve platformdaki deneyiminizi kişiselleştirin.
         </p>
       </div>
-      
+
       <Tabs defaultValue="profile" className="space-y-4">
         <TabsList>
           <TabsTrigger value="profile" className="flex items-center gap-2">
@@ -118,7 +122,7 @@ export default function SettingsPage() {
             <span>Güvenlik</span>
           </TabsTrigger>
         </TabsList>
-        
+
         {/* Profil Ayarları */}
         <TabsContent value="profile" className="space-y-4">
           <Card>
@@ -132,7 +136,9 @@ export default function SettingsPage() {
               <div className="flex flex-col md:flex-row md:items-center gap-6">
                 <div className="relative h-24 w-24 overflow-hidden rounded-full bg-muted">
                   <img src="/avatar.png" alt="Avatar" className="h-full w-full object-cover" />
-                  <div className="absolute inset-0 flex items-center justify-center bg-muted text-lg font-medium opacity-0">KA</div>
+                  <div className="absolute inset-0 flex items-center justify-center bg-muted text-lg font-medium opacity-0">
+                    KA
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <h3 className="text-lg font-medium">Profil Fotoğrafı</h3>
@@ -140,45 +146,51 @@ export default function SettingsPage() {
                     JPEG, PNG veya GIF formatında, maksimum 2MB boyutunda bir görsel yükleyin.
                   </p>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm">Değiştir</Button>
-                    <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
+                    <Button variant="outline" size="sm">
+                      Değiştir
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-destructive hover:text-destructive"
+                    >
                       Kaldır
                     </Button>
                   </div>
                 </div>
               </div>
-              
+
               <div className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="name">İsim</Label>
-                    <Input 
-                      id="name" 
-                      name="name" 
-                      placeholder="Adınız Soyadınız" 
+                    <Input
+                      id="name"
+                      name="name"
+                      placeholder="Adınız Soyadınız"
                       value={profile.name}
                       onChange={handleProfileChange}
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">E-posta</Label>
-                    <Input 
-                      id="email" 
-                      name="email" 
-                      type="email" 
-                      placeholder="mail@ornek.com" 
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="mail@ornek.com"
                       value={profile.email}
                       onChange={handleProfileChange}
                     />
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="bio">Hakkında</Label>
-                  <textarea 
-                    id="bio" 
-                    name="bio" 
-                    rows={4} 
+                  <textarea
+                    id="bio"
+                    name="bio"
+                    rows={4}
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     placeholder="Kendiniz hakkında kısa bir bilgi..."
                     value={profile.bio}
@@ -186,15 +198,15 @@ export default function SettingsPage() {
                   />
                 </div>
               </div>
-              
+
               <div>
                 <h3 className="mb-4 text-lg font-medium">Sosyal Bağlantılar</h3>
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <Github className="h-5 w-5 text-muted-foreground" />
-                    <Input 
-                      id="github" 
-                      name="github" 
+                    <Input
+                      id="github"
+                      name="github"
                       placeholder="GitHub kullanıcı adı"
                       value={profile.github}
                       onChange={handleProfileChange}
@@ -202,9 +214,9 @@ export default function SettingsPage() {
                   </div>
                   <div className="flex items-center gap-3">
                     <Twitter className="h-5 w-5 text-muted-foreground" />
-                    <Input 
-                      id="twitter" 
-                      name="twitter" 
+                    <Input
+                      id="twitter"
+                      name="twitter"
                       placeholder="Twitter kullanıcı adı"
                       value={profile.twitter}
                       onChange={handleProfileChange}
@@ -212,9 +224,9 @@ export default function SettingsPage() {
                   </div>
                   <div className="flex items-center gap-3">
                     <Linkedin className="h-5 w-5 text-muted-foreground" />
-                    <Input 
-                      id="linkedin" 
-                      name="linkedin" 
+                    <Input
+                      id="linkedin"
+                      name="linkedin"
                       placeholder="LinkedIn kullanıcı adı"
                       value={profile.linkedin}
                       onChange={handleProfileChange}
@@ -228,7 +240,7 @@ export default function SettingsPage() {
             </CardFooter>
           </Card>
         </TabsContent>
-        
+
         {/* Görünüm Ayarları */}
         <TabsContent value="appearance" className="space-y-4">
           <Card>
@@ -243,8 +255,8 @@ export default function SettingsPage() {
                 <h3 className="text-lg font-medium">Tema</h3>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <RadioGroup 
-                      defaultValue={theme} 
+                    <RadioGroup
+                      defaultValue={theme}
                       onValueChange={handleThemeChange}
                       className="grid grid-cols-1 gap-4"
                     >
@@ -263,7 +275,7 @@ export default function SettingsPage() {
                           <span className="font-medium">Açık</span>
                         </Label>
                       </div>
-                      
+
                       <div>
                         <RadioGroupItem
                           value="dark"
@@ -279,7 +291,7 @@ export default function SettingsPage() {
                           <span className="font-medium">Koyu</span>
                         </Label>
                       </div>
-                      
+
                       <div>
                         <RadioGroupItem
                           value="system"
@@ -299,15 +311,16 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Dil</h3>
                 <div className="flex items-center gap-3 w-full max-w-sm">
                   <Globe className="h-5 w-5 text-muted-foreground" />
-                  <select 
+                  <select
                     title="Dil Seçimi"
                     aria-label="Dil Seçimi"
-                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
                     <option value="tr">Türkçe</option>
                     <option value="en">English</option>
                     <option value="de">Deutsch</option>
@@ -321,32 +334,26 @@ export default function SettingsPage() {
             </CardFooter>
           </Card>
         </TabsContent>
-        
+
         {/* Editör Ayarları */}
         <TabsContent value="editor" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Kod Editörü Ayarları</CardTitle>
-              <CardDescription>
-                Kod düzenleme deneyiminizi kişiselleştirin.
-              </CardDescription>
+              <CardDescription>Kod düzenleme deneyiminizi kişiselleştirin.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Editör Teması</h3>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <RadioGroup 
-                      defaultValue={editorTheme} 
-                      onValueChange={(value) => setEditorTheme(value)}
+                    <RadioGroup
+                      defaultValue={editorTheme}
+                      onValueChange={value => setEditorTheme(value)}
                       className="grid grid-cols-1 gap-4"
                     >
                       <div>
-                        <RadioGroupItem
-                          value="vs"
-                          id="editor-light"
-                          className="peer sr-only"
-                        />
+                        <RadioGroupItem value="vs" id="editor-light" className="peer sr-only" />
                         <Label
                           htmlFor="editor-light"
                           className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
@@ -357,13 +364,9 @@ export default function SettingsPage() {
                           <span className="font-medium">Açık</span>
                         </Label>
                       </div>
-                      
+
                       <div>
-                        <RadioGroupItem
-                          value="vs-dark"
-                          id="editor-dark"
-                          className="peer sr-only"
-                        />
+                        <RadioGroupItem value="vs-dark" id="editor-dark" className="peer sr-only" />
                         <Label
                           htmlFor="editor-dark"
                           className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
@@ -374,7 +377,7 @@ export default function SettingsPage() {
                           <span className="font-medium">Koyu</span>
                         </Label>
                       </div>
-                      
+
                       <div>
                         <RadioGroupItem
                           value="hc-black"
@@ -395,50 +398,52 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </div>
-              
+
               <Separator />
-              
+
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="fontSize">Font Boyutu</Label>
                   <div className="flex items-center gap-2">
-                    <Input 
-                      id="fontSize" 
-                      type="number" 
+                    <Input
+                      id="fontSize"
+                      type="number"
                       min={8}
                       max={32}
                       value={editorSettings.fontSize}
-                      onChange={(e) => handleEditorSettingChange('fontSize', parseInt(e.target.value))}
+                      onChange={e =>
+                        handleEditorSettingChange('fontSize', parseInt(e.target.value))
+                      }
                       className="w-20"
                     />
                     <span className="text-sm text-muted-foreground">px</span>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="tabSize">Tab Genişliği</Label>
                   <div className="flex items-center gap-2">
-                    <Input 
-                      id="tabSize" 
-                      type="number" 
+                    <Input
+                      id="tabSize"
+                      type="number"
                       min={1}
                       max={8}
                       value={editorSettings.tabSize}
-                      onChange={(e) => handleEditorSettingChange('tabSize', parseInt(e.target.value))}
+                      onChange={e => handleEditorSettingChange('tabSize', parseInt(e.target.value))}
                       className="w-20"
                     />
                     <span className="text-sm text-muted-foreground">boşluk</span>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="wordWrap">Kelime Kaydırma</Label>
-                  <select 
+                  <select
                     id="wordWrap"
                     title="Kelime Kaydırma Seçenekleri"
                     aria-label="Kelime Kaydırma Seçenekleri"
                     value={editorSettings.wordWrap}
-                    onChange={(e) => handleEditorSettingChange('wordWrap', e.target.value)}
+                    onChange={e => handleEditorSettingChange('wordWrap', e.target.value)}
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     <option value="off">Kapalı</option>
@@ -446,21 +451,21 @@ export default function SettingsPage() {
                     <option value="wordWrapColumn">Sütun</option>
                   </select>
                 </div>
-                
+
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="lineNumbers">Satır Numaraları</Label>
-                    <Switch 
-                      id="lineNumbers" 
+                    <Switch
+                      id="lineNumbers"
                       checked={editorSettings.lineNumbers}
-                      onCheckedChange={(checked) => handleEditorSettingChange('lineNumbers', checked)}
+                      onCheckedChange={checked => handleEditorSettingChange('lineNumbers', checked)}
                     />
                   </div>
                 </div>
               </div>
-              
+
               <Separator />
-              
+
               <div className="grid gap-4">
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
@@ -469,13 +474,13 @@ export default function SettingsPage() {
                       Değişiklikleri otomatik olarak kaydet
                     </p>
                   </div>
-                  <Switch 
-                    id="autoSave" 
+                  <Switch
+                    id="autoSave"
                     checked={editorSettings.autoSave}
-                    onCheckedChange={(checked) => handleEditorSettingChange('autoSave', checked)}
+                    onCheckedChange={checked => handleEditorSettingChange('autoSave', checked)}
                   />
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <Label htmlFor="formatOnSave">Kaydetme Sırasında Biçimlendir</Label>
@@ -483,13 +488,13 @@ export default function SettingsPage() {
                       Kodu kaydederken otomatik olarak biçimlendir
                     </p>
                   </div>
-                  <Switch 
-                    id="formatOnSave" 
+                  <Switch
+                    id="formatOnSave"
                     checked={editorSettings.formatOnSave}
-                    onCheckedChange={(checked) => handleEditorSettingChange('formatOnSave', checked)}
+                    onCheckedChange={checked => handleEditorSettingChange('formatOnSave', checked)}
                   />
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <Label htmlFor="minimap">Minimap</Label>
@@ -497,13 +502,13 @@ export default function SettingsPage() {
                       Dosya içeriğinin küçük bir önizlemesini göster
                     </p>
                   </div>
-                  <Switch 
-                    id="minimap" 
+                  <Switch
+                    id="minimap"
                     checked={editorSettings.minimap}
-                    onCheckedChange={(checked) => handleEditorSettingChange('minimap', checked)}
+                    onCheckedChange={checked => handleEditorSettingChange('minimap', checked)}
                   />
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <Label htmlFor="suggestions">Kod Önerileri</Label>
@@ -511,10 +516,10 @@ export default function SettingsPage() {
                       Yazarken kod tamamlama önerilerini göster
                     </p>
                   </div>
-                  <Switch 
-                    id="suggestions" 
+                  <Switch
+                    id="suggestions"
                     checked={editorSettings.suggestions}
-                    onCheckedChange={(checked) => handleEditorSettingChange('suggestions', checked)}
+                    onCheckedChange={checked => handleEditorSettingChange('suggestions', checked)}
                   />
                 </div>
               </div>
@@ -524,20 +529,21 @@ export default function SettingsPage() {
             </CardFooter>
           </Card>
         </TabsContent>
-        
+
         {/* Bildirim Ayarları */}
         <TabsContent value="notifications" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Bildirim Ayarları</CardTitle>
               <CardDescription>
-                Hangi bildirimler ve güncellemeler hakkında bilgilendirilmek istediğinizi belirleyin.
+                Hangi bildirimler ve güncellemeler hakkında bilgilendirilmek istediğinizi
+                belirleyin.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Bildirim Tercihleri</h3>
-                
+
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <div className="space-y-0.5">
@@ -546,34 +552,32 @@ export default function SettingsPage() {
                         Önemli güncellemeler ve etkinlikler hakkında e-posta alın
                       </p>
                     </div>
-                    <Switch 
-                      id="email-notifications" 
+                    <Switch
+                      id="email-notifications"
                       checked={notifications.email}
-                      onCheckedChange={(checked) => handleNotificationChange('email', checked)}
+                      onCheckedChange={checked => handleNotificationChange('email', checked)}
                     />
                   </div>
-                  
+
                   <div className="flex justify-between items-center">
                     <div className="space-y-0.5">
                       <Label htmlFor="push-notifications">Push Bildirimleri</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Tarayıcı bildirimlerini al
-                      </p>
+                      <p className="text-sm text-muted-foreground">Tarayıcı bildirimlerini al</p>
                     </div>
-                    <Switch 
-                      id="push-notifications" 
+                    <Switch
+                      id="push-notifications"
                       checked={notifications.push}
-                      onCheckedChange={(checked) => handleNotificationChange('push', checked)}
+                      onCheckedChange={checked => handleNotificationChange('push', checked)}
                     />
                   </div>
                 </div>
               </div>
-              
+
               <Separator />
-              
+
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">İletişim Tercihleri</h3>
-                
+
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <div className="space-y-0.5">
@@ -582,13 +586,13 @@ export default function SettingsPage() {
                         Yeni özellikler ve iyileştirmeler hakkında bilgi alın
                       </p>
                     </div>
-                    <Switch 
-                      id="product-updates" 
+                    <Switch
+                      id="product-updates"
                       checked={notifications.updates}
-                      onCheckedChange={(checked) => handleNotificationChange('updates', checked)}
+                      onCheckedChange={checked => handleNotificationChange('updates', checked)}
                     />
                   </div>
-                  
+
                   <div className="flex justify-between items-center">
                     <div className="space-y-0.5">
                       <Label htmlFor="newsletter">Bülten</Label>
@@ -596,10 +600,10 @@ export default function SettingsPage() {
                         Düzenli bülten ve içerik güncellemeleri alın
                       </p>
                     </div>
-                    <Switch 
-                      id="newsletter" 
+                    <Switch
+                      id="newsletter"
                       checked={notifications.newsletter}
-                      onCheckedChange={(checked) => handleNotificationChange('newsletter', checked)}
+                      onCheckedChange={checked => handleNotificationChange('newsletter', checked)}
                     />
                   </div>
                 </div>
@@ -610,42 +614,40 @@ export default function SettingsPage() {
             </CardFooter>
           </Card>
         </TabsContent>
-        
+
         {/* Güvenlik Ayarları */}
         <TabsContent value="security" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Güvenlik Ayarları</CardTitle>
-              <CardDescription>
-                Hesabınızın güvenliğini yönetin ve izleyin.
-              </CardDescription>
+              <CardDescription>Hesabınızın güvenliğini yönetin ve izleyin.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Parola Değiştirme</h3>
-                
+
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="current-password">Mevcut Parola</Label>
                     <Input id="current-password" type="password" />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="new-password">Yeni Parola</Label>
                     <Input id="new-password" type="password" />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="confirm-password">Yeni Parolayı Doğrula</Label>
                     <Input id="confirm-password" type="password" />
                   </div>
-                  
+
                   <Button>Parolayı Değiştir</Button>
                 </div>
               </div>
-              
+
               <Separator />
-              
+
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">İki Faktörlü Kimlik Doğrulama (2FA)</h3>
                 <p className="text-sm text-muted-foreground">
@@ -653,9 +655,9 @@ export default function SettingsPage() {
                 </p>
                 <Button variant="outline">İki Faktörlü Kimlik Doğrulamayı Etkinleştir</Button>
               </div>
-              
+
               <Separator />
-              
+
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Hesap İşlemleri</h3>
                 <div className="space-y-4">
@@ -665,7 +667,7 @@ export default function SettingsPage() {
                       Hesabınızla ilgili tüm verileri JSON formatında indirin.
                     </p>
                   </div>
-                  
+
                   <div>
                     <Button variant="destructive">Hesabımı Sil</Button>
                     <p className="mt-1 text-xs text-muted-foreground">

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Search, Plus, ChevronLeft, ChevronRight, SlidersHorizontal, Check, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useI18n } from "@/contexts/i18n-context";
+import { useState, useEffect } from 'react';
+import { Search, Plus, ChevronLeft, ChevronRight, SlidersHorizontal, Check, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useI18n } from '@/contexts/i18n-context';
 
 // Abonelik veri tipi
 type Subscription = {
@@ -12,7 +12,7 @@ type Subscription = {
   userName: string;
   planName: string;
   price: number;
-  status: "ACTIVE" | "CANCELED" | "EXPIRED";
+  status: 'ACTIVE' | 'CANCELED' | 'EXPIRED';
   startDate: string;
   endDate: string | null;
   createdAt: string;
@@ -23,11 +23,11 @@ export default function SubscriptionsPage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [filteredSubscriptions, setFilteredSubscriptions] = useState<Subscription[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
-  
+
   // Simüle edilmiş abonelik verileri
   useEffect(() => {
     const fetchSubscriptions = async () => {
@@ -35,41 +35,39 @@ export default function SubscriptionsPage() {
         // Gerçek uygulamada bir API isteği yapılacaktır
         setTimeout(() => {
           const mockSubscriptions: Subscription[] = Array.from({ length: 35 }).map((_, index) => {
-            const startDate = new Date(
-              Date.now() - Math.floor(Math.random() * 10000000000)
-            );
-            
+            const startDate = new Date(Date.now() - Math.floor(Math.random() * 10000000000));
+
             // Status belirle
-            let status: "ACTIVE" | "CANCELED" | "EXPIRED";
+            let status: 'ACTIVE' | 'CANCELED' | 'EXPIRED';
             const rand = Math.random();
             if (rand > 0.8) {
-              status = "CANCELED";
+              status = 'CANCELED';
             } else if (rand > 0.6) {
-              status = "EXPIRED";
+              status = 'EXPIRED';
             } else {
-              status = "ACTIVE";
+              status = 'ACTIVE';
             }
-            
+
             // Bitiş tarihi
             let endDate: string | null = null;
-            if (status === "ACTIVE") {
+            if (status === 'ACTIVE') {
               // Aktif aboneliklerin bitiş tarihi gelecekte olmalı
               const futureDate = new Date(startDate);
               futureDate.setMonth(futureDate.getMonth() + 1); // 1 ay sonra
               endDate = futureDate.toISOString();
-            } else if (status === "EXPIRED") {
+            } else if (status === 'EXPIRED') {
               // Sona ermiş aboneliklerin bitiş tarihi geçmiş olmalı
               const pastDate = new Date(startDate);
               pastDate.setDate(pastDate.getDate() + 30); // 30 gün sonra
               endDate = pastDate.toISOString();
-            } else if (status === "CANCELED") {
+            } else if (status === 'CANCELED') {
               // İptal edilmiş abonelikler için gelecekteki bir tarih (iptal edilen abonelik hala aktif olabilir)
               const cancelDate = new Date(startDate);
               cancelDate.setDate(cancelDate.getDate() + Math.floor(Math.random() * 30)); // 0-30 gün arasında
               endDate = cancelDate.toISOString();
             }
 
-            const planNames = ["Başlangıç", "Profesyonel", "Kurumsal", "Ücretsiz"];
+            const planNames = ['Başlangıç', 'Profesyonel', 'Kurumsal', 'Ücretsiz'];
             const planPrices = [99, 249, 999, 0];
             const planIndex = Math.floor(Math.random() * planNames.length);
 
@@ -91,7 +89,7 @@ export default function SubscriptionsPage() {
           setIsLoading(false);
         }, 1000);
       } catch (error) {
-        console.error("Abonelik veri hatası:", error);
+        console.error('Abonelik veri hatası:', error);
         setIsLoading(false);
       }
     };
@@ -102,23 +100,21 @@ export default function SubscriptionsPage() {
   // Arama ve filtreleme işlevi
   useEffect(() => {
     let filtered = [...subscriptions];
-    
+
     // Arama sorgusuna göre filtrele
-    if (searchQuery.trim() !== "") {
+    if (searchQuery.trim() !== '') {
       filtered = filtered.filter(
-        (subscription) =>
+        subscription =>
           subscription.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
           subscription.planName.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-    
+
     // Duruma göre filtrele
     if (filterStatus !== null) {
-      filtered = filtered.filter(
-        (subscription) => subscription.status === filterStatus
-      );
+      filtered = filtered.filter(subscription => subscription.status === filterStatus);
     }
-    
+
     setFilteredSubscriptions(filtered);
     setCurrentPage(1);
   }, [searchQuery, filterStatus, subscriptions]);
@@ -136,45 +132,45 @@ export default function SubscriptionsPage() {
 
   // Tarih formatı
   const formatDate = (dateString: string | null) => {
-    if (!dateString) return "-";
-    return new Date(dateString).toLocaleDateString("tr-TR", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+    if (!dateString) return '-';
+    return new Date(dateString).toLocaleDateString('tr-TR', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     });
   };
-  
+
   // Para formatı
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("tr-TR", {
-      style: "currency",
-      currency: "TRY",
+    return new Intl.NumberFormat('tr-TR', {
+      style: 'currency',
+      currency: 'TRY',
     }).format(amount);
   };
 
   // Duruma göre stil belirleme
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case "ACTIVE":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
-      case "CANCELED":
-        return "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300";
-      case "EXPIRED":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
+      case 'ACTIVE':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      case 'CANCELED':
+        return 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300';
+      case 'EXPIRED':
+        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
       default:
-        return "bg-gray-100 text-gray-800";
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
   // Durumu Türkçe gösterme
   const getStatusText = (status: string) => {
     switch (status) {
-      case "ACTIVE":
-        return "Aktif";
-      case "CANCELED":
-        return "İptal Edildi";
-      case "EXPIRED":
-        return "Süresi Doldu";
+      case 'ACTIVE':
+        return 'Aktif';
+      case 'CANCELED':
+        return 'İptal Edildi';
+      case 'EXPIRED':
+        return 'Süresi Doldu';
       default:
         return status;
     }
@@ -191,7 +187,7 @@ export default function SubscriptionsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">{t("admin.subscriptions")}</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t('admin.subscriptions')}</h1>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
           Yeni Abonelik
@@ -207,35 +203,35 @@ export default function SubscriptionsPage() {
             placeholder="Kullanıcı veya plan adı ile ara..."
             className="pl-10 h-10 w-full rounded-md border border-input bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-2">
           <Button
-            variant={filterStatus === null ? "default" : "outline"}
+            variant={filterStatus === null ? 'default' : 'outline'}
             size="sm"
             onClick={() => setFilterStatus(null)}
           >
             Tümü
           </Button>
           <Button
-            variant={filterStatus === "ACTIVE" ? "default" : "outline"}
+            variant={filterStatus === 'ACTIVE' ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setFilterStatus("ACTIVE")}
+            onClick={() => setFilterStatus('ACTIVE')}
           >
             Aktif
           </Button>
           <Button
-            variant={filterStatus === "CANCELED" ? "default" : "outline"}
+            variant={filterStatus === 'CANCELED' ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setFilterStatus("CANCELED")}
+            onClick={() => setFilterStatus('CANCELED')}
           >
             İptal Edildi
           </Button>
           <Button
-            variant={filterStatus === "EXPIRED" ? "default" : "outline"}
+            variant={filterStatus === 'EXPIRED' ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setFilterStatus("EXPIRED")}
+            onClick={() => setFilterStatus('EXPIRED')}
           >
             Süresi Doldu
           </Button>
@@ -276,7 +272,7 @@ export default function SubscriptionsPage() {
               </tr>
             </thead>
             <tbody className="[&_tr:last-child]:border-0">
-              {currentItems.map((subscription) => (
+              {currentItems.map(subscription => (
                 <tr
                   key={subscription.id}
                   className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
@@ -285,7 +281,9 @@ export default function SubscriptionsPage() {
                   <td className="p-4 align-middle">{subscription.planName}</td>
                   <td className="p-4 align-middle">
                     {formatCurrency(subscription.price)}
-                    {subscription.price === 0 && <span className="ml-1 text-xs text-muted-foreground">(Ücretsiz)</span>}
+                    {subscription.price === 0 && (
+                      <span className="ml-1 text-xs text-muted-foreground">(Ücretsiz)</span>
+                    )}
                   </td>
                   <td className="p-4 align-middle">
                     <span
@@ -293,23 +291,19 @@ export default function SubscriptionsPage() {
                         subscription.status
                       )}`}
                     >
-                      {subscription.status === "ACTIVE" && <Check className="mr-1 h-3 w-3" />}
-                      {subscription.status === "CANCELED" && <X className="mr-1 h-3 w-3" />}
+                      {subscription.status === 'ACTIVE' && <Check className="mr-1 h-3 w-3" />}
+                      {subscription.status === 'CANCELED' && <X className="mr-1 h-3 w-3" />}
                       {getStatusText(subscription.status)}
                     </span>
                   </td>
-                  <td className="p-4 align-middle">
-                    {formatDate(subscription.startDate)}
-                  </td>
-                  <td className="p-4 align-middle">
-                    {formatDate(subscription.endDate)}
-                  </td>
+                  <td className="p-4 align-middle">{formatDate(subscription.startDate)}</td>
+                  <td className="p-4 align-middle">{formatDate(subscription.endDate)}</td>
                   <td className="p-4 text-right align-middle">
                     <div className="flex items-center justify-end gap-2">
                       <Button variant="outline" size="sm">
                         Detaylar
                       </Button>
-                      {subscription.status === "ACTIVE" && (
+                      {subscription.status === 'ACTIVE' && (
                         <Button variant="outline" size="sm">
                           İptal Et
                         </Button>
@@ -325,7 +319,7 @@ export default function SubscriptionsPage() {
         {/* Sayfalama */}
         <div className="flex items-center justify-between border-t px-4 py-4">
           <div className="text-sm text-muted-foreground">
-            {filteredSubscriptions.length} sonuçtan {indexOfFirstItem + 1} -{" "}
+            {filteredSubscriptions.length} sonuçtan {indexOfFirstItem + 1} -{' '}
             {Math.min(indexOfLastItem, filteredSubscriptions.length)} arası gösteriliyor
           </div>
           <div className="flex items-center space-x-2">
@@ -340,7 +334,7 @@ export default function SubscriptionsPage() {
             </Button>
             {Array.from({ length: Math.min(totalPages, 5) }).map((_, i) => {
               let pageNum: number;
-              
+
               // Sayfa düğmelerini ortalamalı gösterme
               if (totalPages <= 5) {
                 pageNum = i + 1;
@@ -351,12 +345,12 @@ export default function SubscriptionsPage() {
               } else {
                 pageNum = currentPage - 2 + i;
               }
-              
+
               if (pageNum > 0 && pageNum <= totalPages) {
                 return (
                   <Button
                     key={pageNum}
-                    variant={currentPage === pageNum ? "default" : "outline"}
+                    variant={currentPage === pageNum ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => handlePageChange(pageNum)}
                   >

@@ -13,36 +13,32 @@ const prisma = new PrismaClient();
 const registerSchema = z.object({
   email: z.string().email('Geçerli bir e-posta adresi girin'),
   password: z.string().min(8, 'Şifre en az 8 karakter olmalıdır'),
-  name: z.string().min(2, 'Ad en az 2 karakter olmalıdır')
+  name: z.string().min(2, 'Ad en az 2 karakter olmalıdır'),
 });
 
 const loginSchema = z.object({
   email: z.string().email('Geçerli bir e-posta adresi girin'),
-  password: z.string().min(1, 'Şifre gereklidir')
+  password: z.string().min(1, 'Şifre gereklidir'),
 });
 
 const forgotPasswordSchema = z.object({
-  email: z.string().email('Geçerli bir e-posta adresi girin')
+  email: z.string().email('Geçerli bir e-posta adresi girin'),
 });
 
 const resetPasswordSchema = z.object({
   token: z.string(),
-  password: z.string().min(8, 'Şifre en az 8 karakter olmalıdır')
+  password: z.string().min(8, 'Şifre en az 8 karakter olmalıdır'),
 });
 
 // Register a new user
-export const register = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Validate input
     const { email, password, name } = registerSchema.parse(req.body);
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (existingUser) {
@@ -57,8 +53,8 @@ export const register = async (
       data: {
         email,
         password: hashedPassword,
-        name
-      }
+        name,
+      },
     });
 
     // Generate verification token
@@ -78,12 +74,12 @@ export const register = async (
           E-posta Adresimi Doğrula
         </a>
         <p>Bu bağlantı 24 saat sonra geçerliliğini yitirecektir.</p>
-      `
+      `,
     });
 
     res.status(201).json({
       status: 'success',
-      message: 'Kayıt başarılı. Lütfen e-postanızı doğrulayın.'
+      message: 'Kayıt başarılı. Lütfen e-postanızı doğrulayın.',
     });
   } catch (err) {
     next(err);
@@ -91,18 +87,14 @@ export const register = async (
 };
 
 // Login user
-export const login = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Validate input
     const { email, password } = loginSchema.parse(req.body);
 
     // Find user
     const user = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (!user) {
@@ -134,8 +126,8 @@ export const login = async (
       status: 'success',
       token,
       data: {
-        user: userWithoutPassword
-      }
+        user: userWithoutPassword,
+      },
     });
   } catch (err) {
     next(err);
@@ -143,29 +135,22 @@ export const login = async (
 };
 
 // Logout user
-export const logout = (
-  req: Request,
-  res: Response
-) => {
+export const logout = (req: Request, res: Response) => {
   res.status(200).json({
     status: 'success',
-    message: 'Çıkış başarılı'
+    message: 'Çıkış başarılı',
   });
 };
 
 // Forgot password
-export const forgotPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Validate input
     const { email } = forgotPasswordSchema.parse(req.body);
 
     // Find user
     const user = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (!user) {
@@ -189,12 +174,12 @@ export const forgotPassword = async (
         </a>
         <p>Bu bağlantı 1 saat sonra geçerliliğini yitirecektir.</p>
         <p>Eğer şifre sıfırlama talebinde bulunmadıysanız, bu e-postayı görmezden gelin.</p>
-      `
+      `,
     });
 
     res.status(200).json({
       status: 'success',
-      message: 'Şifre sıfırlama bağlantısı e-posta adresinize gönderildi'
+      message: 'Şifre sıfırlama bağlantısı e-posta adresinize gönderildi',
     });
   } catch (err) {
     next(err);
@@ -202,11 +187,7 @@ export const forgotPassword = async (
 };
 
 // Reset password
-export const resetPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Validate input
     const { token, password } = resetPasswordSchema.parse(req.body);
@@ -215,11 +196,11 @@ export const resetPassword = async (
     const resetToken = await prisma.token.findUnique({
       where: {
         token,
-        type: 'RESET_PASSWORD'
+        type: 'RESET_PASSWORD',
       },
       include: {
-        user: true
-      }
+        user: true,
+      },
     });
 
     if (!resetToken) {
@@ -229,7 +210,7 @@ export const resetPassword = async (
     // Check if token is expired
     if (resetToken.expiresAt && new Date(resetToken.expiresAt) < new Date()) {
       await prisma.token.delete({
-        where: { id: resetToken.id }
+        where: { id: resetToken.id },
       });
       return next(new AppError('Geçersiz veya süresi dolmuş token', 400));
     }
@@ -241,18 +222,18 @@ export const resetPassword = async (
     await prisma.user.update({
       where: { id: resetToken.userId },
       data: {
-        password: hashedPassword
-      }
+        password: hashedPassword,
+      },
     });
 
     // Delete used token
     await prisma.token.delete({
-      where: { id: resetToken.id }
+      where: { id: resetToken.id },
     });
 
     res.status(200).json({
       status: 'success',
-      message: 'Şifreniz başarıyla sıfırlandı. Şimdi giriş yapabilirsiniz.'
+      message: 'Şifreniz başarıyla sıfırlandı. Şimdi giriş yapabilirsiniz.',
     });
   } catch (err) {
     next(err);
@@ -260,11 +241,7 @@ export const resetPassword = async (
 };
 
 // Verify email
-export const verifyEmail = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { token } = req.params;
 
@@ -272,8 +249,8 @@ export const verifyEmail = async (
     const verifyToken = await prisma.token.findUnique({
       where: {
         token,
-        type: 'VERIFY_EMAIL'
-      }
+        type: 'VERIFY_EMAIL',
+      },
     });
 
     if (!verifyToken) {
@@ -283,7 +260,7 @@ export const verifyEmail = async (
     // Check if token is expired
     if (verifyToken.expiresAt && new Date(verifyToken.expiresAt) < new Date()) {
       await prisma.token.delete({
-        where: { id: verifyToken.id }
+        where: { id: verifyToken.id },
       });
       return next(new AppError('Geçersiz veya süresi dolmuş token', 400));
     }
@@ -292,13 +269,13 @@ export const verifyEmail = async (
     await prisma.user.update({
       where: { id: verifyToken.userId },
       data: {
-        emailVerified: true
-      }
+        emailVerified: true,
+      },
     });
 
     // Delete used token
     await prisma.token.delete({
-      where: { id: verifyToken.id }
+      where: { id: verifyToken.id },
     });
 
     // Redirect to frontend

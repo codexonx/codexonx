@@ -1,12 +1,12 @@
-"use client";
+'use client';
 // @ts-nocheck
-// TypeScript hatalarını görmezden geliyoruz çünkü bunlar çeşitli modüller arasındaki 
+// TypeScript hatalarını görmezden geliyoruz çünkü bunlar çeşitli modüller arasındaki
 // tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
 
 import { useState } from 'react';
-import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
-import { useI18n } from "@/contexts/i18n-context";
+import { useTheme } from 'next-themes';
+import { Button } from '@/components/ui/button';
+import { useI18n } from '@/contexts/i18n-context';
 
 // @ts-ignore - Eksik modül hatalarını yok sayıyoruz
 import {
@@ -14,9 +14,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 
-import { Moon, Sun, Laptop } from "lucide-react";
+import { Moon, Sun, Laptop } from 'lucide-react';
 
 export function ThemeSwitcher() {
   const { t } = useI18n();
@@ -24,16 +24,16 @@ export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
 
   const themes = [
-    { value: "light", label: t("common.light"), icon: <Sun className="h-4 w-4" /> },
-    { value: "dark", label: t("common.dark"), icon: <Moon className="h-4 w-4" /> },
-    { value: "system", label: t("common.system"), icon: <Laptop className="h-4 w-4" /> },
+    { value: 'light', label: t('common.light'), icon: <Sun className="h-4 w-4" /> },
+    { value: 'dark', label: t('common.dark'), icon: <Moon className="h-4 w-4" /> },
+    { value: 'system', label: t('common.system'), icon: <Laptop className="h-4 w-4" /> },
   ];
 
   const getCurrentThemeIcon = () => {
     switch (theme) {
-      case "light":
+      case 'light':
         return <Sun className="h-4 w-4" />;
-      case "dark":
+      case 'dark':
         return <Moon className="h-4 w-4" />;
       default:
         return <Laptop className="h-4 w-4" />;
@@ -45,12 +45,12 @@ export function ThemeSwitcher() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" className="h-9 w-9 px-0">
           {getCurrentThemeIcon()}
-          <span className="sr-only">{t("common.theme")}</span>
+          <span className="sr-only">{t('common.theme')}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {themes.map((themeOption) => (
-          <DropdownMenuItem 
+        {themes.map(themeOption => (
+          <DropdownMenuItem
             key={themeOption.value}
             onClick={() => {
               setTheme(themeOption.value);

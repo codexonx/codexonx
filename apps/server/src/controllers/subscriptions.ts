@@ -103,7 +103,8 @@ export const createSubscription = async (req: Request, res: Response) => {
       return res.status(400).json({ error: validationResult.error.errors });
     }
 
-    const { userId, planId, status, startDate, endDate, paymentMethodId, stripeSubscriptionId } = validationResult.data;
+    const { userId, planId, status, startDate, endDate, paymentMethodId, stripeSubscriptionId } =
+      validationResult.data;
 
     // Kullanıcının mevcut aktif aboneliğini kontrol et
     const existingSubscription = await prisma.subscription.findFirst({
@@ -265,10 +266,7 @@ export const checkActiveSubscription = async (req: Request, res: Response) => {
       where: {
         userId,
         status: 'active',
-        OR: [
-          { endDate: null },
-          { endDate: { gt: new Date() } },
-        ],
+        OR: [{ endDate: null }, { endDate: { gt: new Date() } }],
       },
       include: {
         plan: true,

@@ -1,61 +1,61 @@
-"use client";
+'use client';
 
 // @ts-nocheck
 // TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
 // arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
 
-import { useState } from "react";
-import { 
-  Settings, 
-  User, 
-  Key, 
-  Globe, 
-  Brush, 
-  Laptop, 
-  Moon, 
-  Sun, 
-  Terminal, 
-  Keyboard, 
+import { useState } from 'react';
+import {
+  Settings,
+  User,
+  Key,
+  Globe,
+  Brush,
+  Laptop,
+  Moon,
+  Sun,
+  Terminal,
+  Keyboard,
   Github,
   Save,
-  CheckCircle
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/use-toast";
+  CheckCircle,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { toast } from '@/components/ui/use-toast';
 
 export default function SettingsPage() {
   // API ayarları
-  const [apiKey, setApiKey] = useState("");
+  const [apiKey, setApiKey] = useState('');
   const [apiKeyMasked, setApiKeyMasked] = useState(true);
-  const [apiModel, setApiModel] = useState("gpt-4o");
+  const [apiModel, setApiModel] = useState('gpt-4o');
   const [apiTemperature, setApiTemperature] = useState(0.7);
 
   // Arayüz ayarları
-  const [theme, setTheme] = useState("dark");
-  const [fontSize, setFontSize] = useState("14");
-  const [tabSize, setTabSize] = useState("2");
+  const [theme, setTheme] = useState('dark');
+  const [fontSize, setFontSize] = useState('14');
+  const [tabSize, setTabSize] = useState('2');
   const [wordWrap, setWordWrap] = useState(true);
   const [minimap, setMinimap] = useState(true);
   const [lineNumbers, setLineNumbers] = useState(true);
   const [autoSave, setAutoSave] = useState(true);
 
   // Hesap ayarları
-  const [name, setName] = useState("Kullanıcı");
-  const [email, setEmail] = useState("user@example.com");
-  const [githubUsername, setGithubUsername] = useState("");
+  const [name, setName] = useState('Kullanıcı');
+  const [email, setEmail] = useState('user@example.com');
+  const [githubUsername, setGithubUsername] = useState('');
   const [githubConnected, setGithubConnected] = useState(false);
 
   // Ayarları kaydet
   const saveSettings = () => {
     // Gerçek uygulamada burada bir API çağrısı veya localStorage kaydı yapılır
     toast({
-      title: "Ayarlar kaydedildi",
-      description: "Tüm ayarlarınız başarıyla güncellendi",
+      title: 'Ayarlar kaydedildi',
+      description: 'Tüm ayarlarınız başarıyla güncellendi',
     });
   };
 
@@ -63,11 +63,11 @@ export default function SettingsPage() {
   const connectGitHub = () => {
     // Gerçek uygulamada OAuth akışı başlatılır
     toast({
-      title: "GitHub Bağlantısı",
-      description: "Bu demo sürümünde GitHub bağlantısı simüle edilmektedir.",
+      title: 'GitHub Bağlantısı',
+      description: 'Bu demo sürümünde GitHub bağlantısı simüle edilmektedir.',
     });
     setGithubConnected(true);
-    setGithubUsername("demo-user");
+    setGithubUsername('demo-user');
   };
 
   return (
@@ -84,29 +84,29 @@ export default function SettingsPage() {
           <div className="flex flex-col sm:flex-row gap-4 md:gap-8">
             {/* Sekme Çubuğu */}
             <TabsList className="bg-slate-900 border-slate-800 flex flex-row sm:flex-col h-auto p-1 sm:p-0 rounded-md sm:rounded-none sm:w-48 sm:h-auto">
-              <TabsTrigger 
-                value="appearance" 
+              <TabsTrigger
+                value="appearance"
                 className="flex items-center justify-start sm:justify-start gap-2 w-full data-[state=active]:bg-slate-800"
               >
                 <Brush className="w-4 h-4" />
                 <span className="hidden sm:inline">Görünüm</span>
               </TabsTrigger>
-              <TabsTrigger 
-                value="editor" 
+              <TabsTrigger
+                value="editor"
                 className="flex items-center justify-start sm:justify-start gap-2 w-full data-[state=active]:bg-slate-800"
               >
                 <Terminal className="w-4 h-4" />
                 <span className="hidden sm:inline">Editör</span>
               </TabsTrigger>
-              <TabsTrigger 
-                value="ai" 
+              <TabsTrigger
+                value="ai"
                 className="flex items-center justify-start sm:justify-start gap-2 w-full data-[state=active]:bg-slate-800"
               >
                 <Settings className="w-4 h-4" />
                 <span className="hidden sm:inline">AI Ayarları</span>
               </TabsTrigger>
-              <TabsTrigger 
-                value="account" 
+              <TabsTrigger
+                value="account"
                 className="flex items-center justify-start sm:justify-start gap-2 w-full data-[state=active]:bg-slate-800"
               >
                 <User className="w-4 h-4" />
@@ -117,9 +117,12 @@ export default function SettingsPage() {
             {/* Sekmeler */}
             <div className="flex-1">
               {/* Görünüm Sekmesi */}
-              <TabsContent value="appearance" className="mt-0 border border-slate-800 rounded-md p-4 bg-slate-900">
+              <TabsContent
+                value="appearance"
+                className="mt-0 border border-slate-800 rounded-md p-4 bg-slate-900"
+              >
                 <h2 className="text-xl font-bold mb-4">Görünüm Ayarları</h2>
-                
+
                 <div className="space-y-6">
                   <div className="space-y-3">
                     <h3 className="text-sm font-medium text-gray-300">Tema</h3>
@@ -134,7 +137,7 @@ export default function SettingsPage() {
                           <span>Sistem</span>
                         </Label>
                       </div>
-                      
+
                       <div>
                         <RadioGroupItem value="dark" id="dark" className="peer sr-only" />
                         <Label
@@ -145,7 +148,7 @@ export default function SettingsPage() {
                           <span>Koyu</span>
                         </Label>
                       </div>
-                      
+
                       <div>
                         <RadioGroupItem value="light" id="light" className="peer sr-only" />
                         <Label
@@ -184,13 +187,18 @@ export default function SettingsPage() {
               </TabsContent>
 
               {/* Editör Sekmesi */}
-              <TabsContent value="editor" className="mt-0 border border-slate-800 rounded-md p-4 bg-slate-900">
+              <TabsContent
+                value="editor"
+                className="mt-0 border border-slate-800 rounded-md p-4 bg-slate-900"
+              >
                 <h2 className="text-xl font-bold mb-4">Editör Ayarları</h2>
-                
+
                 <div className="space-y-6">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="font-size" className="text-sm">Font Boyutu</Label>
+                      <Label htmlFor="font-size" className="text-sm">
+                        Font Boyutu
+                      </Label>
                       <span className="text-sm text-gray-400">{fontSize}px</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -201,7 +209,7 @@ export default function SettingsPage() {
                         min="10"
                         max="24"
                         value={fontSize}
-                        onChange={(e) => setFontSize(e.target.value)}
+                        onChange={e => setFontSize(e.target.value)}
                         className="flex-1 h-2 bg-slate-700 rounded-full appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4"
                         aria-label="Yazı tipi boyutu"
                         title="Yazı tipi boyutu"
@@ -211,12 +219,14 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="space-y-3">
-                    <Label htmlFor="tab-size" className="text-sm">Tab Boyutu</Label>
+                    <Label htmlFor="tab-size" className="text-sm">
+                      Tab Boyutu
+                    </Label>
                     <select
                       id="tab-size"
                       className="w-full rounded-md bg-slate-800 border-slate-700 text-white px-3 py-2 text-sm"
                       value={tabSize}
-                      onChange={(e) => setTabSize(e.target.value)}
+                      onChange={e => setTabSize(e.target.value)}
                       title="Tab boyutu seçimi"
                       aria-label="Tab boyutu seçimi"
                     >
@@ -234,33 +244,21 @@ export default function SettingsPage() {
                           Uzun satırları görünüm içine sığdır
                         </div>
                       </div>
-                      <Switch
-                        id="word-wrap"
-                        checked={wordWrap}
-                        onCheckedChange={setWordWrap}
-                      />
+                      <Switch id="word-wrap" checked={wordWrap} onCheckedChange={setWordWrap} />
                     </div>
 
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
                         <Label htmlFor="minimap">Kod Minimap'i</Label>
-                        <div className="text-xs text-gray-400">
-                          Kodun küçük önizlemesini göster
-                        </div>
+                        <div className="text-xs text-gray-400">Kodun küçük önizlemesini göster</div>
                       </div>
-                      <Switch
-                        id="minimap"
-                        checked={minimap}
-                        onCheckedChange={setMinimap}
-                      />
+                      <Switch id="minimap" checked={minimap} onCheckedChange={setMinimap} />
                     </div>
 
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
                         <Label htmlFor="line-numbers">Satır Numaraları</Label>
-                        <div className="text-xs text-gray-400">
-                          Satır numaralarını göster
-                        </div>
+                        <div className="text-xs text-gray-400">Satır numaralarını göster</div>
                       </div>
                       <Switch
                         id="line-numbers"
@@ -276,11 +274,7 @@ export default function SettingsPage() {
                           Değişiklikleri otomatik olarak kaydet
                         </div>
                       </div>
-                      <Switch
-                        id="auto-save"
-                        checked={autoSave}
-                        onCheckedChange={setAutoSave}
-                      />
+                      <Switch id="auto-save" checked={autoSave} onCheckedChange={setAutoSave} />
                     </div>
                   </div>
 
@@ -294,20 +288,25 @@ export default function SettingsPage() {
               </TabsContent>
 
               {/* AI Ayarları Sekmesi */}
-              <TabsContent value="ai" className="mt-0 border border-slate-800 rounded-md p-4 bg-slate-900">
+              <TabsContent
+                value="ai"
+                className="mt-0 border border-slate-800 rounded-md p-4 bg-slate-900"
+              >
                 <h2 className="text-xl font-bold mb-4">AI Ayarları</h2>
-                
+
                 <div className="space-y-6">
                   <div className="space-y-3">
-                    <Label htmlFor="api-key" className="text-sm">OpenAI API Anahtarı</Label>
+                    <Label htmlFor="api-key" className="text-sm">
+                      OpenAI API Anahtarı
+                    </Label>
                     <div className="relative">
                       <Input
                         id="api-key"
-                        type={apiKeyMasked ? "password" : "text"}
+                        type={apiKeyMasked ? 'password' : 'text'}
                         placeholder="sk-..."
                         className="bg-slate-800 border-slate-700 text-white pr-20"
                         value={apiKey}
-                        onChange={(e) => setApiKey(e.target.value)}
+                        onChange={e => setApiKey(e.target.value)}
                       />
                       <Button
                         variant="ghost"
@@ -315,21 +314,24 @@ export default function SettingsPage() {
                         className="absolute right-0 top-0 h-full px-3 text-xs text-gray-400 hover:text-white"
                         onClick={() => setApiKeyMasked(!apiKeyMasked)}
                       >
-                        {apiKeyMasked ? "Göster" : "Gizle"}
+                        {apiKeyMasked ? 'Göster' : 'Gizle'}
                       </Button>
                     </div>
                     <p className="text-xs text-gray-400">
-                      API anahtarınız güvenli bir şekilde saklanır ve sadece AI istekleriniz için kullanılır.
+                      API anahtarınız güvenli bir şekilde saklanır ve sadece AI istekleriniz için
+                      kullanılır.
                     </p>
                   </div>
 
                   <div className="space-y-3">
-                    <Label htmlFor="api-model" className="text-sm">AI Modeli</Label>
+                    <Label htmlFor="api-model" className="text-sm">
+                      AI Modeli
+                    </Label>
                     <select
                       id="api-model"
                       className="w-full rounded-md bg-slate-800 border-slate-700 text-white px-3 py-2 text-sm"
                       value={apiModel}
-                      onChange={(e) => setApiModel(e.target.value)}
+                      onChange={e => setApiModel(e.target.value)}
                       title="AI modeli seçimi"
                       aria-label="AI modeli seçimi"
                     >
@@ -343,7 +345,9 @@ export default function SettingsPage() {
 
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="api-temperature" className="text-sm">Yaratıcılık Seviyesi</Label>
+                      <Label htmlFor="api-temperature" className="text-sm">
+                        Yaratıcılık Seviyesi
+                      </Label>
                       <span className="text-sm text-gray-400">{apiTemperature}</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -355,7 +359,7 @@ export default function SettingsPage() {
                         max="1"
                         step="0.1"
                         value={apiTemperature}
-                        onChange={(e) => setApiTemperature(parseFloat(e.target.value))}
+                        onChange={e => setApiTemperature(parseFloat(e.target.value))}
                         className="flex-1 h-2 bg-slate-700 rounded-full appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4"
                         aria-label="Yaratıcılık seviyesi"
                         title="Yaratıcılık seviyesi"
@@ -377,52 +381,62 @@ export default function SettingsPage() {
               </TabsContent>
 
               {/* Hesap Sekmesi */}
-              <TabsContent value="account" className="mt-0 border border-slate-800 rounded-md p-4 bg-slate-900">
+              <TabsContent
+                value="account"
+                className="mt-0 border border-slate-800 rounded-md p-4 bg-slate-900"
+              >
                 <h2 className="text-xl font-bold mb-4">Hesap Ayarları</h2>
-                
+
                 <div className="space-y-6">
                   <div className="space-y-3">
-                    <Label htmlFor="name" className="text-sm">Ad Soyad</Label>
+                    <Label htmlFor="name" className="text-sm">
+                      Ad Soyad
+                    </Label>
                     <Input
                       id="name"
                       className="bg-slate-800 border-slate-700 text-white"
                       value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={e => setName(e.target.value)}
                     />
                   </div>
 
                   <div className="space-y-3">
-                    <Label htmlFor="email" className="text-sm">E-posta Adresi</Label>
+                    <Label htmlFor="email" className="text-sm">
+                      E-posta Adresi
+                    </Label>
                     <Input
                       id="email"
                       type="email"
                       className="bg-slate-800 border-slate-700 text-white"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={e => setEmail(e.target.value)}
                     />
                   </div>
 
                   <div className="space-y-3 pt-2">
                     <h3 className="text-sm font-medium">Bağlantılar</h3>
-                    
+
                     <div className="flex items-center justify-between p-3 border border-slate-700 rounded-md bg-slate-800/50">
                       <div className="flex items-center gap-3">
                         <Github className="w-5 h-5" />
                         <div>
                           <p className="text-sm font-medium">GitHub</p>
                           <p className="text-xs text-gray-400">
-                            {githubConnected 
+                            {githubConnected
                               ? `Bağlı: ${githubUsername}`
-                              : "GitHub hesabınızı bağlayın"
-                            }
+                              : 'GitHub hesabınızı bağlayın'}
                           </p>
                         </div>
                       </div>
-                      <Button 
-                        variant={githubConnected ? "outline" : "default"}
+                      <Button
+                        variant={githubConnected ? 'outline' : 'default'}
                         size="sm"
                         onClick={connectGitHub}
-                        className={githubConnected ? "border-green-600 text-green-500" : "bg-blue-600 hover:bg-blue-700"}
+                        className={
+                          githubConnected
+                            ? 'border-green-600 text-green-500'
+                            : 'bg-blue-600 hover:bg-blue-700'
+                        }
                         disabled={githubConnected}
                       >
                         {githubConnected ? (
@@ -430,7 +444,9 @@ export default function SettingsPage() {
                             <CheckCircle className="w-4 h-4 mr-2" />
                             Bağlandı
                           </>
-                        ) : "Bağlan"}
+                        ) : (
+                          'Bağlan'
+                        )}
                       </Button>
                     </div>
                   </div>
@@ -453,27 +469,30 @@ export default function SettingsPage() {
             <Keyboard className="w-5 h-5 mr-2" />
             Klavye Kısayolları
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <h3 className="text-sm font-medium text-gray-300 mb-2">Editör</h3>
               <ul className="space-y-2">
-                <ShortcutItem keys={["Ctrl", "S"]} description="Değişiklikleri kaydet" />
-                <ShortcutItem keys={["Ctrl", "F"]} description="Dosyada ara" />
-                <ShortcutItem keys={["Ctrl", "P"]} description="Dosya gezgini aç" />
-                <ShortcutItem keys={["Ctrl", "/", "Ctrl", "Shift", "/"]} description="Yorum satırı ekle/çıkar" />
-                <ShortcutItem keys={["Alt", "Z"]} description="Satır kaydırmayı aç/kapat" />
+                <ShortcutItem keys={['Ctrl', 'S']} description="Değişiklikleri kaydet" />
+                <ShortcutItem keys={['Ctrl', 'F']} description="Dosyada ara" />
+                <ShortcutItem keys={['Ctrl', 'P']} description="Dosya gezgini aç" />
+                <ShortcutItem
+                  keys={['Ctrl', '/', 'Ctrl', 'Shift', '/']}
+                  description="Yorum satırı ekle/çıkar"
+                />
+                <ShortcutItem keys={['Alt', 'Z']} description="Satır kaydırmayı aç/kapat" />
               </ul>
             </div>
-            
+
             <div>
               <h3 className="text-sm font-medium text-gray-300 mb-2">AI Asistan</h3>
               <ul className="space-y-2">
-                <ShortcutItem keys={["Alt", "A"]} description="AI sohbeti aç/kapat" />
-                <ShortcutItem keys={["Ctrl", "Space"]} description="Kod tamamlama önerisi iste" />
-                <ShortcutItem keys={["Ctrl", "Shift", "I"]} description="Kodu biçimlendir" />
-                <ShortcutItem keys={["Ctrl", "Alt", "D"]} description="Kodu açıkla" />
-                <ShortcutItem keys={["F1"]} description="Komut paleti" />
+                <ShortcutItem keys={['Alt', 'A']} description="AI sohbeti aç/kapat" />
+                <ShortcutItem keys={['Ctrl', 'Space']} description="Kod tamamlama önerisi iste" />
+                <ShortcutItem keys={['Ctrl', 'Shift', 'I']} description="Kodu biçimlendir" />
+                <ShortcutItem keys={['Ctrl', 'Alt', 'D']} description="Kodu açıkla" />
+                <ShortcutItem keys={['F1']} description="Komut paleti" />
               </ul>
             </div>
           </div>
@@ -490,7 +509,10 @@ function ShortcutItem({ keys, description }) {
       <span className="text-gray-400">{description}</span>
       <div className="flex gap-1">
         {keys.map((key, index) => (
-          <kbd key={index} className="bg-slate-800 text-xs rounded px-1.5 py-0.5 border border-slate-700">
+          <kbd
+            key={index}
+            className="bg-slate-800 text-xs rounded px-1.5 py-0.5 border border-slate-700"
+          >
             {key}
           </kbd>
         ))}

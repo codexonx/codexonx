@@ -43,28 +43,28 @@ export const getProjects = async (limit?: number): Promise<Project[]> => {
   try {
     const token = await getAuthToken();
     let url = `${API_BASE_URL}/projects`;
-    
+
     if (limit) {
       url += `?limit=${limit}`;
     }
-    
+
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
-    
+
     if (!response.ok) {
       throw await handleApiError(response);
     }
-    
+
     const data = await response.json();
     return data;
   } catch (error) {
     console.error('Projeler getirilirken hata:', error);
-    
+
     // Gerçek API çalışmadığında simülasyon verileri dön
     return generateMockProjects(limit || 10);
   }
@@ -78,27 +78,27 @@ export const getProjectById = async (id: string): Promise<Project> => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
-    
+
     if (!response.ok) {
       throw await handleApiError(response);
     }
-    
+
     const data = await response.json();
     return data;
   } catch (error) {
     console.error(`${id} ID'li proje getirilirken hata:`, error);
-    
+
     // Gerçek API çalışmadığında simülasyon veri dön
     const mockProjects = generateMockProjects(10);
     const project = mockProjects.find(p => p.id === id);
-    
+
     if (!project) {
       throw new Error('Proje bulunamadı');
     }
-    
+
     return {
       ...project,
       tasks: generateMockTasks(project.id, 5),
@@ -114,15 +114,15 @@ export const createProject = async (params: CreateProjectParams): Promise<Projec
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(params),
     });
-    
+
     if (!response.ok) {
       throw await handleApiError(response);
     }
-    
+
     const data = await response.json();
     return data;
   } catch (error) {
@@ -139,15 +139,15 @@ export const updateProject = async (id: string, params: UpdateProjectParams): Pr
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(params),
     });
-    
+
     if (!response.ok) {
       throw await handleApiError(response);
     }
-    
+
     const data = await response.json();
     return data;
   } catch (error) {
@@ -164,10 +164,10 @@ export const deleteProject = async (id: string): Promise<void> => {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
-    
+
     if (!response.ok) {
       throw await handleApiError(response);
     }
@@ -183,10 +183,10 @@ function generateMockProjects(count: number): Project[] {
   return Array.from({ length: count }).map((_, i) => {
     const createdDate = new Date();
     createdDate.setDate(createdDate.getDate() - Math.floor(Math.random() * 30));
-    
+
     const updatedDate = new Date(createdDate);
     updatedDate.setDate(createdDate.getDate() + Math.floor(Math.random() * 7));
-    
+
     return {
       id: `proj-${i + 1}`,
       title: `Proje ${i + 1}`,
@@ -204,7 +204,7 @@ function generateMockTasks(projectId: string, count: number): Task[] {
   return Array.from({ length: count }).map((_, i) => {
     const dueDate = new Date();
     dueDate.setDate(dueDate.getDate() + Math.floor(Math.random() * 14));
-    
+
     return {
       id: `task-${projectId}-${i + 1}`,
       title: `Görev ${i + 1}`,

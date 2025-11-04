@@ -1,5 +1,12 @@
 import express from 'express';
-import { getMe, updateMe, getAllUsers, getUser, updateUser, deleteUser } from '../controllers/users';
+import {
+  getMe,
+  updateMe,
+  getAllUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+} from '../controllers/users';
 import { authenticate, restrictTo } from '../middlewares/auth';
 
 const router = express.Router();

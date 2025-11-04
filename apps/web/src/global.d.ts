@@ -15,9 +15,9 @@ declare module 'lucide-react' {
     children?: ReactNode;
     [key: string]: any;
   }
-  
+
   export type IconComponent = ComponentType<IconProps>;
-  
+
   // Tüm ikonları export et
   export const Activity: IconComponent;
   export const AlertCircle: IconComponent;
@@ -92,6 +92,7 @@ declare module 'lucide-react' {
   export const TrendingUp: IconComponent;
   export const User: IconComponent;
   export const Users: IconComponent;
+  export const Zap: IconComponent;
   export const Globe: IconComponent;
   export const Laptop: IconComponent;
   export const LayoutGrid: IconComponent;
@@ -105,13 +106,19 @@ declare module 'lucide-react' {
   export const Upload: IconComponent;
   export const Download: IconComponent;
   export const X: IconComponent;
-  
+
   // Diğer tüm ikonlar buraya eklenebilir
 }
 
 // Framer Motion hata çözümü
 declare module 'framer-motion' {
-  import { ReactNode, Component, ComponentClass, ForwardRefExoticComponent, RefAttributes } from 'react';
+  import {
+    ReactNode,
+    Component,
+    ComponentClass,
+    ForwardRefExoticComponent,
+    RefAttributes,
+  } from 'react';
 
   export interface MotionProps {
     initial?: any;
@@ -124,7 +131,7 @@ declare module 'framer-motion' {
     children?: ReactNode;
     [key: string]: any;
   }
-  
+
   // Framer Motion bileşenlerinin refs özelliğini tanımla
   class MotionComponent<P, S> extends Component<P, S> {
     refs: {
@@ -133,16 +140,36 @@ declare module 'framer-motion' {
   }
 
   export const motion: {
-    div: ForwardRefExoticComponent<MotionProps & React.HTMLAttributes<HTMLDivElement> & RefAttributes<HTMLDivElement>>;
-    span: ForwardRefExoticComponent<MotionProps & React.HTMLAttributes<HTMLSpanElement> & RefAttributes<HTMLSpanElement>>;
-    h1: ForwardRefExoticComponent<MotionProps & React.HTMLAttributes<HTMLHeadingElement> & RefAttributes<HTMLHeadingElement>>;
-    h2: ForwardRefExoticComponent<MotionProps & React.HTMLAttributes<HTMLHeadingElement> & RefAttributes<HTMLHeadingElement>>;
-    h3: ForwardRefExoticComponent<MotionProps & React.HTMLAttributes<HTMLHeadingElement> & RefAttributes<HTMLHeadingElement>>;
-    p: ForwardRefExoticComponent<MotionProps & React.HTMLAttributes<HTMLParagraphElement> & RefAttributes<HTMLParagraphElement>>;
-    a: ForwardRefExoticComponent<MotionProps & React.HTMLAttributes<HTMLAnchorElement> & RefAttributes<HTMLAnchorElement>>;
-    ul: ForwardRefExoticComponent<MotionProps & React.HTMLAttributes<HTMLUListElement> & RefAttributes<HTMLUListElement>>;
-    li: ForwardRefExoticComponent<MotionProps & React.HTMLAttributes<HTMLLIElement> & RefAttributes<HTMLLIElement>>;
-    button: ForwardRefExoticComponent<MotionProps & React.HTMLAttributes<HTMLButtonElement> & RefAttributes<HTMLButtonElement>>;
+    div: ForwardRefExoticComponent<
+      MotionProps & React.HTMLAttributes<HTMLDivElement> & RefAttributes<HTMLDivElement>
+    >;
+    span: ForwardRefExoticComponent<
+      MotionProps & React.HTMLAttributes<HTMLSpanElement> & RefAttributes<HTMLSpanElement>
+    >;
+    h1: ForwardRefExoticComponent<
+      MotionProps & React.HTMLAttributes<HTMLHeadingElement> & RefAttributes<HTMLHeadingElement>
+    >;
+    h2: ForwardRefExoticComponent<
+      MotionProps & React.HTMLAttributes<HTMLHeadingElement> & RefAttributes<HTMLHeadingElement>
+    >;
+    h3: ForwardRefExoticComponent<
+      MotionProps & React.HTMLAttributes<HTMLHeadingElement> & RefAttributes<HTMLHeadingElement>
+    >;
+    p: ForwardRefExoticComponent<
+      MotionProps & React.HTMLAttributes<HTMLParagraphElement> & RefAttributes<HTMLParagraphElement>
+    >;
+    a: ForwardRefExoticComponent<
+      MotionProps & React.HTMLAttributes<HTMLAnchorElement> & RefAttributes<HTMLAnchorElement>
+    >;
+    ul: ForwardRefExoticComponent<
+      MotionProps & React.HTMLAttributes<HTMLUListElement> & RefAttributes<HTMLUListElement>
+    >;
+    li: ForwardRefExoticComponent<
+      MotionProps & React.HTMLAttributes<HTMLLIElement> & RefAttributes<HTMLLIElement>
+    >;
+    button: ForwardRefExoticComponent<
+      MotionProps & React.HTMLAttributes<HTMLButtonElement> & RefAttributes<HTMLButtonElement>
+    >;
     [key: string]: ForwardRefExoticComponent<any>;
   };
 
@@ -150,9 +177,7 @@ declare module 'framer-motion' {
     [key: string]: any;
   }
 
-  export type Variant = 
-    | AnimationDefinition
-    | ((props: any) => AnimationDefinition);
+  export type Variant = AnimationDefinition | ((props: any) => AnimationDefinition);
 
   export interface Variants {
     [key: string]: Variant;
@@ -199,7 +224,10 @@ declare namespace monaco {
       [key: string]: any;
     }
 
-    export function create(element: HTMLElement, options?: IStandaloneEditorConstructionOptions): IStandaloneCodeEditor;
+    export function create(
+      element: HTMLElement,
+      options?: IStandaloneEditorConstructionOptions
+    ): IStandaloneCodeEditor;
     export function setModelLanguage(model: any, language: string): void;
     export function setTheme(theme: string): void;
   }
@@ -233,11 +261,11 @@ declare namespace monaco {
       TypeParameter,
       User,
       Issue,
-      Snippet
+      Snippet,
     }
 
     export enum CompletionItemInsertTextRule {
-      InsertAsSnippet = 1
+      InsertAsSnippet = 1,
     }
 
     export function register(options: any): void;

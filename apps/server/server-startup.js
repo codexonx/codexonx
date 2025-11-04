@@ -1,6 +1,6 @@
 /**
  * Codexonx Server Startup Helper
- * 
+ *
  * Bu script, TypeScript derleme hatalarından bağımsız olarak
  * Express sunucusunu başlatmak için kullanılır.
  */
@@ -18,10 +18,12 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    credentials: true,
+  })
+);
 
 // Ana sayfa için HTML içeriği
 app.get('/', (req, res) => {
@@ -134,7 +136,7 @@ app.get('/health', (req, res) => {
     status: 'OK',
     timestamp: new Date().toISOString(),
     message: 'Codexonx API sunucusu çalışıyor',
-    version: '1.0.0'
+    version: '1.0.0',
   });
 });
 
@@ -146,7 +148,7 @@ const mockProjects = [
     description: 'B2B ve B2C için tam kapsamlı e-ticaret çözümü',
     apiKey: 'api_key_1',
     status: 'active',
-    createdAt: new Date('2025-10-01').toISOString()
+    createdAt: new Date('2025-10-01').toISOString(),
   },
   {
     id: '2',
@@ -154,7 +156,7 @@ const mockProjects = [
     description: 'Müşteri davranışlarını izlemek için gerçek zamanlı analitik dashboard',
     apiKey: 'api_key_2',
     status: 'pending',
-    createdAt: new Date('2025-10-15').toISOString()
+    createdAt: new Date('2025-10-15').toISOString(),
   },
   {
     id: '3',
@@ -162,32 +164,32 @@ const mockProjects = [
     description: 'iOS ve Android için hibrit mobil uygulama',
     apiKey: 'api_key_3',
     status: 'completed',
-    createdAt: new Date('2025-09-20').toISOString()
-  }
+    createdAt: new Date('2025-09-20').toISOString(),
+  },
 ];
 
 // API routes
 app.get('/api/projects', (req, res) => {
   res.status(200).json({
     success: true,
-    data: mockProjects
+    data: mockProjects,
   });
 });
 
 app.get('/api/projects/:id', (req, res) => {
   const { id } = req.params;
   const project = mockProjects.find(p => p.id === id);
-  
+
   if (!project) {
     return res.status(404).json({
       success: false,
-      error: 'Project not found'
+      error: 'Project not found',
     });
   }
-  
+
   res.status(200).json({
     success: true,
-    data: project
+    data: project,
   });
 });
 
@@ -204,16 +206,16 @@ const mockSubscriptions = [
       description: 'Professional plan with advanced features',
       price: 29.99,
       currency: 'USD',
-      interval: 'MONTH'
-    }
-  }
+      interval: 'MONTH',
+    },
+  },
 ];
 
 // Subscription routes
 app.get('/api/subscriptions', (req, res) => {
   res.status(200).json({
     success: true,
-    data: mockSubscriptions
+    data: mockSubscriptions,
   });
 });
 
@@ -230,8 +232,8 @@ app.get('/api/payments/prices', (req, res) => {
         product: {
           id: 'prod_1',
           name: 'Pro Plan',
-          description: 'Professional plan with advanced features'
-        }
+          description: 'Professional plan with advanced features',
+        },
       },
       {
         id: 'price_2',
@@ -241,10 +243,10 @@ app.get('/api/payments/prices', (req, res) => {
         product: {
           id: 'prod_2',
           name: 'Enterprise Plan',
-          description: 'Enterprise plan with all features and priority support'
-        }
-      }
-    ]
+          description: 'Enterprise plan with all features and priority support',
+        },
+      },
+    ],
   });
 });
 

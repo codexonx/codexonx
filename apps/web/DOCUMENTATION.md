@@ -147,7 +147,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     // Token kontrolü ve kullanıcı verisi alma
     const checkAuth = async () => {
@@ -160,12 +160,12 @@ export function AuthProvider({ children }) {
         setLoading(false);
       }
     };
-    
+
     checkAuth();
   }, []);
-  
+
   // Auth işlevleri...
-  
+
   return (
     <AuthContext.Provider value={{ user, loading, login, logout, register }}>
       {children}
@@ -213,27 +213,27 @@ Monaco Editor entegrasyonu için özel bir hook geliştirilmiştir:
 export function useMonacoEditor(options = {}) {
   const editorRef = useRef(null);
   const containerRef = useRef(null);
-  
+
   useEffect(() => {
     if (!containerRef.current) return;
-    
+
     // Monaco Editor'u yükle ve başlat
-    import('monaco-editor').then(monaco => {
+    import("monaco-editor").then(monaco => {
       editorRef.current = monaco.editor.create(containerRef.current, {
-        value: options.initialValue || '',
-        language: options.language || 'javascript',
-        theme: options.theme || 'vs-dark',
+        value: options.initialValue || "",
+        language: options.language || "javascript",
+        theme: options.theme || "vs-dark",
         automaticLayout: true,
-        ...options
+        ...options,
       });
-      
+
       // Temizleme işlevi
       return () => {
         editorRef.current?.dispose();
       };
     });
   }, [options.language, options.theme]);
-  
+
   return { containerRef, editorRef };
 }
 ```
@@ -259,21 +259,21 @@ export const I18nContext = createContext<I18nContextType | undefined>(undefined)
 export function I18nProvider({ children }) {
   const [locale, setLocale] = useState('tr');
   const [translations, setTranslations] = useState({});
-  
+
   useEffect(() => {
     // Dil dosyasını yükle
     const loadTranslations = async () => {
       const translations = await import(`../locales/${locale}.json`);
       setTranslations(translations.default);
     };
-    
+
     loadTranslations();
   }, [locale]);
-  
+
   const t = useCallback((key) => {
     return key.split('.').reduce((o, i) => o?.[i], translations) || key;
   }, [translations]);
-  
+
   return (
     <I18nContext.Provider value={{ locale, setLocale, t }}>
       {children}
@@ -305,8 +305,14 @@ Framer Motion bileşenleriyle ilgili ref hataları için global.d.ts dosyasında
 
 ```typescript
 // global.d.ts içerisindeki tanımlamalar
-declare module 'framer-motion' {
-  import { ReactNode, Component, ComponentClass, ForwardRefExoticComponent, RefAttributes } from 'react';
+declare module "framer-motion" {
+  import {
+    ReactNode,
+    Component,
+    ComponentClass,
+    ForwardRefExoticComponent,
+    RefAttributes,
+  } from "react";
 
   export interface MotionProps {
     initial?: any;
@@ -319,7 +325,7 @@ declare module 'framer-motion' {
     children?: ReactNode;
     [key: string]: any;
   }
-  
+
   // Framer Motion bileşenlerinin refs özelliğini tanımla
   class MotionComponent<P, S> extends Component<P, S> {
     refs: {
@@ -328,7 +334,9 @@ declare module 'framer-motion' {
   }
 
   export const motion: {
-    div: ForwardRefExoticComponent<MotionProps & React.HTMLAttributes<HTMLDivElement> & RefAttributes<HTMLDivElement>>;
+    div: ForwardRefExoticComponent<
+      MotionProps & React.HTMLAttributes<HTMLDivElement> & RefAttributes<HTMLDivElement>
+    >;
     // Diğer elementler...
   };
 }
@@ -340,8 +348,8 @@ Lucide ikonları için eksik tip tanımlamaları global.d.ts dosyasında şu şe
 
 ```typescript
 // global.d.ts içerisindeki tanımlamalar
-declare module 'lucide-react' {
-  import { ComponentType, ReactNode } from 'react';
+declare module "lucide-react" {
+  import { ComponentType, ReactNode } from "react";
   export interface IconProps {
     color?: string;
     size?: number | string;
@@ -351,9 +359,9 @@ declare module 'lucide-react' {
     children?: ReactNode;
     [key: string]: any;
   }
-  
+
   export type IconComponent = ComponentType<IconProps>;
-  
+
   // İkonlar
   export const Activity: IconComponent;
   export const AlertCircle: IconComponent;
@@ -367,8 +375,8 @@ Tailwind CSS'de bazı sınıf çakışmaları olabilir. Bunların çözümü iç
 
 ```typescript
 // utils.ts
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

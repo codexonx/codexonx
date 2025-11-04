@@ -1,51 +1,51 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Check, Save } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useI18n } from "@/contexts/i18n-context";
+import { useState } from 'react';
+import { Check, Save } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useI18n } from '@/contexts/i18n-context';
 
 export default function SettingsPage() {
   const { t } = useI18n();
-  const [activeTab, setActiveTab] = useState("general");
+  const [activeTab, setActiveTab] = useState('general');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
   // Form değerleri
   const [generalSettings, setGeneralSettings] = useState({
-    siteName: "Codexonx Platform",
-    siteDescription: "Kodlama projeleriniz için güçlü bir platform",
-    companyName: "Codexonx Ltd. Şti.",
-    companyEmail: "info@codexonx.com",
-    companyPhone: "+90 212 123 4567",
-    companyAddress: "İstanbul, Türkiye",
+    siteName: 'Codexonx Platform',
+    siteDescription: 'Kodlama projeleriniz için güçlü bir platform',
+    companyName: 'Codexonx Ltd. Şti.',
+    companyEmail: 'info@codexonx.com',
+    companyPhone: '+90 212 123 4567',
+    companyAddress: 'İstanbul, Türkiye',
   });
 
   const [securitySettings, setSecuritySettings] = useState({
     requireMFA: false,
-    sessionTimeout: "30",
-    passwordPolicy: "strong",
-    loginAttempts: "5",
+    sessionTimeout: '30',
+    passwordPolicy: 'strong',
+    loginAttempts: '5',
     ipRestriction: false,
   });
 
   const [notificationSettings, setNotificationSettings] = useState({
     emailNotifications: true,
     slackIntegration: false,
-    slackWebhook: "",
+    slackWebhook: '',
     telegramBot: false,
-    telegramToken: "",
+    telegramToken: '',
     discordWebhook: false,
-    discordWebhookUrl: "",
+    discordWebhookUrl: '',
   });
 
   const [apiSettings, setApiSettings] = useState({
     rateLimitEnabled: true,
-    rateLimit: "100",
-    rateLimitPeriod: "minute",
+    rateLimit: '100',
+    rateLimitPeriod: 'minute',
     corsEnabled: true,
-    allowedOrigins: "*",
-    apiKeyExpiration: "never",
+    allowedOrigins: '*',
+    apiKeyExpiration: 'never',
   });
 
   // Form kaydedildiğinde
@@ -55,11 +55,11 @@ export default function SettingsPage() {
     try {
       // Gerçek uygulamada burada bir API isteği yapılacaktır
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (error) {
-      console.error("Ayarlar kaydedilemedi:", error);
+      console.error('Ayarlar kaydedilemedi:', error);
     } finally {
       setSaving(false);
     }
@@ -77,9 +77,7 @@ export default function SettingsPage() {
             type="text"
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             value={generalSettings.siteName}
-            onChange={(e) =>
-              setGeneralSettings({ ...generalSettings, siteName: e.target.value })
-            }
+            onChange={e => setGeneralSettings({ ...generalSettings, siteName: e.target.value })}
             title="Site Adı"
             placeholder="Site adını girin"
             aria-label="Site Adı"
@@ -93,7 +91,7 @@ export default function SettingsPage() {
             type="text"
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             value={generalSettings.siteDescription}
-            onChange={(e) =>
+            onChange={e =>
               setGeneralSettings({ ...generalSettings, siteDescription: e.target.value })
             }
             title="Site Açıklaması"
@@ -109,9 +107,7 @@ export default function SettingsPage() {
             type="text"
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             value={generalSettings.companyName}
-            onChange={(e) =>
-              setGeneralSettings({ ...generalSettings, companyName: e.target.value })
-            }
+            onChange={e => setGeneralSettings({ ...generalSettings, companyName: e.target.value })}
             title="Şirket Adı"
             placeholder="Şirket adını girin"
             aria-label="Şirket Adı"
@@ -125,9 +121,7 @@ export default function SettingsPage() {
             type="email"
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             value={generalSettings.companyEmail}
-            onChange={(e) =>
-              setGeneralSettings({ ...generalSettings, companyEmail: e.target.value })
-            }
+            onChange={e => setGeneralSettings({ ...generalSettings, companyEmail: e.target.value })}
             title="Şirket E-posta"
             placeholder="Şirket e-posta adresini girin"
             aria-label="Şirket E-posta"
@@ -141,9 +135,7 @@ export default function SettingsPage() {
             type="tel"
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             value={generalSettings.companyPhone}
-            onChange={(e) =>
-              setGeneralSettings({ ...generalSettings, companyPhone: e.target.value })
-            }
+            onChange={e => setGeneralSettings({ ...generalSettings, companyPhone: e.target.value })}
             title="Şirket Telefonu"
             placeholder="Şirket telefon numarasını girin"
             aria-label="Şirket Telefonu"
@@ -157,7 +149,7 @@ export default function SettingsPage() {
             type="text"
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             value={generalSettings.companyAddress}
-            onChange={(e) =>
+            onChange={e =>
               setGeneralSettings({ ...generalSettings, companyAddress: e.target.value })
             }
             title="Şirket Adresi"
@@ -179,7 +171,7 @@ export default function SettingsPage() {
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
               checked={securitySettings.requireMFA}
-              onChange={(e) =>
+              onChange={e =>
                 setSecuritySettings({ ...securitySettings, requireMFA: e.target.checked })
               }
               title="İki Faktörlü Kimlik Doğrulamayı Zorunlu Tut"
@@ -202,7 +194,7 @@ export default function SettingsPage() {
             type="number"
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             value={securitySettings.sessionTimeout}
-            onChange={(e) =>
+            onChange={e =>
               setSecuritySettings({ ...securitySettings, sessionTimeout: e.target.value })
             }
             title="Oturum Zaman Aşımı"
@@ -218,7 +210,7 @@ export default function SettingsPage() {
           <select
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             value={securitySettings.passwordPolicy}
-            onChange={(e) =>
+            onChange={e =>
               setSecuritySettings({ ...securitySettings, passwordPolicy: e.target.value })
             }
             title="Şifre Politikası"
@@ -226,7 +218,9 @@ export default function SettingsPage() {
           >
             <option value="weak">Zayıf (min. 6 karakter)</option>
             <option value="medium">Orta (min. 8 karakter, harf ve rakam)</option>
-            <option value="strong">Güçlü (min. 10 karakter, büyük/küçük harf, rakam, özel karakter)</option>
+            <option value="strong">
+              Güçlü (min. 10 karakter, büyük/küçük harf, rakam, özel karakter)
+            </option>
           </select>
         </div>
 
@@ -238,7 +232,7 @@ export default function SettingsPage() {
             type="number"
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             value={securitySettings.loginAttempts}
-            onChange={(e) =>
+            onChange={e =>
               setSecuritySettings({ ...securitySettings, loginAttempts: e.target.value })
             }
             title="Maksimum Giriş Denemesi"
@@ -253,7 +247,7 @@ export default function SettingsPage() {
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
               checked={securitySettings.ipRestriction}
-              onChange={(e) =>
+              onChange={e =>
                 setSecuritySettings({ ...securitySettings, ipRestriction: e.target.checked })
               }
               title="IP Kısıtlamasını Etkinleştir"
@@ -279,10 +273,10 @@ export default function SettingsPage() {
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
               checked={notificationSettings.emailNotifications}
-              onChange={(e) =>
-                setNotificationSettings({ 
-                  ...notificationSettings, 
-                  emailNotifications: e.target.checked 
+              onChange={e =>
+                setNotificationSettings({
+                  ...notificationSettings,
+                  emailNotifications: e.target.checked,
                 })
               }
               title="E-posta Bildirimleri"
@@ -301,10 +295,10 @@ export default function SettingsPage() {
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
               checked={notificationSettings.slackIntegration}
-              onChange={(e) =>
-                setNotificationSettings({ 
-                  ...notificationSettings, 
-                  slackIntegration: e.target.checked 
+              onChange={e =>
+                setNotificationSettings({
+                  ...notificationSettings,
+                  slackIntegration: e.target.checked,
                 })
               }
               title="Slack Entegrasyonu"
@@ -326,10 +320,10 @@ export default function SettingsPage() {
               type="text"
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               value={notificationSettings.slackWebhook}
-              onChange={(e) =>
-                setNotificationSettings({ 
-                  ...notificationSettings, 
-                  slackWebhook: e.target.value 
+              onChange={e =>
+                setNotificationSettings({
+                  ...notificationSettings,
+                  slackWebhook: e.target.value,
                 })
               }
               placeholder="https://hooks.slack.com/services/..."
@@ -345,10 +339,10 @@ export default function SettingsPage() {
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
               checked={notificationSettings.telegramBot}
-              onChange={(e) =>
-                setNotificationSettings({ 
-                  ...notificationSettings, 
-                  telegramBot: e.target.checked 
+              onChange={e =>
+                setNotificationSettings({
+                  ...notificationSettings,
+                  telegramBot: e.target.checked,
                 })
               }
               title="Telegram Bot"
@@ -370,10 +364,10 @@ export default function SettingsPage() {
               type="text"
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               value={notificationSettings.telegramToken}
-              onChange={(e) =>
-                setNotificationSettings({ 
-                  ...notificationSettings, 
-                  telegramToken: e.target.value 
+              onChange={e =>
+                setNotificationSettings({
+                  ...notificationSettings,
+                  telegramToken: e.target.value,
                 })
               }
               placeholder="123456789:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
@@ -389,10 +383,10 @@ export default function SettingsPage() {
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
               checked={notificationSettings.discordWebhook}
-              onChange={(e) =>
-                setNotificationSettings({ 
-                  ...notificationSettings, 
-                  discordWebhook: e.target.checked 
+              onChange={e =>
+                setNotificationSettings({
+                  ...notificationSettings,
+                  discordWebhook: e.target.checked,
                 })
               }
               title="Discord Webhook"
@@ -400,9 +394,7 @@ export default function SettingsPage() {
             />
             <span className="text-sm font-medium leading-none">Discord Webhook</span>
           </label>
-          <p className="text-xs text-muted-foreground">
-            Discord kanalına bildirimler gönderir.
-          </p>
+          <p className="text-xs text-muted-foreground">Discord kanalına bildirimler gönderir.</p>
         </div>
 
         {notificationSettings.discordWebhook && (
@@ -414,10 +406,10 @@ export default function SettingsPage() {
               type="text"
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               value={notificationSettings.discordWebhookUrl}
-              onChange={(e) =>
-                setNotificationSettings({ 
-                  ...notificationSettings, 
-                  discordWebhookUrl: e.target.value 
+              onChange={e =>
+                setNotificationSettings({
+                  ...notificationSettings,
+                  discordWebhookUrl: e.target.value,
                 })
               }
               placeholder="https://discord.com/api/webhooks/..."
@@ -440,9 +432,7 @@ export default function SettingsPage() {
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
               checked={apiSettings.rateLimitEnabled}
-              onChange={(e) =>
-                setApiSettings({ ...apiSettings, rateLimitEnabled: e.target.checked })
-              }
+              onChange={e => setApiSettings({ ...apiSettings, rateLimitEnabled: e.target.checked })}
               title="Rate Limiting"
               aria-label="Rate Limiting"
             />
@@ -463,9 +453,7 @@ export default function SettingsPage() {
                 type="number"
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 value={apiSettings.rateLimit}
-                onChange={(e) =>
-                  setApiSettings({ ...apiSettings, rateLimit: e.target.value })
-                }
+                onChange={e => setApiSettings({ ...apiSettings, rateLimit: e.target.value })}
                 title="Rate Limit Değeri"
                 placeholder="API çağrı limiti sayısını girin"
                 aria-label="Rate Limit Değeri"
@@ -479,9 +467,7 @@ export default function SettingsPage() {
               <select
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 value={apiSettings.rateLimitPeriod}
-                onChange={(e) =>
-                  setApiSettings({ ...apiSettings, rateLimitPeriod: e.target.value })
-                }
+                onChange={e => setApiSettings({ ...apiSettings, rateLimitPeriod: e.target.value })}
                 title="Rate Limit Periyodu"
                 aria-label="Rate Limit Periyodu"
               >
@@ -500,9 +486,7 @@ export default function SettingsPage() {
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
               checked={apiSettings.corsEnabled}
-              onChange={(e) =>
-                setApiSettings({ ...apiSettings, corsEnabled: e.target.checked })
-              }
+              onChange={e => setApiSettings({ ...apiSettings, corsEnabled: e.target.checked })}
               title="CORS"
               aria-label="Cross-Origin Resource Sharing"
             />
@@ -522,9 +506,7 @@ export default function SettingsPage() {
               type="text"
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               value={apiSettings.allowedOrigins}
-              onChange={(e) =>
-                setApiSettings({ ...apiSettings, allowedOrigins: e.target.value })
-              }
+              onChange={e => setApiSettings({ ...apiSettings, allowedOrigins: e.target.value })}
               placeholder="*"
               title="İzin Verilen Kaynaklar"
               aria-label="İzin Verilen Kaynaklar"
@@ -542,9 +524,7 @@ export default function SettingsPage() {
           <select
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             value={apiSettings.apiKeyExpiration}
-            onChange={(e) =>
-              setApiSettings({ ...apiSettings, apiKeyExpiration: e.target.value })
-            }
+            onChange={e => setApiSettings({ ...apiSettings, apiKeyExpiration: e.target.value })}
             title="API Anahtarı Süresi"
             aria-label="API Anahtarı Süresi"
           >
@@ -561,11 +541,8 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">{t("admin.settings")}</h1>
-        <Button 
-          onClick={handleSave}
-          disabled={saving}
-        >
+        <h1 className="text-2xl font-bold tracking-tight">{t('admin.settings')}</h1>
+        <Button onClick={handleSave} disabled={saving}>
           {saving ? (
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
           ) : saved ? (
@@ -573,7 +550,7 @@ export default function SettingsPage() {
           ) : (
             <Save className="mr-2 h-4 w-4" />
           )}
-          {saved ? "Kaydedildi" : "Kaydet"}
+          {saved ? 'Kaydedildi' : 'Kaydet'}
         </Button>
       </div>
 
@@ -582,53 +559,53 @@ export default function SettingsPage() {
         <div className="flex space-x-4">
           <button
             className={`pb-2 pt-2 text-sm font-medium ${
-              activeTab === "general"
-                ? "border-b-2 border-primary text-primary"
-                : "text-muted-foreground"
+              activeTab === 'general'
+                ? 'border-b-2 border-primary text-primary'
+                : 'text-muted-foreground'
             }`}
-            onClick={() => setActiveTab("general")}
+            onClick={() => setActiveTab('general')}
           >
-            {t("admin.generalSettings")}
+            {t('admin.generalSettings')}
           </button>
           <button
             className={`pb-2 pt-2 text-sm font-medium ${
-              activeTab === "security"
-                ? "border-b-2 border-primary text-primary"
-                : "text-muted-foreground"
+              activeTab === 'security'
+                ? 'border-b-2 border-primary text-primary'
+                : 'text-muted-foreground'
             }`}
-            onClick={() => setActiveTab("security")}
+            onClick={() => setActiveTab('security')}
           >
-            {t("admin.securitySettings")}
+            {t('admin.securitySettings')}
           </button>
           <button
             className={`pb-2 pt-2 text-sm font-medium ${
-              activeTab === "notifications"
-                ? "border-b-2 border-primary text-primary"
-                : "text-muted-foreground"
+              activeTab === 'notifications'
+                ? 'border-b-2 border-primary text-primary'
+                : 'text-muted-foreground'
             }`}
-            onClick={() => setActiveTab("notifications")}
+            onClick={() => setActiveTab('notifications')}
           >
-            {t("admin.emailSettings")}
+            {t('admin.emailSettings')}
           </button>
           <button
             className={`pb-2 pt-2 text-sm font-medium ${
-              activeTab === "api"
-                ? "border-b-2 border-primary text-primary"
-                : "text-muted-foreground"
+              activeTab === 'api'
+                ? 'border-b-2 border-primary text-primary'
+                : 'text-muted-foreground'
             }`}
-            onClick={() => setActiveTab("api")}
+            onClick={() => setActiveTab('api')}
           >
-            {t("admin.apiSettings")}
+            {t('admin.apiSettings')}
           </button>
         </div>
       </div>
 
       {/* Aktif Sekme İçeriği */}
       <div className="py-4">
-        {activeTab === "general" && generalSettingsForm}
-        {activeTab === "security" && securitySettingsForm}
-        {activeTab === "notifications" && notificationSettingsForm}
-        {activeTab === "api" && apiSettingsForm}
+        {activeTab === 'general' && generalSettingsForm}
+        {activeTab === 'security' && securitySettingsForm}
+        {activeTab === 'notifications' && notificationSettingsForm}
+        {activeTab === 'api' && apiSettingsForm}
       </div>
     </div>
   );

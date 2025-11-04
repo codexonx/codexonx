@@ -1,33 +1,36 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle 
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { CheckCircle, ChevronRight, ChevronLeft, Code, Terminal, Settings } from "lucide-react";
+import { useState, useEffect } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { CheckCircle, ChevronRight, ChevronLeft, Code, Terminal, Settings } from 'lucide-react';
 
 const steps = [
   {
     title: "CodeXONX'e Hoş Geldiniz!",
-    description: "Yazılım geliştirme süreçlerinizi kolaylaştırmak için tasarlanmış güçlü platformumuza hoş geldiniz. Başlamak için hızlı bir tur atalım.",
-    icon: <Code className="h-12 w-12 text-primary" />
+    description:
+      'Yazılım geliştirme süreçlerinizi kolaylaştırmak için tasarlanmış güçlü platformumuza hoş geldiniz. Başlamak için hızlı bir tur atalım.',
+    icon: <Code className="h-12 w-12 text-primary" />,
   },
   {
-    title: "Kod Editörü",
-    description: "Modern kod editörümüzle hızlıca kod yazın, düzenleyin ve paylaşın. Syntax vurgulama, otomatik tamamlama ve AI desteği ile kodlama deneyiminizi geliştirin.",
-    icon: <Terminal className="h-12 w-12 text-primary" />
+    title: 'Kod Editörü',
+    description:
+      'Modern kod editörümüzle hızlıca kod yazın, düzenleyin ve paylaşın. Syntax vurgulama, otomatik tamamlama ve AI desteği ile kodlama deneyiminizi geliştirin.',
+    icon: <Terminal className="h-12 w-12 text-primary" />,
   },
   {
-    title: "Projeler",
-    description: "Projelerinizi oluşturun, yönetin ve ekip arkadaşlarınızla paylaşın. Şablonlarla çalışmaya hızlı başlayın veya sıfırdan kendi projenizi oluşturun.",
-    icon: <Settings className="h-12 w-12 text-primary" />
-  }
+    title: 'Projeler',
+    description:
+      'Projelerinizi oluşturun, yönetin ve ekip arkadaşlarınızla paylaşın. Şablonlarla çalışmaya hızlı başlayın veya sıfırdan kendi projenizi oluşturun.',
+    icon: <Settings className="h-12 w-12 text-primary" />,
+  },
 ];
 
 export function WelcomeModal() {
@@ -36,21 +39,21 @@ export function WelcomeModal() {
 
   useEffect(() => {
     // Kullanıcı daha önce bu modalı gördü mü kontrol et
-    const hasSeenWelcomeModal = localStorage.getItem("hasSeenWelcomeModal");
-    
+    const hasSeenWelcomeModal = localStorage.getItem('hasSeenWelcomeModal');
+
     if (!hasSeenWelcomeModal) {
       // Sayfa yüklendiğinde 1 saniye sonra göster
       const timer = setTimeout(() => {
         setOpen(true);
       }, 1000);
-      
+
       return () => clearTimeout(timer);
     }
   }, []);
 
   const handleClose = () => {
     // Modalı bir daha gösterme
-    localStorage.setItem("hasSeenWelcomeModal", "true");
+    localStorage.setItem('hasSeenWelcomeModal', 'true');
     setOpen(false);
   };
 
@@ -75,17 +78,15 @@ export function WelcomeModal() {
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <div className="mx-auto p-4 mb-4">{steps[currentStep].icon}</div>
-          <DialogTitle className="text-2xl text-center">
-            {steps[currentStep].title}
-          </DialogTitle>
+          <DialogTitle className="text-2xl text-center">{steps[currentStep].title}</DialogTitle>
           <DialogDescription className="text-center pt-2">
             {steps[currentStep].description}
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="flex justify-center mt-4 space-x-1">
           {steps.map((_, index) => (
-            <span 
+            <span
               key={index}
               className={`block h-2 w-2 rounded-full ${currentStep === index ? 'bg-primary' : 'bg-muted'}`}
             />
@@ -99,15 +100,12 @@ export function WelcomeModal() {
               variant="outline"
               onClick={prevStep}
               disabled={currentStep === 0}
-              className={currentStep === 0 ? "opacity-0" : ""}
+              className={currentStep === 0 ? 'opacity-0' : ''}
             >
               <ChevronLeft className="mr-2 h-4 w-4" />
               Önceki
             </Button>
-            <Button 
-              type="button" 
-              onClick={nextStep}
-            >
+            <Button type="button" onClick={nextStep}>
               {isLastStep ? (
                 <>
                   <CheckCircle className="mr-2 h-4 w-4" />
@@ -122,7 +120,7 @@ export function WelcomeModal() {
             </Button>
           </div>
           {!isLastStep && (
-            <Button 
+            <Button
               type="button"
               variant="ghost"
               size="sm"

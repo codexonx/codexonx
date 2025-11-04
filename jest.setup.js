@@ -1,9 +1,9 @@
 // Jest setup file
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom';
 
 // Mock Next.js router
-jest.mock('next/router', () => require('next-router-mock'))
-jest.mock('next/navigation', () => require('next-router-mock/next-navigation'))
+jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/navigation', () => require('next-router-mock/next-navigation'));
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -18,22 +18,22 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: jest.fn(),
     dispatchEvent: jest.fn(),
   })),
-})
+});
 
 // Mock IntersectionObserver
 class MockIntersectionObserver {
   constructor(callback) {
-    this.callback = callback
+    this.callback = callback;
   }
   observe() {
-    return null
+    return null;
   }
   unobserve() {
-    return null
+    return null;
   }
   disconnect() {
-    return null
+    return null;
   }
 }
 
-global.IntersectionObserver = MockIntersectionObserver
+global.IntersectionObserver = MockIntersectionObserver;

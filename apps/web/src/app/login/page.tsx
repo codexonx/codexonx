@@ -1,40 +1,40 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { Code, Eye, EyeOff } from "lucide-react";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { Code, Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setIsLoading(true);
-    
+
     try {
       // Basit doğrulama
       if (!email) {
-        throw new Error("E-posta adresi gerekli");
+        throw new Error('E-posta adresi gerekli');
       }
       if (!password) {
-        throw new Error("Şifre gerekli");
+        throw new Error('Şifre gerekli');
       }
-      
+
       // TODO: Backend API entegrasyonu gelecek
-      console.log("Giriş yapılıyor:", { email, password });
-      
+      console.log('Giriş yapılıyor:', { email, password });
+
       // Simüle edilmiş başarılı giriş
       setTimeout(() => {
-        window.location.href = "/workspace";
+        window.location.href = '/workspace';
       }, 1000);
     } catch (err: any) {
-      setError(err.message || "Giriş yapılırken bir hata oluştu");
+      setError(err.message || 'Giriş yapılırken bir hata oluştu');
       setIsLoading(false);
     }
   };
@@ -48,11 +48,9 @@ export default function LoginPage() {
             <span className="text-2xl font-bold">Codexonx</span>
           </div>
           <div>
-            <h2 className="mt-6 text-2xl font-bold tracking-tight">
-              Hesabınıza giriş yapın
-            </h2>
+            <h2 className="mt-6 text-2xl font-bold tracking-tight">Hesabınıza giriş yapın</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Hesabınız yok mu?{" "}
+              Hesabınız yok mu?{' '}
               <Link href="/register" className="font-medium text-primary hover:underline">
                 Kayıt olun
               </Link>
@@ -79,7 +77,7 @@ export default function LoginPage() {
                       autoComplete="email"
                       required
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={e => setEmail(e.target.value)}
                       className="block w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     />
                   </div>
@@ -93,18 +91,18 @@ export default function LoginPage() {
                     <input
                       id="password"
                       name="password"
-                      type={showPassword ? "text" : "password"}
+                      type={showPassword ? 'text' : 'password'}
                       autoComplete="current-password"
                       required
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={e => setPassword(e.target.value)}
                       className="block w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     />
                     <button
                       type="button"
                       className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground"
                       onClick={() => setShowPassword(!showPassword)}
-                      aria-label={showPassword ? "Şifreyi gizle" : "Şifreyi göster"}
+                      aria-label={showPassword ? 'Şifreyi gizle' : 'Şifreyi göster'}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -125,19 +123,18 @@ export default function LoginPage() {
                   </div>
 
                   <div className="text-sm">
-                    <Link href="/forgot-password" className="font-medium text-primary hover:underline">
+                    <Link
+                      href="/forgot-password"
+                      className="font-medium text-primary hover:underline"
+                    >
                       Şifrenizi mi unuttunuz?
                     </Link>
                   </div>
                 </div>
 
                 <div>
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Giriş yapılıyor..." : "Giriş yap"}
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? 'Giriş yapılıyor...' : 'Giriş yap'}
                   </Button>
                 </div>
               </form>

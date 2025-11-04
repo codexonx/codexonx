@@ -52,7 +52,7 @@ const MainTab = createBottomTabNavigator<MainTabParamList>();
 // Kimlik doğrulama navigator'ı
 const AuthNavigator = () => {
   const { t } = useTranslation();
-  
+
   return (
     <AuthStack.Navigator
       screenOptions={{
@@ -60,11 +60,15 @@ const AuthNavigator = () => {
       }}
     >
       <AuthStack.Screen name="Login" component={LoginScreen} options={{ title: t('auth.login') }} />
-      <AuthStack.Screen name="Register" component={RegisterScreen} options={{ title: t('auth.register') }} />
-      <AuthStack.Screen 
-        name="ForgotPassword" 
-        component={ForgotPasswordScreen} 
-        options={{ title: t('auth.forgotPassword') }} 
+      <AuthStack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{ title: t('auth.register') }}
+      />
+      <AuthStack.Screen
+        name="ForgotPassword"
+        component={ForgotPasswordScreen}
+        options={{ title: t('auth.forgotPassword') }}
       />
     </AuthStack.Navigator>
   );
@@ -73,7 +77,7 @@ const AuthNavigator = () => {
 // Ana tab navigator'ı
 const MainNavigator = () => {
   const { t } = useTranslation();
-  
+
   return (
     <MainTab.Navigator
       screenOptions={{
@@ -100,7 +104,9 @@ const MainNavigator = () => {
         component={ProjectsScreen}
         options={{
           title: t('nav.projects'),
-          tabBarIcon: ({ color, size }) => <ProjectsIcon color={color} width={size} height={size} />,
+          tabBarIcon: ({ color, size }) => (
+            <ProjectsIcon color={color} width={size} height={size} />
+          ),
         }}
       />
       <MainTab.Screen
@@ -116,7 +122,9 @@ const MainNavigator = () => {
         component={SettingsScreen}
         options={{
           title: t('nav.settings'),
-          tabBarIcon: ({ color, size }) => <SettingsIcon color={color} width={size} height={size} />,
+          tabBarIcon: ({ color, size }) => (
+            <SettingsIcon color={color} width={size} height={size} />
+          ),
         }}
       />
     </MainTab.Navigator>
@@ -126,19 +134,19 @@ const MainNavigator = () => {
 // Kök navigator
 const RootNavigator = () => {
   const { isAuthenticated } = useAuthStore();
-  
+
   return (
     <RootStack.Navigator screenOptions={{ headerShown: false }}>
       {isAuthenticated ? (
         <>
           <RootStack.Screen name="Main" component={MainNavigator} />
-          <RootStack.Screen 
-            name="ProjectDetail" 
-            component={ProjectDetailScreen} 
-            options={({ route }) => ({ 
+          <RootStack.Screen
+            name="ProjectDetail"
+            component={ProjectDetailScreen}
+            options={({ route }) => ({
               headerShown: true,
-              title: route.params.title 
-            })} 
+              title: route.params.title,
+            })}
           />
         </>
       ) : (

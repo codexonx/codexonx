@@ -1,49 +1,49 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { Code, Eye, EyeOff } from "lucide-react";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { Code, Eye, EyeOff } from 'lucide-react';
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setIsLoading(true);
-    
+
     try {
       // Basit doğrulama
       if (!name) {
-        throw new Error("Ad alanı gerekli");
+        throw new Error('Ad alanı gerekli');
       }
       if (!email) {
-        throw new Error("E-posta adresi gerekli");
+        throw new Error('E-posta adresi gerekli');
       }
       if (!password) {
-        throw new Error("Şifre gerekli");
+        throw new Error('Şifre gerekli');
       }
       if (password.length < 8) {
-        throw new Error("Şifre en az 8 karakter olmalıdır");
+        throw new Error('Şifre en az 8 karakter olmalıdır');
       }
-      
+
       // TODO: Backend API entegrasyonu gelecek
-      console.log("Kayıt yapılıyor:", { name, email, password });
-      
+      console.log('Kayıt yapılıyor:', { name, email, password });
+
       // Simüle edilmiş başarılı kayıt
       setTimeout(() => {
         setIsSuccess(true);
         setIsLoading(false);
       }, 1000);
     } catch (err: any) {
-      setError(err.message || "Kayıt yapılırken bir hata oluştu");
+      setError(err.message || 'Kayıt yapılırken bir hata oluştu');
       setIsLoading(false);
     }
   };
@@ -54,15 +54,26 @@ export default function RegisterPage() {
         <div className="mx-auto w-full max-w-md rounded-lg border bg-card p-8 shadow-sm">
           <div className="flex items-center justify-center mb-6">
             <div className="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-600">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
             </div>
           </div>
           <h2 className="text-2xl font-bold text-center mb-4">Kayıt İşlemi Başarılı</h2>
           <p className="text-center text-muted-foreground mb-6">
-            E-posta adresinize bir doğrulama linki gönderdik. 
-            Lütfen hesabınızı aktifleştirmek için e-postanızı kontrol edin.
+            E-posta adresinize bir doğrulama linki gönderdik. Lütfen hesabınızı aktifleştirmek için
+            e-postanızı kontrol edin.
           </p>
           <Button asChild className="w-full">
             <Link href="/login">Giriş Sayfasına Git</Link>
@@ -81,11 +92,9 @@ export default function RegisterPage() {
             <span className="text-2xl font-bold">Codexonx</span>
           </div>
           <div>
-            <h2 className="mt-6 text-2xl font-bold tracking-tight">
-              Yeni hesap oluşturun
-            </h2>
+            <h2 className="mt-6 text-2xl font-bold tracking-tight">Yeni hesap oluşturun</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Zaten hesabınız var mı?{" "}
+              Zaten hesabınız var mı?{' '}
               <Link href="/login" className="font-medium text-primary hover:underline">
                 Giriş yapın
               </Link>
@@ -112,12 +121,12 @@ export default function RegisterPage() {
                       autoComplete="name"
                       required
                       value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={e => setName(e.target.value)}
                       className="block w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     />
                   </div>
                 </div>
-                
+
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium">
                     E-posta adresi
@@ -130,7 +139,7 @@ export default function RegisterPage() {
                       autoComplete="email"
                       required
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={e => setEmail(e.target.value)}
                       className="block w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     />
                   </div>
@@ -144,18 +153,18 @@ export default function RegisterPage() {
                     <input
                       id="password"
                       name="password"
-                      type={showPassword ? "text" : "password"}
+                      type={showPassword ? 'text' : 'password'}
                       autoComplete="new-password"
                       required
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={e => setPassword(e.target.value)}
                       className="block w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     />
                     <button
                       type="button"
                       className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground"
                       onClick={() => setShowPassword(!showPassword)}
-                      aria-label={showPassword ? "Şifreyi gizle" : "Şifreyi göster"}
+                      aria-label={showPassword ? 'Şifreyi gizle' : 'Şifreyi göster'}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -175,21 +184,21 @@ export default function RegisterPage() {
                   />
                   <label htmlFor="terms" className="ml-2 block text-sm text-muted-foreground">
                     <span>
-                      <Link href="/terms" className="text-primary hover:underline">Kullanım Şartları</Link>
-                      {' '}ve{' '}
-                      <Link href="/privacy" className="text-primary hover:underline">Gizlilik Politikası</Link>'nı
-                      kabul ediyorum
+                      <Link href="/terms" className="text-primary hover:underline">
+                        Kullanım Şartları
+                      </Link>{' '}
+                      ve{' '}
+                      <Link href="/privacy" className="text-primary hover:underline">
+                        Gizlilik Politikası
+                      </Link>
+                      'nı kabul ediyorum
                     </span>
                   </label>
                 </div>
 
                 <div>
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Kayıt yapılıyor..." : "Kayıt ol"}
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? 'Kayıt yapılıyor...' : 'Kayıt ol'}
                   </Button>
                 </div>
               </form>

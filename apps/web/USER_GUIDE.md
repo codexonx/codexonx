@@ -201,6 +201,7 @@ AI asistanı ile etkileşim kurmak için:
 5. Kod parçalarını doğrudan editöre eklemek için "Ekle" butonuna tıklayın.
 
 Örnek kullanım senaryoları:
+
 - "Bu fonksiyonu optimize etmeme yardımcı ol"
 - "React'ta form validasyonu nasıl yapılır?"
 - "Bu hatanın nedenini açıklayabilir misin?"
@@ -292,18 +293,19 @@ API'yi uygulamalarınızla entegre etmek için:
 1. Sol menüden "API Belgeleri"ne tıklayın.
 2. API endpoint'leri ve kullanım örneklerini inceleyebilirsiniz.
 3. İsteklerinize kimlik doğrulama eklemek için:
+
    ```javascript
    // API İstek örneği
-   fetch('https://api.codexonx.com/v1/projects', {
-     method: 'GET',
+   fetch("https://api.codexonx.com/v1/projects", {
+     method: "GET",
      headers: {
-       'Authorization': 'Bearer YOUR_API_KEY',
-       'Content-Type': 'application/json'
-     }
+       Authorization: "Bearer YOUR_API_KEY",
+       "Content-Type": "application/json",
+     },
    })
-   .then(response => response.json())
-   .then(data => console.log(data))
-   .catch(error => console.error(error));
+     .then(response => response.json())
+     .then(data => console.log(data))
+     .catch(error => console.error(error));
    ```
 
 4. API kullanım limitlerinizi ve istatistiklerinizi "API Kullanımı" sayfasından izleyebilirsiniz.
@@ -328,6 +330,7 @@ C: Evet, projenizin detay sayfasındaki "Dışa Aktar" butonunu kullanarak proje
 
 **Sorun: Editör yüklenmiyor**  
 Çözüm:
+
 1. Tarayıcınızı yenileyin
 2. Tarayıcı önbelleğini temizleyin
 3. WebGL'in etkin olduğundan emin olun
@@ -335,6 +338,7 @@ C: Evet, projenizin detay sayfasındaki "Dışa Aktar" butonunu kullanarak proje
 
 **Sorun: Terminal komutları çalışmıyor**  
 Çözüm:
+
 1. Terminal türünün doğru olduğundan emin olun (Bash, PowerShell, vb.)
 2. İnternet bağlantınızı kontrol edin
 3. Projenizin çalışma dizinini kontrol edin
@@ -342,6 +346,7 @@ C: Evet, projenizin detay sayfasındaki "Dışa Aktar" butonunu kullanarak proje
 
 **Sorun: AI asistanı yanıt vermiyor**  
 Çözüm:
+
 1. İnternet bağlantınızı kontrol edin
 2. Sohbeti yeniden başlatmayı deneyin
 3. Sorunuz daha kısa ve net bir şekilde yeniden formüle edin

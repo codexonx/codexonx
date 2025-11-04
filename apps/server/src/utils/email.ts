@@ -17,8 +17,8 @@ export const sendEmail = async (options: EmailOptions) => {
       secure: process.env.SMTP_PORT === '465', // true for 465, false for other ports
       auth: {
         user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD
-      }
+        pass: process.env.SMTP_PASSWORD,
+      },
     });
 
     // Define email options
@@ -27,7 +27,7 @@ export const sendEmail = async (options: EmailOptions) => {
       to: options.to,
       subject: options.subject,
       text: options.text,
-      html: options.html
+      html: options.html,
     };
 
     // Send email

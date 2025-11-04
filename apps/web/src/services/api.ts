@@ -1,6 +1,6 @@
 /**
  * API Service
- * 
+ *
  * Backend API istekleri için merkezi service katmanı
  */
 
@@ -10,12 +10,9 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api';
 /**
  * Fetch ile API istekleri yapan yardımcı fonksiyon
  */
-async function fetchAPI<T>(
-  endpoint: string, 
-  options: RequestInit = {}
-): Promise<T> {
+async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_URL}${endpoint}`;
-  
+
   const defaultHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
   };
@@ -25,7 +22,7 @@ async function fetchAPI<T>(
   if (token) {
     defaultHeaders['Authorization'] = `Bearer ${token}`;
   }
-  
+
   const response = await fetch(url, {
     ...options,
     headers: {
@@ -63,80 +60,81 @@ async function fetchAPI<T>(
 export const api = {
   // Sağlık kontrolü
   health: {
-    check: () => fetchAPI<{status: string, timestamp: string}>('/health'),
+    check: () => fetchAPI<{ status: string; timestamp: string }>('/health'),
   },
 
   // Auth işlemleri
   auth: {
     login: (email: string, password: string) =>
-      fetchAPI<{token: string, user: any}>('/auth/login', {
+      fetchAPI<{ token: string; user: any }>('/auth/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       }),
-    register: (userData: {email: string, password: string, name: string}) =>
-      fetchAPI<{token: string, user: any}>('/auth/register', {
+    register: (userData: { email: string; password: string; name: string }) =>
+      fetchAPI<{ token: string; user: any }>('/auth/register', {
         method: 'POST',
         body: JSON.stringify(userData),
       }),
-    me: () => fetchAPI<{user: any}>('/auth/me'),
+    me: () => fetchAPI<{ user: any }>('/auth/me'),
   },
 
   // Proje işlemleri
   projects: {
-    getAll: () => fetchAPI<{data: any[]}>('/projects'),
-    getById: (id: string) => fetchAPI<{data: any}>(`/projects/${id}`),
-    create: (data: any) => 
-      fetchAPI<{data: any}>('/projects', {
+    getAll: () => fetchAPI<{ data: any[] }>('/projects'),
+    getById: (id: string) => fetchAPI<{ data: any }>(`/projects/${id}`),
+    create: (data: any) =>
+      fetchAPI<{ data: any }>('/projects', {
         method: 'POST',
         body: JSON.stringify(data),
       }),
     update: (id: string, data: any) =>
-      fetchAPI<{data: any}>(`/projects/${id}`, {
+      fetchAPI<{ data: any }>(`/projects/${id}`, {
         method: 'PUT',
         body: JSON.stringify(data),
       }),
     delete: (id: string) =>
-      fetchAPI<{success: boolean}>(`/projects/${id}`, {
+      fetchAPI<{ success: boolean }>(`/projects/${id}`, {
         method: 'DELETE',
       }),
     regenerateApiKey: (id: string) =>
-      fetchAPI<{data: {apiKey: string}}>(`/projects/${id}/regenerate-api-key`, {
+      fetchAPI<{ data: { apiKey: string } }>(`/projects/${id}/regenerate-api-key`, {
         method: 'POST',
       }),
   },
 
   // Abonelik işlemleri
   subscriptions: {
-    getAll: () => fetchAPI<{data: any[]}>('/subscriptions'),
-    getActive: () => fetchAPI<{hasActiveSubscription: boolean, data: any | null}>('/subscriptions/active'),
-    getById: (id: string) => fetchAPI<{data: any}>(`/subscriptions/${id}`),
+    getAll: () => fetchAPI<{ data: any[] }>('/subscriptions'),
+    getActive: () =>
+      fetchAPI<{ hasActiveSubscription: boolean; data: any | null }>('/subscriptions/active'),
+    getById: (id: string) => fetchAPI<{ data: any }>(`/subscriptions/${id}`),
     create: (data: any) =>
-      fetchAPI<{data: any}>('/subscriptions', {
+      fetchAPI<{ data: any }>('/subscriptions', {
         method: 'POST',
         body: JSON.stringify(data),
       }),
     cancel: (id: string) =>
-      fetchAPI<{data: any}>(`/subscriptions/${id}`, {
+      fetchAPI<{ data: any }>(`/subscriptions/${id}`, {
         method: 'DELETE',
       }),
   },
 
   // Ödeme işlemleri
   payments: {
-    getPrices: () => fetchAPI<{data: any[]}>('/payments/prices'),
-    createCustomer: (data: {email: string, name: string}) =>
-      fetchAPI<{data: any}>('/payments/customers', {
+    getPrices: () => fetchAPI<{ data: any[] }>('/payments/prices'),
+    createCustomer: (data: { email: string; name: string }) =>
+      fetchAPI<{ data: any }>('/payments/customers', {
         method: 'POST',
         body: JSON.stringify(data),
       }),
     createPaymentIntent: (data: {
-      amount: number,
-      currency: string,
-      description?: string,
-      paymentMethod: string,
-      customerId?: string,
+      amount: number;
+      currency: string;
+      description?: string;
+      paymentMethod: string;
+      customerId?: string;
     }) =>
-      fetchAPI<{clientSecret: string, paymentIntentId: string}>('/payments/payment-intents', {
+      fetchAPI<{ clientSecret: string; paymentIntentId: string }>('/payments/payment-intents', {
         method: 'POST',
         body: JSON.stringify(data),
       }),

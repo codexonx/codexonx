@@ -2,6 +2,13 @@
 node_modules
 .pnp
 .pnp.js
+.cache
+
+# AI model files
+*.bin
+*.onnx
+*.pt
+model_cache/
 
 # testing
 coverage
@@ -37,7 +44,19 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+next-env.d.ts
 
 # logs
 logs
 *.log
+.eslintcache
+
+# monaco editor
+public/monaco-workers/
+
+# IDE specific files
+.idea
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json

@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { 
-  Users, 
-  Package, 
-  CreditCard, 
-  Activity, 
-  ArrowUp, 
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import {
+  Users,
+  Package,
+  CreditCard,
+  Activity,
+  ArrowUp,
   ArrowDown,
   Info,
   Lightbulb,
@@ -21,15 +21,22 @@ import {
   Clock,
   ChevronRight,
   FileText,
-  RefreshCcw
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { AnalyticsDashboard } from "@/components/dashboard/analytics-dashboard";
-import { StatisticsReport } from "@/components/dashboard/statistics-report";
-import { Logo } from "@/components/ui/logo";
-import { AdminLayout } from "@/components/layouts/admin-layout";
-import { useI18n } from "@/contexts/i18n-context";
+  RefreshCcw,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { AnalyticsDashboard } from '@/components/dashboard/analytics-dashboard';
+import { StatisticsReport } from '@/components/dashboard/statistics-report';
+import { Logo } from '@/components/ui/logo';
+import { AdminLayout } from '@/components/layouts/admin-layout';
+import { useI18n } from '@/contexts/i18n-context';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -61,7 +68,7 @@ export default function AdminDashboard() {
           setIsLoading(false);
         }, 1000);
       } catch (error) {
-        console.error("Dashboard veri hatası:", error);
+        console.error('Dashboard veri hatası:', error);
         setIsLoading(false);
       }
     };
@@ -70,9 +77,9 @@ export default function AdminDashboard() {
   }, []);
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("tr-TR", {
-      style: "currency",
-      currency: "TRY",
+    return new Intl.NumberFormat('tr-TR', {
+      style: 'currency',
+      currency: 'TRY',
     }).format(amount);
   };
 
@@ -85,7 +92,7 @@ export default function AdminDashboard() {
   }
 
   const { t } = useI18n();
-  
+
   // Animasyon varyantları
   const fadeInUp = {
     initial: { y: 20, opacity: 0 },
@@ -99,7 +106,7 @@ export default function AdminDashboard() {
       },
     }),
   };
-  
+
   // Bilgiler ve durumlar
   const suggestions = [
     {
@@ -121,7 +128,7 @@ export default function AdminDashboard() {
       color: 'text-sky-600 bg-sky-100 dark:bg-sky-900/30 dark:text-sky-400',
     },
   ];
-  
+
   const quickActions = [
     { name: t('dashboard.actions.newProject'), icon: Plus, href: '/admin/projects/new' },
     { name: t('dashboard.actions.analytics'), icon: BarChart2, href: '/admin/analytics' },
@@ -201,7 +208,7 @@ export default function AdminDashboard() {
       <div className="space-y-8">
         {/* Hoş Geldiniz Bölümü */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <motion.div 
+          <motion.div
             custom={0}
             variants={fadeInUp}
             initial="initial"
@@ -210,16 +217,16 @@ export default function AdminDashboard() {
           >
             <h1 className="text-2xl font-bold tracking-tight">{t('dashboard.welcome')}</h1>
             <p className="text-muted-foreground">
-              {new Date().toLocaleDateString('tr-TR', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+              {new Date().toLocaleDateString('tr-TR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
               })}
             </p>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             custom={1}
             variants={fadeInUp}
             initial="initial"
@@ -230,7 +237,7 @@ export default function AdminDashboard() {
               <RefreshCcw className="h-3.5 w-3.5" />
               {t('dashboard.refresh')}
             </Button>
-            
+
             <Button size="sm" className="gap-1.5">
               <Plus className="h-3.5 w-3.5" />
               {t('dashboard.newProject')}
@@ -240,35 +247,35 @@ export default function AdminDashboard() {
 
         {/* Ana İstatistikler */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <StatCard 
-            title={t('dashboard.stats.totalUsers')} 
-            value={stats.usersCount.toLocaleString()} 
-            change={stats.userGrowth} 
-            icon={Users} 
+          <StatCard
+            title={t('dashboard.stats.totalUsers')}
+            value={stats.usersCount.toLocaleString()}
+            change={stats.userGrowth}
+            icon={Users}
             accentColor="indigo"
           />
-          
-          <StatCard 
-            title={t('dashboard.stats.projects')} 
-            value={stats.projectsCount.toLocaleString()} 
-            change={stats.projectGrowth} 
-            icon={Package} 
+
+          <StatCard
+            title={t('dashboard.stats.projects')}
+            value={stats.projectsCount.toLocaleString()}
+            change={stats.projectGrowth}
+            icon={Package}
             accentColor="emerald"
           />
-          
-          <StatCard 
-            title={t('dashboard.stats.activeSubscriptions')} 
-            value={stats.activeSubscriptions.toLocaleString()} 
-            change={((stats.activeSubscriptions / stats.usersCount) * 100).toFixed(1)} 
-            icon={CreditCard} 
+
+          <StatCard
+            title={t('dashboard.stats.activeSubscriptions')}
+            value={stats.activeSubscriptions.toLocaleString()}
+            change={((stats.activeSubscriptions / stats.usersCount) * 100).toFixed(1)}
+            icon={CreditCard}
             accentColor="violet"
           />
-          
-          <StatCard 
-            title={t('dashboard.stats.monthlyRevenue')} 
-            value={formatCurrency(stats.monthlyRevenue)} 
-            change={stats.revenueGrowth} 
-            icon={Activity} 
+
+          <StatCard
+            title={t('dashboard.stats.monthlyRevenue')}
+            value={formatCurrency(stats.monthlyRevenue)}
+            change={stats.revenueGrowth}
+            icon={Activity}
             accentColor="pink"
           />
         </div>
@@ -276,7 +283,7 @@ export default function AdminDashboard() {
         {/* İstatistik Grafiği ve Öneriler */}
         <div className="grid gap-4 lg:grid-cols-3">
           {/* Ana Grafik */}
-          <motion.div 
+          <motion.div
             custom={2}
             variants={fadeInUp}
             initial="initial"
@@ -311,14 +318,9 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </motion.div>
-          
+
           {/* Öneriler */}
-          <motion.div 
-            custom={3}
-            variants={fadeInUp}
-            initial="initial"
-            animate="animate"
-          >
+          <motion.div custom={3} variants={fadeInUp} initial="initial" animate="animate">
             <Card className="h-full">
               <CardHeader>
                 <CardTitle>{t('dashboard.insights')}</CardTitle>
@@ -354,12 +356,7 @@ export default function AdminDashboard() {
         {/* Hızlı Eylemler ve Son Aktiviteler */}
         <div className="grid gap-4 md:grid-cols-2">
           {/* Hızlı Eylemler */}
-          <motion.div 
-            custom={4}
-            variants={fadeInUp}
-            initial="initial"
-            animate="animate"
-          >
+          <motion.div custom={4} variants={fadeInUp} initial="initial" animate="animate">
             <Card>
               <CardHeader>
                 <CardTitle>{t('dashboard.quickActions')}</CardTitle>
@@ -368,10 +365,7 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-2 gap-3">
                   {quickActions.map((action, index) => (
                     <Link href={action.href} key={index}>
-                      <Button 
-                        variant="outline" 
-                        className="h-auto p-4 w-full justify-start"
-                      >
+                      <Button variant="outline" className="h-auto p-4 w-full justify-start">
                         <div className="flex flex-col items-start gap-1">
                           <span className="rounded-full bg-primary/10 p-1.5">
                             <action.icon className="h-4 w-4 text-primary" />
@@ -385,14 +379,9 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </motion.div>
-          
+
           {/* Son Aktiviteler */}
-          <motion.div 
-            custom={5}
-            variants={fadeInUp}
-            initial="initial"
-            animate="animate"
-          >
+          <motion.div custom={5} variants={fadeInUp} initial="initial" animate="animate">
             <Card>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
@@ -406,12 +395,14 @@ export default function AdminDashboard() {
               <CardContent className="p-0">
                 <div className="space-y-0">
                   {recentActivity.map((activity, index) => (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       className="flex items-center justify-between py-3 px-6 border-b last:border-0 hover:bg-muted/50"
                     >
                       <div className="flex items-start gap-3">
-                        <div className={`rounded-full p-1.5 ${getActivityTypeColor(activity.type)}`}>
+                        <div
+                          className={`rounded-full p-1.5 ${getActivityTypeColor(activity.type)}`}
+                        >
                           {getActivityTypeIcon(activity.type)}
                         </div>
                         <div>
@@ -422,9 +413,7 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                       <div className="flex items-center">
-                        <p className="text-xs text-muted-foreground pr-2">
-                          {activity.time}
-                        </p>
+                        <p className="text-xs text-muted-foreground pr-2">{activity.time}</p>
                         <ChevronRight className="h-4 w-4 text-muted-foreground" />
                       </div>
                     </div>
@@ -439,14 +428,9 @@ export default function AdminDashboard() {
             </Card>
           </motion.div>
         </div>
-        
+
         {/* En altta geniş kart - özet veya performans istatistikleri */}
-        <motion.div 
-          custom={6}
-          variants={fadeInUp}
-          initial="initial"
-          animate="animate"
-        >
+        <motion.div custom={6} variants={fadeInUp} initial="initial" animate="animate">
           <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle>{t('dashboard.performanceOverview')}</CardTitle>
@@ -457,51 +441,57 @@ export default function AdminDashboard() {
                 <div className="max-w-md text-center p-6">
                   <Logo size="lg" animated className="mx-auto mb-6" />
                   <h3 className="text-xl font-bold mb-2">{t('dashboard.codexonxPlatform')}</h3>
-                  <p className="text-muted-foreground">
-                    {t('dashboard.platformDescription')}
-                  </p>
+                  <p className="text-muted-foreground">{t('dashboard.platformDescription')}</p>
                 </div>
               </div>
             </CardContent>
             <CardFooter className="flex justify-between">
-              <Button variant="ghost">
-                {t('dashboard.documentation')}
-              </Button>
-              <Button>
-                {t('dashboard.getStarted')}
-              </Button>
+              <Button variant="ghost">{t('dashboard.documentation')}</Button>
+              <Button>{t('dashboard.getStarted')}</Button>
             </CardFooter>
           </Card>
         </motion.div>
       </div>
     </AdminLayout>
   );
-  
+
   // Yardımcı fonksiyonlar
   function getActivityTypeColor(type: string) {
     switch (type) {
-      case 'project': return 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400';
-      case 'subscription': return 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400';
-      case 'api': return 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400';
-      default: return 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400';
+      case 'project':
+        return 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400';
+      case 'subscription':
+        return 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400';
+      case 'api':
+        return 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400';
+      default:
+        return 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400';
     }
   }
-  
+
   function getActivityTypeIcon(type: string) {
     switch (type) {
-      case 'project': return <FileText className="h-3.5 w-3.5" />;
-      case 'subscription': return <CreditCard className="h-3.5 w-3.5" />;
-      case 'api': return <Activity className="h-3.5 w-3.5" />;
-      default: return <Info className="h-3.5 w-3.5" />;
+      case 'project':
+        return <FileText className="h-3.5 w-3.5" />;
+      case 'subscription':
+        return <CreditCard className="h-3.5 w-3.5" />;
+      case 'api':
+        return <Activity className="h-3.5 w-3.5" />;
+      default:
+        return <Info className="h-3.5 w-3.5" />;
     }
   }
-  
+
   function getActivityActionText(action: string) {
     switch (action) {
-      case 'created': return 'oluşturdu';
-      case 'upgraded': return 'yükseltme yaptı';
-      case 'limit_changed': return 'limit değişikliği yaptı';
-      default: return action;
+      case 'created':
+        return 'oluşturdu';
+      case 'upgraded':
+        return 'yükseltme yaptı';
+      case 'limit_changed':
+        return 'limit değişikliği yaptı';
+      default:
+        return action;
     }
   }
 }

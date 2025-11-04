@@ -51,7 +51,7 @@ Yaygın HTTP durum kodları:
 API istekleri rate limiting'e tabidir. Limitler plan türünüze göre değişir:
 
 | Plan     | Dakika Başına İstek | Günlük Limit |
-|----------|---------------------|--------------|
+| -------- | ------------------- | ------------ |
 | Ücretsiz | 60                  | 10,000       |
 | Premium  | 300                 | 50,000       |
 | Kurumsal | 1,000               | 200,000      |
@@ -76,10 +76,10 @@ POST /auth/login
 
 **Parametreler**
 
-| Ad       | Tür    | Açıklama                  | Gerekli |
-|----------|--------|----------------------------|---------|
-| email    | string | Kullanıcı e-posta adresi  | Evet    |
-| password | string | Kullanıcı şifresi         | Evet    |
+| Ad       | Tür    | Açıklama                 | Gerekli |
+| -------- | ------ | ------------------------ | ------- |
+| email    | string | Kullanıcı e-posta adresi | Evet    |
+| password | string | Kullanıcı şifresi        | Evet    |
 
 **Yanıt**
 
@@ -102,11 +102,11 @@ POST /auth/register
 
 **Parametreler**
 
-| Ad       | Tür    | Açıklama                  | Gerekli |
-|----------|--------|----------------------------|---------|
-| name     | string | Kullanıcı adı             | Evet    |
-| email    | string | Kullanıcı e-posta adresi  | Evet    |
-| password | string | Kullanıcı şifresi         | Evet    |
+| Ad       | Tür    | Açıklama                 | Gerekli |
+| -------- | ------ | ------------------------ | ------- |
+| name     | string | Kullanıcı adı            | Evet    |
+| email    | string | Kullanıcı e-posta adresi | Evet    |
+| password | string | Kullanıcı şifresi        | Evet    |
 
 **Yanıt**
 
@@ -151,7 +151,7 @@ GET /projects
 **Sorgu Parametreleri**
 
 | Ad     | Tür    | Açıklama                    | Varsayılan |
-|--------|--------|-----------------------------|------------|
+| ------ | ------ | --------------------------- | ---------- |
 | page   | number | Sayfa numarası              | 1          |
 | limit  | number | Sayfa başına öğe sayısı     | 20         |
 | search | string | Arama terimi                | -          |
@@ -230,12 +230,12 @@ POST /projects
 
 **Parametreler**
 
-| Ad          | Tür    | Açıklama                          | Gerekli |
-|-------------|--------|-----------------------------------|---------|
-| name        | string | Proje adı                         | Evet    |
-| description | string | Proje açıklaması                  | Hayır   |
-| language    | string | Ana programlama dili              | Evet    |
-| template_id | string | Başlangıç şablonu kimliği         | Hayır   |
+| Ad          | Tür    | Açıklama                  | Gerekli |
+| ----------- | ------ | ------------------------- | ------- |
+| name        | string | Proje adı                 | Evet    |
+| description | string | Proje açıklaması          | Hayır   |
+| language    | string | Ana programlama dili      | Evet    |
+| template_id | string | Başlangıç şablonu kimliği | Hayır   |
 
 **Yanıt**
 
@@ -259,7 +259,7 @@ PUT /projects/{id}
 **Parametreler**
 
 | Ad          | Tür    | Açıklama         | Gerekli |
-|-------------|--------|------------------|---------|
+| ----------- | ------ | ---------------- | ------- |
 | name        | string | Proje adı        | Hayır   |
 | description | string | Proje açıklaması | Hayır   |
 
@@ -301,9 +301,9 @@ GET /projects/{id}/files
 
 **Sorgu Parametreleri**
 
-| Ad   | Tür    | Açıklama                     | Varsayılan |
-|------|--------|-----------------------------|------------|
-| path | string | Dosya yolu (örn. /src)      | /          |
+| Ad   | Tür    | Açıklama               | Varsayılan |
+| ---- | ------ | ---------------------- | ---------- |
+| path | string | Dosya yolu (örn. /src) | /          |
 
 **Yanıt**
 
@@ -336,8 +336,8 @@ GET /projects/{id}/files/content
 
 **Sorgu Parametreleri**
 
-| Ad   | Tür    | Açıklama                | Gerekli |
-|------|--------|-------------------------|---------|
+| Ad   | Tür    | Açıklama                        | Gerekli |
+| ---- | ------ | ------------------------------- | ------- |
 | path | string | Dosya yolu (örn. /src/index.js) | Evet    |
 
 **Yanıt**
@@ -360,10 +360,10 @@ PUT /projects/{id}/files/content
 
 **Parametreler**
 
-| Ad      | Tür    | Açıklama                | Gerekli |
-|---------|--------|-------------------------|---------|
-| path    | string | Dosya yolu              | Evet    |
-| content | string | Dosya içeriği           | Evet    |
+| Ad      | Tür    | Açıklama      | Gerekli |
+| ------- | ------ | ------------- | ------- |
+| path    | string | Dosya yolu    | Evet    |
+| content | string | Dosya içeriği | Evet    |
 
 **Yanıt**
 
@@ -384,7 +384,7 @@ POST /projects/{id}/files
 **Parametreler**
 
 | Ad      | Tür    | Açıklama                | Gerekli |
-|---------|--------|-------------------------|---------|
+| ------- | ------ | ----------------------- | ------- |
 | path    | string | Dosya yolu              | Evet    |
 | type    | string | "file" veya "directory" | Evet    |
 | content | string | Dosya içeriği           | Hayır   |
@@ -409,9 +409,9 @@ DELETE /projects/{id}/files
 
 **Parametreler**
 
-| Ad   | Tür    | Açıklama                | Gerekli |
-|------|--------|-------------------------|---------|
-| path | string | Dosya yolu              | Evet    |
+| Ad   | Tür    | Açıklama   | Gerekli |
+| ---- | ------ | ---------- | ------- |
+| path | string | Dosya yolu | Evet    |
 
 **Yanıt**
 
@@ -432,12 +432,12 @@ POST /ai/code/complete
 
 **Parametreler**
 
-| Ad       | Tür    | Açıklama                      | Gerekli |
-|----------|--------|-------------------------------|---------|
-| code     | string | Tamamlanacak kod              | Evet    |
-| language | string | Programlama dili              | Evet    |
-| max_tokens | number | Maksimum tamamlama uzunluğu | Hayır   |
-| temperature | number | Üretkenlik (0.0-1.0)       | Hayır   |
+| Ad          | Tür    | Açıklama                    | Gerekli |
+| ----------- | ------ | --------------------------- | ------- |
+| code        | string | Tamamlanacak kod            | Evet    |
+| language    | string | Programlama dili            | Evet    |
+| max_tokens  | number | Maksimum tamamlama uzunluğu | Hayır   |
+| temperature | number | Üretkenlik (0.0-1.0)        | Hayır   |
 
 **Yanıt**
 
@@ -456,10 +456,10 @@ POST /ai/chat
 
 **Parametreler**
 
-| Ad      | Tür    | Açıklama                      | Gerekli |
-|---------|--------|-------------------------------|---------|
-| message | string | Kullanıcı mesajı              | Evet    |
-| context | object | İsteğe bağlı bağlam bilgisi   | Hayır   |
+| Ad      | Tür    | Açıklama                    | Gerekli |
+| ------- | ------ | --------------------------- | ------- |
+| message | string | Kullanıcı mesajı            | Evet    |
+| context | object | İsteğe bağlı bağlam bilgisi | Hayır   |
 
 **Yanıt**
 
@@ -478,10 +478,10 @@ POST /ai/code/analyze
 
 **Parametreler**
 
-| Ad       | Tür    | Açıklama                      | Gerekli |
-|----------|--------|-------------------------------|---------|
-| code     | string | Analiz edilecek kod           | Evet    |
-| language | string | Programlama dili              | Evet    |
+| Ad       | Tür    | Açıklama            | Gerekli |
+| -------- | ------ | ------------------- | ------- |
+| code     | string | Analiz edilecek kod | Evet    |
+| language | string | Programlama dili    | Evet    |
 
 **Yanıt**
 
@@ -501,10 +501,7 @@ POST /ai/code/analyze
         "line": 42
       }
     ],
-    "suggestions": [
-      "Parametre doğrulaması ekleyin",
-      "Async/await kullanımını düşünün"
-    ]
+    "suggestions": ["Parametre doğrulaması ekleyin", "Async/await kullanımını düşünün"]
   }
 }
 ```
@@ -519,13 +516,13 @@ GET /templates
 
 **Sorgu Parametreleri**
 
-| Ad       | Tür    | Açıklama                    | Varsayılan |
-|----------|--------|-----------------------------|------------|
-| page     | number | Sayfa numarası              | 1          |
-| limit    | number | Sayfa başına öğe sayısı     | 20         |
-| category | string | Kategori filtresi           | -          |
-| type     | string | Şablon türü (official, community) | -    |
-| search   | string | Arama terimi                | -          |
+| Ad       | Tür    | Açıklama                          | Varsayılan |
+| -------- | ------ | --------------------------------- | ---------- |
+| page     | number | Sayfa numarası                    | 1          |
+| limit    | number | Sayfa başına öğe sayısı           | 20         |
+| category | string | Kategori filtresi                 | -          |
+| type     | string | Şablon türü (official, community) | -          |
+| search   | string | Arama terimi                      | -          |
 
 **Yanıt**
 
@@ -611,26 +608,26 @@ GET /templates/{id}
 ### JavaScript (Node.js)
 
 ```javascript
-const axios = require('axios');
+const axios = require("axios");
 
-const API_TOKEN = 'your_api_token';
-const API_URL = 'https://api.codexonx.com/v1';
+const API_TOKEN = "your_api_token";
+const API_URL = "https://api.codexonx.com/v1";
 
 const codexonxApi = axios.create({
   baseURL: API_URL,
   headers: {
-    'Authorization': `Bearer ${API_TOKEN}`,
-    'Content-Type': 'application/json'
-  }
+    Authorization: `Bearer ${API_TOKEN}`,
+    "Content-Type": "application/json",
+  },
 });
 
 // Projeleri listele
 async function getProjects() {
   try {
-    const response = await codexonxApi.get('/projects');
+    const response = await codexonxApi.get("/projects");
     return response.data;
   } catch (error) {
-    console.error('Error fetching projects:', error.response?.data || error.message);
+    console.error("Error fetching projects:", error.response?.data || error.message);
     throw error;
   }
 }
@@ -638,10 +635,10 @@ async function getProjects() {
 // Yeni proje oluştur
 async function createProject(projectData) {
   try {
-    const response = await codexonxApi.post('/projects', projectData);
+    const response = await codexonxApi.post("/projects", projectData);
     return response.data;
   } catch (error) {
-    console.error('Error creating project:', error.response?.data || error.message);
+    console.error("Error creating project:", error.response?.data || error.message);
     throw error;
   }
 }
@@ -649,13 +646,13 @@ async function createProject(projectData) {
 // Kod tamamlama
 async function completeCode(code, language) {
   try {
-    const response = await codexonxApi.post('/ai/code/complete', {
+    const response = await codexonxApi.post("/ai/code/complete", {
       code,
-      language
+      language,
     });
     return response.data;
   } catch (error) {
-    console.error('Error completing code:', error.response?.data || error.message);
+    console.error("Error completing code:", error.response?.data || error.message);
     throw error;
   }
 }
@@ -728,11 +725,11 @@ POST /webhooks
 
 **Parametreler**
 
-| Ad     | Tür    | Açıklama                      | Gerekli |
-|--------|--------|-------------------------------|---------|
-| url    | string | Webhook endpoint URL'si       | Evet    |
-| events | array  | Dinlenecek olaylar dizisi     | Evet    |
-| secret | string | Webhook imzası için gizli anahtar | Hayır |
+| Ad     | Tür    | Açıklama                          | Gerekli |
+| ------ | ------ | --------------------------------- | ------- |
+| url    | string | Webhook endpoint URL'si           | Evet    |
+| events | array  | Dinlenecek olaylar dizisi         | Evet    |
+| secret | string | Webhook imzası için gizli anahtar | Hayır   |
 
 **Yanıt**
 
@@ -747,14 +744,14 @@ POST /webhooks
 
 ### Webhook Olayları
 
-| Olay Adı | Açıklama |
-|----------|----------|
+| Olay Adı        | Açıklama                    |
+| --------------- | --------------------------- |
 | project.created | Yeni proje oluşturulduğunda |
-| project.updated | Proje güncellendiğinde |
-| project.deleted | Proje silindiğinde |
-| file.created | Dosya oluşturulduğunda |
-| file.updated | Dosya güncellendiğinde |
-| file.deleted | Dosya silindiğinde |
+| project.updated | Proje güncellendiğinde      |
+| project.deleted | Proje silindiğinde          |
+| file.created    | Dosya oluşturulduğunda      |
+| file.updated    | Dosya güncellendiğinde      |
+| file.deleted    | Dosya silindiğinde          |
 
 ### Webhook Yükü Örneği
 
@@ -783,14 +780,14 @@ X-Codexonx-Signature: sha256=7682fe915e8cedab68e2c2eeac8b47f6c90c62865c1c1873346
 İmza doğrulama örneği (Node.js):
 
 ```javascript
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 function verifyWebhookSignature(payload, signature, secret) {
   const expectedSignature = crypto
-    .createHmac('sha256', secret)
+    .createHmac("sha256", secret)
     .update(JSON.stringify(payload))
-    .digest('hex');
-  
+    .digest("hex");
+
   return signature === `sha256=${expectedSignature}`;
 }
 ```

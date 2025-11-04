@@ -1,6 +1,6 @@
-# AICodeX - AI Kod Yazma Platformu
+# AICodeX - Yapay Zeka Destekli Kod Yazma Platformu
 
-AICodeX, yapay zeka destekli kod yazma, düzenleme ve geliştirme platformudur. Bu platform, [Emergent](https://app.emergent.sh/) benzeri bir deneyim sunarak, geliştiricilerin AI asistanlarla birlikte çalışarak kod projelerini daha hızlı ve verimli bir şekilde oluşturmasını sağlar.
+AICodeX, geliştiricilere yapay zeka güç ile kod yazma, düzenleme ve geliştirme olanağı sunan modern bir kodlama platformudur. Bu platform, [Emergent](https://app.emergent.sh/) ve [GitHub Copilot](https://github.com/features/copilot) benzeri bir deneyim sunarak, geliştiricilerin AI asistanlarla birlikte çalışarak kodlama sürecini hızlandırmasını ve kod kalitesini artırmasını sağlar.
 
 ## Özellikler
 
@@ -13,27 +13,34 @@ AICodeX, yapay zeka destekli kod yazma, düzenleme ve geliştirme platformudur. 
 
 ## Teknoloji Yığını
 
-- **Frontend**: React 18, Next.js 14, TypeScript
-- **UI**: TailwindCSS, Framer Motion
-- **Bileşenler**: Shadcn UI, Radix UI
-- **AI Entegrasyonu**: OpenAI API (simüle edilmiş)
-- **İkonlar**: Lucide React
+- **Frontend**: React 18, Next.js 14.2+, TypeScript 5.4+
+- **Kod Editörü**: Monaco Editor (VS Code motoru)
+- **UI**: TailwindCSS 3.4+, Framer Motion 11
+- **Bileşenler**: Shadcn UI, Radix UI 2.0
+- **AI Entegrasyonu**: OpenAI API (simüle edilmiş, GPT-4o hazırlıklı)
+- **İkonlar**: Lucide React 0.350+
+- **Performans Optimizasyonu**: Web Workers, Code Splitting, Lazy Loading
 
 ## Proje Yapısı
 
 ```plaintext
 /ai-code
-  ├── page.tsx               # Ana sayfa
-  ├── layout.tsx             # AI kod platformu ana düzeni
-  ├── editor/
-  │   ├── page.tsx           # Kod editörü sayfası
-  │   └── layout.tsx         # Editör düzeni
-  ├── demo/
-  │   └── page.tsx           # Demo sayfası
-  └── components/
-      ├── ai-api.ts          # AI API entegrasyonu
-      ├── code-editor.tsx    # Kod editörü bileşeni
-      └── ai-chat.tsx        # AI sohbet bileşeni
+  ├─ page.tsx                 # Ana tanıtım sayfası
+  ├─ layout.tsx               # AI kod platformu ana düzeni
+  ├─ editor/
+  │   ├─ page.tsx             # Kod editörü sayfası
+  │   └─ layout.tsx           # Editör düzeni
+  ├─ demo/
+  │   └─ page.tsx             # Demo sayfası
+  ├─ community/               # Topluluk sayfaları
+  ├─ projects/                # Kullanıcı projeleri
+  ├─ templates/               # Proje şablonları
+  ├─ settings/                # Kullanıcı ve uygulama ayarları
+  └─ components/
+      ├─ ai-api.ts            # AI API entegrasyonu (simüle edilmiş)
+      ├─ ai-chat.tsx          # AI sohbet bileşeni
+      ├─ monaco-editor.tsx    # Monaco kod editörü bileşeni
+      └─ monaco-editor.css    # Monaco editör stilleri
 ```
 
 ## Kurulum ve Çalıştırma
@@ -46,7 +53,13 @@ AICodeX, yapay zeka destekli kod yazma, düzenleme ve geliştirme platformudur. 
    yarn
    ```
 
-2. Geliştirme sunucusunu başlatma:
+2. Monaco Editör worker'larını oluşturma:
+
+   ```bash
+   npx webpack --config webpack.monaco-workers.config.js
+   ```
+
+3. Geliştirme sunucusunu başlatma:
 
    ```bash
    npm run dev
@@ -54,17 +67,18 @@ AICodeX, yapay zeka destekli kod yazma, düzenleme ve geliştirme platformudur. 
    yarn dev
    ```
 
-3. Tarayıcıda [http://localhost:3000/ai-code](http://localhost:3000/ai-code) adresini açın
+4. Tarayıcıda [http://localhost:3000/ai-code](http://localhost:3000/ai-code) adresini açın
 
 ## Gelecek Özellikler
 
-- Kullanıcı hesap sistemi ve oturum yönetimi
-- Gerçek OpenAI API entegrasyonu
-- GitHub entegrasyonu
-- Proje şablonları ve hazır kod parçaları
-- Çoklu dil desteği
-- İleri kod analizi ve optimize etme özellikleri
-- Kolaboratif kodlama özellikleri
+- **Kullanıcı Yönetimi**: Oturum açma, hesap yönetimi ve kullanıcı profilleri
+- **Gerçek AI Entegrasyonu**: OpenAI, Claude veya Gemini API'ları ile entegrasyon
+- **Git Entegrasyonu**: GitHub, GitLab veya Bitbucket entegrasyonu
+- **Kod Analiz Æracları**: Statik kod analizi, güvenlik taramaları, kod kalitesi değerlendirmesi
+- **Proje Şablonları**: Önceden hazırlanmış çeşitli proje şablonları
+- **Kolaboratif Kodlama**: Birden fazla geliştiricinin aynı projede çalışabilmesi
+- **Çoklu AI Modelieri**: Farklı AI modellerini proje gereksinimlerine göre kullanabilme
+- **Özelleştirme**: Tema, düzenleme ve kullanıcı tercihleri
 
 ## Lisans
 

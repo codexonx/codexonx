@@ -1,23 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Bell, Check, X, ChevronDown, ChevronUp, Filter, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
+import { useState, useEffect } from 'react';
+import { Bell, Check, X, ChevronDown, ChevronUp, Filter, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 
 // Bildirim türleri
-export type NotificationType = "info" | "success" | "warning" | "error" | "system";
+export type NotificationType = 'info' | 'success' | 'warning' | 'error' | 'system';
 
 // Bildirim veri modeli
 export interface Notification {
@@ -41,7 +32,7 @@ export function NotificationsCenter({
   onNotificationClick,
 }: NotificationsCenterProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [activeTab, setActiveTab] = useState<"all" | "unread">("all");
+  const [activeTab, setActiveTab] = useState<'all' | 'unread'>('all');
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -49,88 +40,88 @@ export function NotificationsCenter({
   useEffect(() => {
     const fetchNotifications = async () => {
       setIsLoading(true);
-      
+
       // Simüle edilmiş API isteği
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      
+      await new Promise(resolve => setTimeout(resolve, 800));
+
       const mockNotifications: Notification[] = [
         {
-          id: "1",
-          title: "Ödeme başarılı",
-          message: "Pro plan için aylık ödemeniz başarıyla alındı.",
-          type: "success",
+          id: '1',
+          title: 'Ödeme başarılı',
+          message: 'Pro plan için aylık ödemeniz başarıyla alındı.',
+          type: 'success',
           read: false,
           createdAt: new Date(Date.now() - 1000 * 60 * 10).toISOString(), // 10 dakika önce
         },
         {
-          id: "2",
-          title: "API kotası aşıldı",
-          message: "Projelerinizden biri günlük API kotasını aştı.",
-          type: "warning",
+          id: '2',
+          title: 'API kotası aşıldı',
+          message: 'Projelerinizden biri günlük API kotasını aştı.',
+          type: 'warning',
           read: false,
           createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 saat önce
-          link: "/admin/projects/limits",
-          actionText: "Kota Ayarları",
+          link: '/admin/projects/limits',
+          actionText: 'Kota Ayarları',
         },
         {
-          id: "3",
-          title: "Sistem bakımı",
-          message: "Yarın 03:00-05:00 arasında planlı bakım gerçekleştirilecektir.",
-          type: "info",
+          id: '3',
+          title: 'Sistem bakımı',
+          message: 'Yarın 03:00-05:00 arasında planlı bakım gerçekleştirilecektir.',
+          type: 'info',
           read: true,
           createdAt: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(), // 12 saat önce
         },
         {
-          id: "4",
-          title: "Hesap güvenliği",
-          message: "Hesabınıza farklı bir konumdan giriş yapıldı.",
-          type: "error",
+          id: '4',
+          title: 'Hesap güvenliği',
+          message: 'Hesabınıza farklı bir konumdan giriş yapıldı.',
+          type: 'error',
           read: true,
           createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(), // 2 gün önce
-          link: "/admin/settings/security",
-          actionText: "Güvenlik Ayarları",
+          link: '/admin/settings/security',
+          actionText: 'Güvenlik Ayarları',
         },
         {
-          id: "5",
-          title: "Yeni özellik: API Anahtarları",
-          message: "Artık birden fazla API anahtarı oluşturup yönetebilirsiniz.",
-          type: "system",
+          id: '5',
+          title: 'Yeni özellik: API Anahtarları',
+          message: 'Artık birden fazla API anahtarı oluşturup yönetebilirsiniz.',
+          type: 'system',
           read: true,
           createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5).toISOString(), // 5 gün önce
-          link: "/admin/settings/api-keys",
-          actionText: "Keşfet",
+          link: '/admin/settings/api-keys',
+          actionText: 'Keşfet',
         },
       ];
-      
+
       setNotifications(mockNotifications);
       setIsLoading(false);
     };
-    
+
     if (isOpen) {
       fetchNotifications();
     }
   }, [isOpen]);
 
   // Okunmamış bildirimleri filtrele
-  const unreadNotifications = notifications.filter((notification) => !notification.read);
-  
+  const unreadNotifications = notifications.filter(notification => !notification.read);
+
   // Aktif sekmeye göre gösterilecek bildirimleri filtrele
-  const filteredNotifications = activeTab === "unread" ? unreadNotifications : notifications;
-  
+  const filteredNotifications = activeTab === 'unread' ? unreadNotifications : notifications;
+
   // Bildirimi oku
   const handleNotificationClick = (notification: Notification) => {
     if (!notification.read) {
       // Okunma durumunu güncelle (gerçek uygulamada API çağrısı yapılacak)
-      const updatedNotifications = notifications.map((item) => {
+      const updatedNotifications = notifications.map(item => {
         if (item.id === notification.id) {
           return { ...item, read: true };
         }
         return item;
       });
-      
+
       setNotifications(updatedNotifications);
     }
-    
+
     // Özel tıklama işlemi
     if (onNotificationClick) {
       onNotificationClick(notification);
@@ -139,13 +130,13 @@ export function NotificationsCenter({
 
   // Tümünü okundu işaretle
   const markAllAsRead = () => {
-    const updatedNotifications = notifications.map((notification) => ({
+    const updatedNotifications = notifications.map(notification => ({
       ...notification,
       read: true,
     }));
-    
+
     setNotifications(updatedNotifications);
-    
+
     if (onMarkAllAsRead) {
       onMarkAllAsRead();
     }
@@ -154,15 +145,15 @@ export function NotificationsCenter({
   // Bildirim türüne göre simge
   const getNotificationIcon = (type: NotificationType) => {
     switch (type) {
-      case "success":
+      case 'success':
         return <div className="h-2 w-2 rounded-full bg-green-500"></div>;
-      case "warning":
+      case 'warning':
         return <div className="h-2 w-2 rounded-full bg-yellow-500"></div>;
-      case "error":
+      case 'error':
         return <div className="h-2 w-2 rounded-full bg-red-500"></div>;
-      case "info":
+      case 'info':
         return <div className="h-2 w-2 rounded-full bg-blue-500"></div>;
-      case "system":
+      case 'system':
         return <div className="h-2 w-2 rounded-full bg-purple-500"></div>;
       default:
         return <div className="h-2 w-2 rounded-full bg-gray-500"></div>;
@@ -174,9 +165,9 @@ export function NotificationsCenter({
     const date = new Date(dateString);
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    
+
     if (diffInSeconds < 60) {
-      return "Az önce";
+      return 'Az önce';
     } else if (diffInSeconds < 3600) {
       return `${Math.floor(diffInSeconds / 60)} dakika önce`;
     } else if (diffInSeconds < 86400) {
@@ -200,7 +191,7 @@ export function NotificationsCenter({
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 sm:w-96 p-0">
-        <Tabs defaultValue={activeTab} onValueChange={(v) => setActiveTab(v as "all" | "unread")}>
+        <Tabs defaultValue={activeTab} onValueChange={v => setActiveTab(v as 'all' | 'unread')}>
           <div className="flex items-center justify-between border-b px-3 py-2">
             <h4 className="font-medium">Bildirimler</h4>
             <div className="flex gap-1">
@@ -209,7 +200,7 @@ export function NotificationsCenter({
                   Tümü
                 </TabsTrigger>
                 <TabsTrigger value="unread" className="text-xs px-2">
-                  Okunmamış{" "}
+                  Okunmamış{' '}
                   {unreadNotifications.length > 0 && (
                     <span className="ml-1 rounded-full bg-primary/20 px-1.5 text-[10px]">
                       {unreadNotifications.length}
@@ -223,11 +214,11 @@ export function NotificationsCenter({
           <TabsContent value="all" className="focus-visible:outline-none">
             {renderNotifications(filteredNotifications)}
           </TabsContent>
-          
+
           <TabsContent value="unread" className="focus-visible:outline-none">
             {renderNotifications(filteredNotifications)}
           </TabsContent>
-          
+
           <div className="border-t px-3 py-2">
             <div className="flex justify-between items-center">
               <Button
@@ -240,7 +231,7 @@ export function NotificationsCenter({
                 <Check className="mr-2 h-3.5 w-3.5" />
                 Tümünü okundu işaretle
               </Button>
-              
+
               <Button variant="ghost" size="sm" className="h-7 text-xs">
                 <Filter className="mr-2 h-3.5 w-3.5" />
                 Filtrele
@@ -251,7 +242,7 @@ export function NotificationsCenter({
       </PopoverContent>
     </Popover>
   );
-  
+
   // Bildirim listesi render fonksiyonu
   function renderNotifications(notificationsList: Notification[]) {
     if (isLoading) {
@@ -261,57 +252,55 @@ export function NotificationsCenter({
         </div>
       );
     }
-    
+
     if (notificationsList.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
           <Bell className="h-10 w-10 text-muted-foreground/50 mb-3" />
           <p className="text-sm text-muted-foreground">
-            {activeTab === "all"
-              ? "Henüz bildiriminiz bulunmuyor"
-              : "Okunmamış bildiriminiz bulunmuyor"}
+            {activeTab === 'all'
+              ? 'Henüz bildiriminiz bulunmuyor'
+              : 'Okunmamış bildiriminiz bulunmuyor'}
           </p>
         </div>
       );
     }
-    
+
     return (
       <div className="max-h-[60vh] overflow-y-auto">
-        {notificationsList.map((notification) => (
+        {notificationsList.map(notification => (
           <div
             key={notification.id}
             onClick={() => handleNotificationClick(notification)}
             className={cn(
-              "flex gap-3 px-3 py-3 border-b last:border-0 cursor-pointer transition-colors",
-              notification.read ? "bg-background" : "bg-muted/30",
-              "hover:bg-muted/50"
+              'flex gap-3 px-3 py-3 border-b last:border-0 cursor-pointer transition-colors',
+              notification.read ? 'bg-background' : 'bg-muted/30',
+              'hover:bg-muted/50'
             )}
           >
             <div className="mt-1">{getNotificationIcon(notification.type)}</div>
             <div className="flex-1 space-y-1">
               <div className="flex items-start justify-between gap-2">
-                <p className={cn("text-sm font-medium", !notification.read && "font-semibold")}>
+                <p className={cn('text-sm font-medium', !notification.read && 'font-semibold')}>
                   {notification.title}
                 </p>
                 <time className="text-xs text-muted-foreground whitespace-nowrap">
                   {formatDate(notification.createdAt)}
                 </time>
               </div>
-              <p className="text-sm text-muted-foreground line-clamp-2">
-                {notification.message}
-              </p>
+              <p className="text-sm text-muted-foreground line-clamp-2">{notification.message}</p>
               {notification.link && (
                 <div className="pt-1">
                   <Button
                     variant="link"
                     size="sm"
                     className="h-auto p-0 text-xs text-primary"
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
                       window.location.href = notification.link!;
                     }}
                   >
-                    {notification.actionText || "Ayrıntılar"}
+                    {notification.actionText || 'Ayrıntılar'}
                   </Button>
                 </div>
               )}
