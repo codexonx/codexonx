@@ -269,6 +269,9 @@ export const getUsageStats = async (req: Request, res: Response, next: NextFunct
           userId,
           createdAt: { gte: thirtyDaysAgo },
         },
+        orderBy: {
+          model: 'asc',
+        },
         _sum: {
           tokensUsed: true,
         },

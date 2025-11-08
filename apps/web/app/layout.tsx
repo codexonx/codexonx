@@ -23,7 +23,11 @@ export const metadata: Metadata = {
   description: 'Kodlama projeleriniz için güçlü bir platform',
   manifest: '/manifest.webmanifest',
   themeColor: '#4f46e5',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    viewportFit: 'cover',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',

@@ -30,6 +30,10 @@ jest.mock('../lib/prisma', () => {
         findMany: jest.fn(),
         findUnique: jest.fn(),
       },
+      contactRequest: {
+        create: jest.fn(),
+        update: jest.fn(),
+      },
       $transaction: jest.fn(),
       $connect: jest.fn(),
       $disconnect: jest.fn(),

@@ -1,29 +1,29 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, SubStatus } from '@prisma/client';
 import { Request, Response } from 'express';
 import { z } from 'zod';
 
+import prisma from '../lib/prisma';
 import { logger } from '../utils/logger';
 
-const prisma = new PrismaClient();
+const statusSchema = z
+  .string()
+  .transform(value => value.toUpperCase())
+  .pipe(z.nativeEnum(SubStatus));
 
 // Abonelik oluşturma şeması
 const createSubscriptionSchema = z.object({
   userId: z.string().uuid(),
   planId: z.string(),
-  status: z.enum(['active', 'canceled', 'expired', 'trial']).default('active'),
-  startDate: z.date().optional(),
-  endDate: z.date().optional(),
-  paymentMethodId: z.string().optional(),
-  stripeSubscriptionId: z.string().optional(),
+  status: statusSchema.default(SubStatus.ACTIVE),
+  startDate: z.coerce.date().optional(),
+  endDate: z.coerce.date().optional(),
 });
 
 // Abonelik güncelleme şeması
 const updateSubscriptionSchema = z.object({
   planId: z.string().optional(),
-  status: z.enum(['active', 'canceled', 'expired', 'trial']).optional(),
-  endDate: z.date().optional(),
-  paymentMethodId: z.string().optional(),
-  stripeSubscriptionId: z.string().optional(),
+  status: statusSchema.optional(),
+  endDate: z.coerce.date().nullable().optional(),
 });
 
 /**
@@ -105,14 +105,13 @@ export const createSubscription = async (req: Request, res: Response) => {
       return res.status(400).json({ error: validationResult.error.errors });
     }
 
-    const { userId, planId, status, startDate, endDate, paymentMethodId, stripeSubscriptionId } =
-      validationResult.data;
+    const { userId, planId, status, startDate, endDate } = validationResult.data;
 
     // Kullanıcının mevcut aktif aboneliğini kontrol et
     const existingSubscription = await prisma.subscription.findFirst({
       where: {
         userId,
-        status: 'active',
+        status: SubStatus.ACTIVE,
       },
     });
 
@@ -132,13 +131,15 @@ export const createSubscription = async (req: Request, res: Response) => {
     // Yeni abonelik oluştur
     const newSubscription = await prisma.subscription.create({
       data: {
-        userId,
-        planId,
+        user: {
+          connect: { id: userId },
+        },
+        plan: {
+          connect: { id: planId },
+        },
         status,
         startDate: startDate || new Date(),
         endDate,
-        paymentMethodId,
-        stripeSubscriptionId,
       },
       include: {
         plan: true,
@@ -185,10 +186,27 @@ export const updateSubscription = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Abonelik bulunamadı' });
     }
 
-    // Aboneliği güncelle
+    const { planId, status, endDate } = validationResult.data;
+
+    const updateData: Prisma.SubscriptionUpdateInput = {};
+
+    if (planId) {
+      updateData.plan = {
+        connect: { id: planId },
+      };
+    }
+
+    if (status) {
+      updateData.status = status;
+    }
+
+    if (endDate !== undefined) {
+      updateData.endDate = endDate;
+    }
+
     const updatedSubscription = await prisma.subscription.update({
       where: { id },
-      data: validationResult.data,
+      data: updateData,
       include: {
         plan: true,
       },
@@ -232,16 +250,10 @@ export const cancelSubscription = async (req: Request, res: Response) => {
     const canceledSubscription = await prisma.subscription.update({
       where: { id },
       data: {
-        status: 'canceled',
+        status: SubStatus.CANCELED,
         endDate: new Date(),
       },
     });
-
-    // Stripe aboneliği varsa, orada da iptal et
-    if (existingSubscription.stripeSubscriptionId) {
-      // Stripe iptal işlemi burada yapılacak
-      // Bu kısım payments controller'ındaki cancelSubscription fonksiyonu ile yapılabilir
-    }
 
     return res.status(200).json({
       success: true,
@@ -267,7 +279,7 @@ export const checkActiveSubscription = async (req: Request, res: Response) => {
     const activeSubscription = await prisma.subscription.findFirst({
       where: {
         userId,
-        status: 'active',
+        status: SubStatus.ACTIVE,
         OR: [{ endDate: null }, { endDate: { gt: new Date() } }],
       },
       include: {

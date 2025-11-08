@@ -7,28 +7,27 @@ declare module '../lib/prisma' {
   export default prisma;
 }
 
-// Ortak kullanıcı tipi
-type WorkspaceRole = 'OWNER' | 'ADMIN' | 'MEMBER';
-type WorkspacePlan = 'FREE' | 'PRO' | 'ENTERPRISE';
-
-interface UserWorkspaceSummary {
-  id: string;
-  name: string;
-  slug: string;
-  role: WorkspaceRole;
-  plan: WorkspacePlan;
-}
-
-export interface RequestUser {
-  id: string;
-  email: string;
-  role: 'USER' | 'ADMIN';
-  workspaces: UserWorkspaceSummary[];
-  activeWorkspace?: UserWorkspaceSummary;
-}
-
-// Express tiplemeleri
+// Ortak tipler
 declare global {
+  type WorkspaceRole = 'OWNER' | 'ADMIN' | 'MEMBER';
+  type WorkspacePlan = 'FREE' | 'PRO' | 'ENTERPRISE';
+
+  interface UserWorkspaceSummary {
+    id: string;
+    name: string;
+    slug: string;
+    role: WorkspaceRole;
+    plan: WorkspacePlan;
+  }
+
+  interface RequestUser {
+    id: string;
+    email: string;
+    role: 'USER' | 'ADMIN';
+    workspaces: UserWorkspaceSummary[];
+    activeWorkspace?: UserWorkspaceSummary;
+  }
+
   namespace Express {
     interface Request {
       user?: RequestUser;

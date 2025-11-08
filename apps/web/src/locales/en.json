@@ -153,5 +153,244 @@
     "contactUs": "Contact Us",
     "about": "About",
     "help": "Help"
+  },
+  "landing": {
+    "nav": {
+      "features": "Features",
+      "ecosystem": "Integrations",
+      "pricing": "Pricing",
+      "contact": "Contact"
+    },
+    "hero": {
+      "betaTag": "Beta program • Live onboarding tour with 18 teams",
+      "title": {
+        "prefix": "Reimagine delivery pipelines",
+        "highlight": "together with your team",
+        "suffix": "from commit to production"
+      },
+      "description": {
+        "primary": "Codexonx unifies your CI/CD lifecycles with an AI assisted pair-authoring flow and secure API key governance.",
+        "secondary": "Ship every sprint with confidence thanks to data-informed reports, shareable retros, and decision logs your teammates can trust."
+      },
+      "primaryCta": "Start Free Trial",
+      "secondaryCta": "Book a 30-Min Demo",
+      "bullets": [
+        "Beta access includes two guided weekly onboarding sessions",
+        "Zero-trust security posture & GDPR-ready governance"
+      ]
+    },
+    "stats": {
+      "heading": "Platform Snapshot",
+      "description": "Teams using Codexonx shorten delivery time while keeping quality measurable.",
+      "items": [
+        {
+          "value": "48",
+          "label": "Active Workspaces"
+        },
+        {
+          "value": "120K",
+          "label": "Monthly Code Suggestions"
+        },
+        {
+          "value": "<4h",
+          "label": "Initial Support Response"
+        }
+      ]
+    },
+    "featureHighlights": {
+      "heading": "Highlighted Capabilities",
+      "description": {
+        "lead": "A next-generation platform for engineering teams.",
+        "detail": "From planning to ship-ready code, unlock visibility and control throughout your lifecycle."
+      },
+      "ctaLabel": "Explore more",
+      "items": [
+        {
+          "title": "Modern Command Center",
+          "description": "Operate streams, integrations, and rollouts from a single customizable dashboard with real-time context."
+        },
+        {
+          "title": "Secure API Credentials",
+          "description": "Apply zero-trust policies, instant key rotation, and detailed access logs without leaving your workflow."
+        },
+        {
+          "title": "Deep Analytics",
+          "description": "AI-powered reports, trend forecasts, and bespoke metric sets accelerate decision-making for platform leads."
+        },
+        {
+          "title": "Enterprise Safeguards",
+          "description": "SOC 2 readiness, encrypted storage, and fine-grained RBAC help you meet global compliance expectations."
+        }
+      ]
+    },
+    "trust": {
+      "heading": "Why teams trust Codexonx",
+      "description": "We iterate transparently with pilot customers and share every milestone.",
+      "items": [
+        {
+          "title": "GDPR & KVKK aligned",
+          "description": "Process design follows EU and Turkish data protection standards from day one."
+        },
+        {
+          "title": "SOC 2 Type I in progress",
+          "description": "Independent audit underway with reports scheduled before Q4 2025."
+        },
+        {
+          "title": "Feedback from 18 pilot teams",
+          "description": "Active pilots across Istanbul, Berlin, and London guide our weekly releases."
+        }
+      ]
+    },
+    "integrations": {
+      "heading": "Ecosystem & Integrations",
+      "description": "Connect every step of your delivery chain. Codexonx observes the journey from commit to live ops.",
+      "items": [
+        {
+          "name": "GitOps & Repo Sync",
+          "description": "Continuously index GitHub and GitLab repos, auto-review pull requests, and rotate secrets safely."
+        },
+        {
+          "name": "Cloud Delivery Flow",
+          "description": "Track Vercel and AWS rollouts with live pipeline health after each deploy."
+        },
+        {
+          "name": "Team Notifications",
+          "description": "Share critical events, approvals, and AI summaries instantly through Slack."
+        }
+      ]
+    },
+    "testimonials": {
+      "heading": "What our pilot teams say",
+      "description": "Highlights from the teams co-building Codexonx with us.",
+      "items": [
+        {
+          "quote": "Codexonx gives us confidence by surfacing pipeline health in one place. Our weekly syncs now run on data, not guesswork.",
+          "name": "Selin Arda",
+          "role": "Platform Engineering Lead",
+          "company": "Lunaris Labs",
+          "region": "Berlin"
+        },
+        {
+          "quote": "Even during beta the support team responds within minutes. Key rotation and audit trails removed a huge burden from my crew.",
+          "name": "Jorge Méndez",
+          "role": "Head of DevOps",
+          "company": "AtlasPay",
+          "region": "Madrid"
+        },
+        {
+          "quote": "Ahead of our EMEA launch we validated security workflows with Codexonx. The team iterated alongside our actual needs.",
+          "name": "Ebru Kahvecioğlu",
+          "role": "CTO",
+          "company": "NovaFleet",
+          "region": "Istanbul"
+        }
+      ]
+    },
+    "pricing": {
+      "heading": "Pricing Plans",
+      "subheading": "Scale confidently with plans that include the Codexonx AI editor, secure API management, and workspace sync.",
+      "currencyLabel": "Currency",
+      "currencyNotes": {
+        "try": "Pricing defaults to Turkish Lira.",
+        "usd": "USD values reference the daily CBRT average rate.",
+        "eur": "Euro conversions reflect EU customer guidance."
+      },
+      "currencyDisclaimer": "* Exchange rates are indicative and refreshed at billing time.",
+      "mostPopularBadge": "Most Popular",
+      "roi": {
+        "free": "Risk-free for freelancers to explore core workflows at no cost.",
+        "enterprise": "We tailor pricing and SLAs around your deployment footprint and governance requirements.",
+        "team": "Roughly {{formattedCost}} monthly for a {{teamSize}}-person squad. Teams save ~8 engineering hours per sprint on average."
+      },
+      "plans": {
+        "starter": {
+          "name": "Starter",
+          "frequency": "/month / seat",
+          "tagline": "An ideal launchpad for individual builders.",
+          "features": [
+            "Up to 2 workspaces",
+            "Unlimited API keys",
+            "7-day activity history"
+          ],
+          "cta": "Start for Free"
+        },
+        "pro": {
+          "name": "Pro",
+          "frequency": "/month / seat",
+          "tagline": "Automation and insights for growing squads.",
+          "features": [
+            "Up to 10 workspaces",
+            "Automated key rotation",
+            "30-day activity history",
+            "Priority support"
+          ],
+          "cta": "Choose Plan"
+        },
+        "enterprise": {
+          "name": "Enterprise",
+          "frequency": "Custom offer",
+          "tagline": "Advanced security, dedicated SLAs, and on-prem options.",
+          "features": [
+            "Unlimited workspaces",
+            "Private deployment choices",
+            "SOC 2 / ISO 27001 alignment",
+            "24/7 engineering response"
+          ],
+          "cta": "Talk with Our Team"
+        }
+      },
+      "faq": [
+        {
+          "question": "Is the Starter plan truly free?",
+          "answer": "Yes. No credit card required and you stay on Starter unless you decide to upgrade."
+        },
+        {
+          "question": "Who benefits most from the Pro plan?",
+          "answer": "Product and platform teams shipping daily. It includes automated rotation, 30-day logs, and priority support."
+        },
+        {
+          "question": "How do Enterprise engagements work?",
+          "answer": "Pricing reflects the number of environments, compliance scope, and enablement needs. Most teams launch in 4-6 weeks."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Accelerate your team's AI-assisted workflows",
+      "description": "Codexonx brings secure workspace orchestration, automated pipeline observability, and AI-guided pair authoring so you can ship faster.",
+      "button": "Request a Live Demo",
+      "linkLabel": "Browse our documentation roadmap →"
+    },
+    "footer": {
+      "description": "Future-proof your teams with secure pipeline management, workspace synchronization, and AI-guided code generation.",
+      "tagline": "Istanbul • Built for global product squads",
+      "sections": {
+        "platform": {
+          "title": "Platform",
+          "links": {
+            "features": "Features",
+            "pricing": "Pricing",
+            "docs": "Documentation"
+          }
+        },
+        "company": {
+          "title": "Company",
+          "links": {
+            "about": "About",
+            "blog": "Blog",
+            "careers": "Careers"
+          }
+        },
+        "contact": {
+          "title": "Contact",
+          "location": "Istanbul, Türkiye"
+        }
+      },
+      "social": {
+        "github": "GitHub",
+        "twitter": "Twitter",
+        "linkedin": "LinkedIn",
+        "email": "Email"
+      }
+    }
   }
 }

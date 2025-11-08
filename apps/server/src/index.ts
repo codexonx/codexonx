@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import { errorHandler } from './middlewares/errorHandler';
 import aiCodeRoutes from './routes/ai-code.routes';
 import authRoutes from './routes/auth';
+import contactRoutes from './routes/contact';
 import paymentRoutes from './routes/payments';
 import projectRoutes from './routes/projects';
 import subscriptionRoutes from './routes/subscriptions';
@@ -43,6 +44,7 @@ app.use('/api/subscriptions', subscriptionRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/ai', aiCodeRoutes);
 app.use('/api/waitlist', waitlistRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

@@ -162,4 +162,20 @@ export const api = {
         body: JSON.stringify(data),
       }),
   },
+
+  contact: {
+    submit: (data: {
+      fullName: string;
+      email: string;
+      company?: string;
+      topic: string;
+      message: string;
+      consent: boolean;
+      referrer?: string;
+    }) =>
+      fetchAPI<{ status: string; message: string }>('/contact', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+  },
 };

@@ -55,7 +55,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const response = await api.auth.me();
         setUser(response.user);
       } catch (error) {
-        console.error('Authentication error:', error);
+        if (error instanceof Error && /401|unauthorized/i.test(error.message)) {
+          console.warn('Authentication session expired. Clearing local token.');
+        } else {
+          console.error('Authentication error:', error);
+        }
         // Token geçersiz ise çıkış yap
         localStorage.removeItem('auth_token');
       } finally {
