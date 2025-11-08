@@ -7,10 +7,12 @@ import { useI18n } from '@/contexts/i18n-context';
 import { cn } from '@/lib/utils';
 
 // Tip tanımlamaları
+type NavIconName = 'Home' | 'LayoutDashboard' | 'User' | 'Settings';
+
 interface NavItem {
   href: string;
   label: string;
-  iconName: keyof typeof Icons;
+  iconName: NavIconName;
   active: boolean;
 }
 
@@ -32,7 +34,7 @@ export default function MobileNavBar() {
     {
       href: '/projects',
       label: t('nav.projects'),
-      iconName: 'Layout',
+      iconName: 'LayoutDashboard',
       active: pathname === '/projects' || pathname.startsWith('/projects/'),
     },
     {
@@ -53,7 +55,7 @@ export default function MobileNavBar() {
     <nav className="mobile-nav">
       {navItems.map(item => {
         // Lucide ikonlarını ad üzerinden çağıralım
-        const Icon = Icons[item.iconName];
+        const IconComponent = Icons[item.iconName] as React.ComponentType<{ className?: string }>;
         return (
           <a
             key={item.href}
@@ -63,8 +65,7 @@ export default function MobileNavBar() {
             })}
           >
             <div className="mobile-nav-icon">
-              {/* @ts-ignore - Basit bir çözüm için tip hatasını görmezden geliyoruz */}
-              <Icon className="h-5 w-5" />
+              <IconComponent className="h-5 w-5" />
             </div>
             <span>{item.label}</span>
           </a>

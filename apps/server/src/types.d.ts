@@ -7,34 +7,68 @@ declare module '../lib/prisma' {
   export default prisma;
 }
 
+// Ortak kullanıcı tipi
+type WorkspaceRole = 'OWNER' | 'ADMIN' | 'MEMBER';
+type WorkspacePlan = 'FREE' | 'PRO' | 'ENTERPRISE';
+
+interface UserWorkspaceSummary {
+  id: string;
+  name: string;
+  slug: string;
+  role: WorkspaceRole;
+  plan: WorkspacePlan;
+}
+
+export interface RequestUser {
+  id: string;
+  email: string;
+  role: 'USER' | 'ADMIN';
+  workspaces: UserWorkspaceSummary[];
+  activeWorkspace?: UserWorkspaceSummary;
+}
+
 // Express tiplemeleri
-declare namespace Express {
-  interface Request {
-    user?: {
-      id: string;
-      email: string;
-      role: string;
-    };
+declare global {
+  namespace Express {
+    interface Request {
+      user?: RequestUser;
+    }
   }
 }
 
+export {};
+
 // API Yanıt tipleri
-interface ApiResponse<T = any> {
+interface ApiResponse<T = unknown> {
   success: boolean;
   message?: string;
   data?: T;
-  errors?: any[];
+  errors?: unknown[];
 }
 
 // Proje modeli tipleri
+type ProjectVisibility = 'PRIVATE' | 'INTERNAL' | 'PUBLIC';
+
 interface Project {
   id: string;
   name: string;
   description?: string;
   apiKey: string;
-  userId: string;
+  workspaceId: string;
+  createdById?: string | null;
+  visibility: ProjectVisibility;
   createdAt: Date;
   updatedAt: Date;
+}
+
+interface ProjectWithWorkspace extends Project {
+  workspace: {
+    id: string;
+    name: string;
+    slug: string;
+    plan: WorkspacePlan;
+    description?: string | null;
+  };
 }
 
 // Kullanıcı modeli tipleri
@@ -74,44 +108,52 @@ interface Plan {
 
 // Test tiplemeleri
 declare global {
-  namespace jest {
-    interface Mock<T = any, Y extends any[] = any[]> {
-      (...args: Y): T;
-      mockImplementation(fn: (...args: Y) => T): this;
-      mockReturnThis(): this;
-      mockReturnValue(value: T): this;
-      mockReturnValueOnce(value: T): this;
-      mockResolvedValue(value: T): this;
-      mockResolvedValueOnce(value: T): this;
-      mockRejectedValue(value: any): this;
-      mockRejectedValueOnce(value: any): this;
-      mockClear(): this;
-      mockReset(): this;
-      mockRestore(): this;
-      getMockName(): string;
-      mockName(name: string): this;
-      mock: {
-        calls: Y[];
-        instances: T[];
-        invocationCallOrder: number[];
-        results: Array<{ type: string; value: any }>;
-      };
-    }
+  type JestDone = (reason?: string | Error) => void;
+  type JestHook = () => unknown | Promise<unknown>;
+  type JestHookWithDone = (done: JestDone) => void;
+  type JestTestHandler = JestHook | JestHookWithDone;
+
+  interface JestMock<T = unknown, Y extends unknown[] = unknown[]> {
+    (...args: Y): T;
+    mockImplementation(fn: (...args: Y) => T): this;
+    mockReturnThis(): this;
+    mockReturnValue(value: T): this;
+    mockReturnValueOnce(value: T): this;
+    mockResolvedValue(value: T): this;
+    mockResolvedValueOnce(value: T): this;
+    mockRejectedValue(value: unknown): this;
+    mockRejectedValueOnce(value: unknown): this;
+    mockClear(): this;
+    mockReset(): this;
+    mockRestore(): this;
+    getMockName(): string;
+    mockName(name: string): this;
+    mock: {
+      calls: Y[];
+      instances: T[];
+      invocationCallOrder: number[];
+      results: Array<{ type: string; value: unknown }>;
+    };
   }
 
-  function describe(name: string, fn: () => void): void;
-  function test(name: string, fn: Function, timeout?: number): void;
-  function it(name: string, fn: Function, timeout?: number): void;
-  function expect<T>(actual: T): any;
-  function beforeAll(fn: Function, timeout?: number): void;
-  function beforeEach(fn: Function, timeout?: number): void;
-  function afterAll(fn: Function, timeout?: number): void;
-  function afterEach(fn: Function, timeout?: number): void;
+  function describe(name: string, fn: JestHook): void;
+  function test(name: string, fn: JestTestHandler, timeout?: number): void;
+  function it(name: string, fn: JestTestHandler, timeout?: number): void;
+  function expect<T>(actual: T): unknown;
+  function beforeAll(fn: JestTestHandler, timeout?: number): void;
+  function beforeEach(fn: JestTestHandler, timeout?: number): void;
+  function afterAll(fn: JestTestHandler, timeout?: number): void;
+  function afterEach(fn: JestTestHandler, timeout?: number): void;
 
   const jest: {
-    fn: <T = any>(implementation?: (...args: any[]) => T) => jest.Mock<T>;
-    spyOn: <T extends {}, M extends keyof T>(object: T, method: M) => jest.Mock<T[M]>;
-    mock: (moduleName: string, factory?: any, options?: any) => void;
+    fn: <T = unknown, Y extends unknown[] = unknown[]>(
+      implementation?: (...args: Y) => T
+    ) => JestMock<T, Y>;
+    spyOn: <T extends Record<string, unknown>, M extends keyof T>(
+      object: T,
+      method: M
+    ) => JestMock<T[M]>;
+    mock: (moduleName: string, factory?: () => unknown, options?: { virtual?: boolean }) => void;
     clearAllMocks: () => void;
     resetAllMocks: () => void;
     restoreAllMocks: () => void;

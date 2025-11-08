@@ -5,9 +5,10 @@
 // arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Check, Save, Copy, Play, Share, Download } from 'lucide-react';
+import { Check, Save, Copy, Play, Share2 as Share, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
 
 interface CodeEditorProps {
   initialCode?: string;
@@ -16,6 +17,8 @@ interface CodeEditorProps {
   onChange?: (code: string) => void;
   onRun?: (code: string) => void;
   height?: string;
+  className?: string;
+  textareaClassName?: string;
 }
 
 // Basit bir kod editörü komponenti
@@ -27,10 +30,30 @@ export const CodeEditor = ({
   onChange,
   onRun,
   height = '400px',
+  className,
+  textareaClassName,
 }: CodeEditorProps) => {
   const [code, setCode] = useState(initialCode);
   const [isCopied, setIsCopied] = useState(false);
   const editorRef = useRef<HTMLTextAreaElement>(null);
+
+  const heightClassMap: Record<string, string> = {
+    '300px': 'h-[300px]',
+    '320px': 'h-[320px]',
+    '360px': 'h-[360px]',
+    '400px': 'h-[400px]',
+    '480px': 'h-[480px]',
+    '500px': 'h-[500px]',
+    '560px': 'h-[560px]',
+    '600px': 'h-[600px]',
+    '640px': 'h-[640px]',
+    '70vh': 'h-[70vh]',
+    auto: 'h-auto',
+    full: 'h-full',
+    '100%': 'h-full',
+  };
+
+  const containerHeightClass = heightClassMap[height] || heightClassMap['400px'];
 
   useEffect(() => {
     // initialCode değişirse, editörü güncelle
@@ -134,7 +157,14 @@ export const CodeEditor = ({
   };
 
   return (
-    <div className="flex flex-col bg-slate-900 rounded-md overflow-hidden border border-slate-700">
+    <div
+      className={cn(
+        'flex flex-col bg-slate-900 rounded-md overflow-hidden border border-slate-700',
+        'min-h-[200px]',
+        containerHeightClass,
+        className
+      )}
+    >
       {/* Editör başlık çubuğu */}
       <div className="bg-slate-800 px-4 py-2 flex justify-between items-center border-b border-slate-700">
         <div className="flex items-center">
@@ -224,8 +254,11 @@ export const CodeEditor = ({
         value={code}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
-        className="flex-1 w-full bg-slate-900 text-slate-300 p-4 font-mono text-sm resize-none outline-none"
-        style={{ height, minHeight: '200px' }}
+        className={cn(
+          'flex-1 w-full bg-slate-900 text-slate-300 p-4 font-mono text-sm resize-none outline-none',
+          'min-h-[200px] h-full',
+          textareaClassName
+        )}
         spellCheck={false}
         autoCapitalize="off"
         autoCorrect="off"

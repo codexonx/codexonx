@@ -1,30 +1,28 @@
-import express from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
+import { config } from 'dotenv';
+import express, { json, urlencoded } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { rateLimit } from 'express-rate-limit';
 
-// Load environment variables
-dotenv.config();
-
-// Import routes
+import { errorHandler } from './middlewares/errorHandler';
+import aiCodeRoutes from './routes/ai-code.routes';
 import authRoutes from './routes/auth';
-import userRoutes from './routes/users';
+import paymentRoutes from './routes/payments';
 import projectRoutes from './routes/projects';
 import subscriptionRoutes from './routes/subscriptions';
-import paymentRoutes from './routes/payments';
-import aiCodeRoutes from './routes/ai-code.routes';
+import userRoutes from './routes/users';
+import waitlistRoutes from './routes/waitlist';
+import { logger } from './utils/logger';
 
-// Import middlewares
-import { errorHandler } from './middlewares/errorHandler';
+// Load environment variables
+config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(json());
+app.use(urlencoded({ extended: true }));
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
@@ -44,6 +42,7 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/ai', aiCodeRoutes);
+app.use('/api/waitlist', waitlistRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -55,7 +54,7 @@ app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  logger.info(`Server running on port ${PORT}`);
 });
 
 export default app;

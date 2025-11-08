@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, ArrowLeft, RefreshCw } from 'lucide-react';
+import { AlertCircle, ArrowLeft, RefreshCcw } from 'lucide-react';
 
 export default function PaymentErrorPage() {
   const router = useRouter();
@@ -42,7 +42,7 @@ export default function PaymentErrorPage() {
     <div className="container mx-auto px-4 py-16 max-w-3xl">
       <div className="flex flex-col items-center text-center mb-12">
         <div className="bg-red-100 dark:bg-red-900 p-6 rounded-full mb-6">
-          <AlertTriangle className="h-16 w-16 text-red-600 dark:text-red-300" />
+          <AlertCircle className="h-12 w-12 text-red-500" />
         </div>
 
         <h1 className="text-3xl md:text-4xl font-bold mb-4">Ödeme Başarısız</h1>
@@ -60,7 +60,7 @@ export default function PaymentErrorPage() {
         <div className="space-y-4">
           <div className="flex items-start p-4 bg-card rounded-md border">
             <div className="bg-primary/10 p-2 rounded-full mr-4 mt-1">
-              <RefreshCw className="h-4 w-4 text-primary" />
+              <RefreshCcw className="h-4 w-4 text-primary" />
             </div>
             <div className="text-left">
               <h3 className="font-medium">Tekrar deneyin</h3>
@@ -72,7 +72,7 @@ export default function PaymentErrorPage() {
 
           <div className="flex items-start p-4 bg-card rounded-md border">
             <div className="bg-primary/10 p-2 rounded-full mr-4 mt-1">
-              <RefreshCw className="h-4 w-4 text-primary" />
+              <RefreshCcw className="h-4 w-4 text-primary" />
             </div>
             <div className="text-left">
               <h3 className="font-medium">Başka bir ödeme yöntemi kullanın</h3>
@@ -84,7 +84,7 @@ export default function PaymentErrorPage() {
 
           <div className="flex items-start p-4 bg-card rounded-md border">
             <div className="bg-primary/10 p-2 rounded-full mr-4 mt-1">
-              <RefreshCw className="h-4 w-4 text-primary" />
+              <RefreshCcw className="h-4 w-4 text-primary" />
             </div>
             <div className="text-left">
               <h3 className="font-medium">Bankanız ile iletişime geçin</h3>
@@ -97,7 +97,7 @@ export default function PaymentErrorPage() {
 
         <div className="pt-6 flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
           <Button className="w-full" onClick={handleTryAgain}>
-            <RefreshCw className="mr-2 h-4 w-4" />
+            <RefreshCcw className="h-4 w-4 mr-2" />
             Tekrar Dene
           </Button>
 

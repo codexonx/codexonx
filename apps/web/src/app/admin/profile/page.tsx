@@ -1,10 +1,6 @@
 'use client';
 
-// @ts-nocheck
-// TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve Radix UI/Lucide
-// arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
-
-import React, { useState } from 'react';
+import React, { useState, type ChangeEvent, type FormEvent, type KeyboardEvent } from 'react';
 import { motion } from 'framer-motion';
 import {
   User,
@@ -47,13 +43,51 @@ import { toast } from '@/components/ui/use-toast';
 import { Toaster } from '@/components/ui/toaster';
 import { useI18n } from '@/contexts/i18n-context';
 
+type TabKey = 'personal' | 'account' | 'security';
+
+interface Language {
+  name: string;
+  level: string;
+}
+
+interface NotificationPreferences {
+  email: boolean;
+  sms: boolean;
+  push: boolean;
+  marketing: boolean;
+}
+
+interface SecuritySettings {
+  twoFactor: boolean;
+  lastPasswordChange: string;
+  lastLogin: string;
+}
+
+interface ProfileData {
+  name: string;
+  email: string;
+  phone: string;
+  avatar: string;
+  coverPhoto: string;
+  birthday: string;
+  address: string;
+  company: string;
+  position: string;
+  bio: string;
+  website: string;
+  languages: Language[];
+  skills: string[];
+  notifications: NotificationPreferences;
+  security: SecuritySettings;
+}
+
 export default function ProfilePage() {
   const { t } = useI18n();
-  const [activeTab, setActiveTab] = useState('personal');
+  const [activeTab, setActiveTab] = useState<TabKey>('personal');
   const [saving, setSaving] = useState(false);
 
   // Simüle edilmiş kullanıcı profil verisi
-  const [profile, setProfile] = useState({
+  const [profile, setProfile] = useState<ProfileData>({
     name: 'Ahmet Yılmaz',
     email: 'ahmet.yilmaz@codexonx.com',
     phone: '+90 532 123 4567',
@@ -96,12 +130,43 @@ export default function ProfilePage() {
   });
 
   // Kullanıcı bilgilerini güncellemek için fonksiyon
-  const updateProfile = (field, value) => {
+  const updateProfile = <K extends keyof ProfileData>(field: K, value: ProfileData[K]) => {
     setProfile(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleInputChange =
+    (field: keyof ProfileData) => (event: ChangeEvent<HTMLInputElement>) => {
+      updateProfile(field, event.currentTarget.value);
+    };
+
+  const handleTextareaChange =
+    (field: keyof ProfileData) => (event: ChangeEvent<HTMLTextAreaElement>) => {
+      updateProfile(field, event.currentTarget.value);
+    };
+
+  const handleSkillKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Enter') {
+      return;
+    }
+
+    const newSkill = event.currentTarget.value.trim();
+    if (!newSkill) {
+      return;
+    }
+
+    event.preventDefault();
+    setProfile(prev => {
+      if (prev.skills.includes(newSkill)) {
+        return prev;
+      }
+
+      return { ...prev, skills: [...prev.skills, newSkill] };
+    });
+    event.currentTarget.value = '';
+  };
+
   // Form submit fonksiyonu
-  const handleSubmit = async event => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSaving(true);
 
@@ -198,7 +263,11 @@ export default function ProfilePage() {
 
       {/* Sekmeler */}
       <motion.div variants={fadeInUp} initial="initial" animate="animate">
-        <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs
+          defaultValue={activeTab}
+          onValueChange={(value: string) => setActiveTab(value as TabKey)}
+          className="w-full"
+        >
           <TabsList className="grid w-full grid-cols-3 md:w-auto md:inline-flex">
             <TabsTrigger value="personal">{t('profile.personalInfo')}</TabsTrigger>
             <TabsTrigger value="account">{t('profile.account')}</TabsTrigger>
@@ -222,7 +291,7 @@ export default function ProfilePage() {
                         <Input
                           id="name"
                           value={profile.name}
-                          onChange={e => updateProfile('name', e.target.value)}
+                          onChange={handleInputChange('name')}
                           className="pl-10"
                         />
                       </div>
@@ -235,7 +304,7 @@ export default function ProfilePage() {
                           id="email"
                           type="email"
                           value={profile.email}
-                          onChange={e => updateProfile('email', e.target.value)}
+                          onChange={handleInputChange('email')}
                           className="pl-10"
                         />
                       </div>
@@ -247,7 +316,7 @@ export default function ProfilePage() {
                         <Input
                           id="phone"
                           value={profile.phone}
-                          onChange={e => updateProfile('phone', e.target.value)}
+                          onChange={handleInputChange('phone')}
                           className="pl-10"
                         />
                       </div>
@@ -260,7 +329,7 @@ export default function ProfilePage() {
                           id="birthday"
                           type="date"
                           value={profile.birthday}
-                          onChange={e => updateProfile('birthday', e.target.value)}
+                          onChange={handleInputChange('birthday')}
                           className="pl-10"
                         />
                       </div>
@@ -272,7 +341,7 @@ export default function ProfilePage() {
                         <Input
                           id="address"
                           value={profile.address}
-                          onChange={e => updateProfile('address', e.target.value)}
+                          onChange={handleInputChange('address')}
                           className="pl-10"
                         />
                       </div>
@@ -284,7 +353,7 @@ export default function ProfilePage() {
                         <Input
                           id="website"
                           value={profile.website}
-                          onChange={e => updateProfile('website', e.target.value)}
+                          onChange={handleInputChange('website')}
                           className="pl-10"
                         />
                       </div>
@@ -298,7 +367,7 @@ export default function ProfilePage() {
                       <Input
                         id="company"
                         value={profile.company}
-                        onChange={e => updateProfile('company', e.target.value)}
+                        onChange={handleInputChange('company')}
                         className="pl-10"
                       />
                     </div>
@@ -311,7 +380,7 @@ export default function ProfilePage() {
                       <Input
                         id="position"
                         value={profile.position}
-                        onChange={e => updateProfile('position', e.target.value)}
+                        onChange={handleInputChange('position')}
                         className="pl-10"
                       />
                     </div>
@@ -322,7 +391,7 @@ export default function ProfilePage() {
                     <Textarea
                       id="bio"
                       value={profile.bio}
-                      onChange={e => updateProfile('bio', e.target.value)}
+                      onChange={handleTextareaChange('bio')}
                       rows={4}
                     />
                   </div>
@@ -350,16 +419,7 @@ export default function ProfilePage() {
                         <Input
                           placeholder={t('profile.addSkill')}
                           className="w-40 h-8"
-                          onKeyDown={e => {
-                            if (e.key === 'Enter' && e.target.value.trim()) {
-                              e.preventDefault();
-                              const newSkill = e.target.value.trim();
-                              if (!profile.skills.includes(newSkill)) {
-                                updateProfile('skills', [...profile.skills, newSkill]);
-                              }
-                              e.target.value = '';
-                            }
-                          }}
+                          onKeyDown={handleSkillKeyDown}
                         />
                       </div>
                     </div>

@@ -18,6 +18,11 @@ export function useMonacoEditor(options: MonacoEditorOptions = {}) {
   const editorContainer = useRef<HTMLDivElement>(null);
   const [editorInstance, setEditorInstance] = useState<any>(null);
   const [isEditorReady, setIsEditorReady] = useState(false);
+  const optionsRef = useRef(options);
+
+  useEffect(() => {
+    optionsRef.current = options;
+  }, [options]);
 
   useEffect(() => {
     // Monaco Editor'ü yükleme ve kurma
@@ -57,12 +62,14 @@ export function useMonacoEditor(options: MonacoEditorOptions = {}) {
 
         // Editör referansı mevcut ve container hazırsa
         if (editorContainer.current && window.monaco) {
+          const currentOptions = optionsRef.current || {};
           editor = window.monaco.editor.create(editorContainer.current, {
-            value: options.value || '',
-            language: options.language || 'javascript',
-            theme: options.theme || 'vs-dark',
-            automaticLayout: options.automaticLayout !== undefined ? options.automaticLayout : true,
-            minimap: options.minimap || { enabled: false },
+            value: currentOptions.value || '',
+            language: currentOptions.language || 'javascript',
+            theme: currentOptions.theme || 'vs-dark',
+            automaticLayout:
+              currentOptions.automaticLayout !== undefined ? currentOptions.automaticLayout : true,
+            minimap: currentOptions.minimap || { enabled: false },
             fontSize: 14,
             scrollBeyondLastLine: false,
             renderLineHighlight: 'all',
@@ -78,10 +85,10 @@ export function useMonacoEditor(options: MonacoEditorOptions = {}) {
           setIsEditorReady(true);
 
           // Editör hazır olduğunda dil ve tema ayarlarını uygula
-          if (options.language) {
+          if (currentOptions.language) {
             const model = editor.getModel();
             if (model) {
-              monaco.editor.setModelLanguage(model, options.language);
+              monaco.editor.setModelLanguage(model, currentOptions.language);
             }
           }
         }

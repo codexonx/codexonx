@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import MonacoEditor, { setupMonaco } from '@/app/ai-code/components/monaco-editor';
-import { AIService } from '@/services/ai-service';
+import { AIService, type Message as AIMessage } from '@/services/ai-service';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -13,7 +13,7 @@ import {
   MessageSquare,
   FileText,
   Check,
-  RefreshCw,
+  RefreshCcw as RefreshCw,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -49,7 +49,7 @@ export function AICodeEditor({
   const [output, setOutput] = useState<string>('');
   const [isRunning, setIsRunning] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('editor');
-  const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
+  const [messages, setMessages] = useState<AIMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [editorReady, setEditorReady] = useState(false);
@@ -99,7 +99,8 @@ export function AICodeEditor({
           const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
           await new AsyncFunction(code)();
         } catch (error) {
-          logs.push(`Hata: ${error.message}`);
+          const message = error instanceof Error ? error.message : String(error);
+          logs.push(`Hata: ${message}`);
         }
 
         console.log = originalConsoleLog;
@@ -108,7 +109,8 @@ export function AICodeEditor({
         setOutput(`${language} kodu için çalıştırma simülasyonu henüz eklenmedi.`);
       }
     } catch (error) {
-      setOutput(`Çalıştırma hatası: ${error.message}`);
+      const message = error instanceof Error ? error.message : String(error);
+      setOutput(`Çalıştırma hatası: ${message}`);
     } finally {
       setIsRunning(false);
     }
@@ -127,14 +129,15 @@ export function AICodeEditor({
 
     if (!input.trim()) return;
 
-    const userMessage = { role: 'user', content: input };
-    setMessages([...messages, userMessage]);
+    const userMessage: AIMessage = { role: 'user', content: input };
+    setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
 
     try {
       // AI yanıtını al
-      const response = await aiService.sendChatMessage([...messages, userMessage], {
+      const conversation: AIMessage[] = [...messages, userMessage];
+      const response = await aiService.sendChatMessage(conversation, {
         context: {
           code,
           language,
@@ -142,12 +145,15 @@ export function AICodeEditor({
         },
       });
 
-      setMessages(prev => [...prev, { role: 'assistant', content: response.text }]);
+      const assistantMessage: AIMessage = { role: 'assistant', content: response.text };
+      setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
-      setMessages(prev => [
-        ...prev,
-        { role: 'assistant', content: 'Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.' },
-      ]);
+      const message = error instanceof Error ? error.message : String(error);
+      const errorMessage: AIMessage = {
+        role: 'assistant',
+        content: `Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin. (Detay: ${message})`,
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -250,36 +256,46 @@ export function AICodeEditor({
               {showSuggestions && (
                 <div className="absolute bottom-4 right-4 max-w-xs bg-background border shadow-lg rounded-lg p-3 text-sm">
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium flex items-center">
-                      <FileText className="h-3.5 w-3.5 mr-1 text-primary" />
-                      Kod İyileştirme Önerileri
+                    <h4 className="font-medium flex items-center gap-1">
+                      <FileText className="h-3.5 w-3.5 text-primary" />
+                      <span>Kod önerileri</span>
                     </h4>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-6 w-6 p-0"
+                      className="h-6 w-6 p-0 shrink-0"
                       onClick={() => setShowSuggestions(false)}
                     >
-                      &times;
+                      ×
                     </Button>
                   </div>
-                  <ul className="space-y-1.5">
+                  <ul className="space-y-2">
                     {suggestions.map((suggestion, index) => (
                       <li key={index} className="flex items-start">
-                        <Check className="h-3.5 w-3.5 mr-1.5 mt-0.5 text-green-500 flex-shrink-0" />
-                        <span className="text-xs">{suggestion}</span>
+                        <Check className="h-3.5 w-3.5 mr-1.5 mt-0.5 text-green-500 shrink-0" />
+                        <span className="text-xs leading-relaxed">{suggestion}</span>
                       </li>
                     ))}
                   </ul>
-                  <Button
-                    size="sm"
-                    variant="link"
-                    className="text-xs mt-2 p-0"
-                    onClick={requestCodeSuggestions}
-                  >
-                    <RefreshCw className="h-3 w-3 mr-1" />
-                    Yeni öneriler al
-                  </Button>
+                  <div className="flex items-center justify-between gap-2 mt-3">
+                    <Button
+                      size="sm"
+                      variant="link"
+                      className="text-xs p-0"
+                      onClick={requestCodeSuggestions}
+                    >
+                      <RefreshCw className="h-3 w-3 mr-1" />
+                      Yeni öneriler al
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-xs"
+                      onClick={() => setShowSuggestions(false)}
+                    >
+                      Kapat
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>

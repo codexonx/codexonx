@@ -1,6 +1,8 @@
+import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { PrismaClient } from '@prisma/client';
+
+import { logger } from '../utils/logger';
 
 const prisma = new PrismaClient();
 
@@ -51,7 +53,7 @@ export const getSubscriptions = async (req: Request, res: Response) => {
       data: subscriptions,
     });
   } catch (error: any) {
-    console.error('Abonelikleri getirme hatası:', error);
+    logger.error('Abonelikleri getirme hatası:', error);
     return res.status(500).json({ error: error.message || 'Sunucu hatası' });
   }
 };
@@ -87,7 +89,7 @@ export const getSubscription = async (req: Request, res: Response) => {
       data: subscription,
     });
   } catch (error: any) {
-    console.error('Abonelik getirme hatası:', error);
+    logger.error('Abonelik getirme hatası:', error);
     return res.status(500).json({ error: error.message || 'Sunucu hatası' });
   }
 };
@@ -148,7 +150,7 @@ export const createSubscription = async (req: Request, res: Response) => {
       data: newSubscription,
     });
   } catch (error: any) {
-    console.error('Abonelik oluşturma hatası:', error);
+    logger.error('Abonelik oluşturma hatası:', error);
     return res.status(500).json({ error: error.message || 'Sunucu hatası' });
   }
 };
@@ -197,7 +199,7 @@ export const updateSubscription = async (req: Request, res: Response) => {
       data: updatedSubscription,
     });
   } catch (error: any) {
-    console.error('Abonelik güncelleme hatası:', error);
+    logger.error('Abonelik güncelleme hatası:', error);
     return res.status(500).json({ error: error.message || 'Sunucu hatası' });
   }
 };
@@ -246,7 +248,7 @@ export const cancelSubscription = async (req: Request, res: Response) => {
       data: canceledSubscription,
     });
   } catch (error: any) {
-    console.error('Abonelik iptal hatası:', error);
+    logger.error('Abonelik iptal hatası:', error);
     return res.status(500).json({ error: error.message || 'Sunucu hatası' });
   }
 };
@@ -279,7 +281,7 @@ export const checkActiveSubscription = async (req: Request, res: Response) => {
       data: activeSubscription,
     });
   } catch (error: any) {
-    console.error('Abonelik kontrolü hatası:', error);
+    logger.error('Abonelik kontrolü hatası:', error);
     return res.status(500).json({ error: error.message || 'Sunucu hatası' });
   }
 };

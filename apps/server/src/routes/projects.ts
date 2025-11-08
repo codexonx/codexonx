@@ -1,4 +1,5 @@
-import express from 'express';
+import { Router } from 'express';
+
 import {
   getProjects,
   getProject,
@@ -9,7 +10,7 @@ import {
 } from '../controllers/projects';
 import { authenticate } from '../middlewares/auth';
 
-const router = express.Router();
+const router = Router();
 
 // All project routes require authentication
 router.use(authenticate);

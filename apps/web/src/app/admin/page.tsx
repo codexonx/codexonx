@@ -50,6 +50,7 @@ export default function AdminDashboard() {
   });
 
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useI18n();
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -90,8 +91,6 @@ export default function AdminDashboard() {
       </div>
     );
   }
-
-  const { t } = useI18n();
 
   // Animasyon varyantları
   const fadeInUp = {

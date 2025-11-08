@@ -1,4 +1,5 @@
-import express from 'express';
+import { Router } from 'express';
+
 import {
   getMe,
   updateMe,
@@ -9,7 +10,7 @@ import {
 } from '../controllers/users';
 import { authenticate, restrictTo } from '../middlewares/auth';
 
-const router = express.Router();
+const router = Router();
 
 // User routes
 router.use(authenticate);

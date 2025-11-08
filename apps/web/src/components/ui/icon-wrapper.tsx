@@ -1,9 +1,5 @@
 'use client';
 
-// @ts-nocheck
-// TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve dynamic import
-// arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
-
 import React from 'react';
 import dynamic from 'next/dynamic';
 
@@ -14,15 +10,34 @@ export interface IconProps extends React.SVGProps<SVGSVGElement> {
   strokeWidth?: number;
 }
 
+type LucideModule = typeof import('lucide-react');
+
+const MissingIcon: React.FC<IconProps> = () => <span className="icon-missing w-5 h-5" />;
+
 // Dinamik olarak Lucide ikonlarını import eden bir fonksiyon
 export function Icon({ name, ...props }: IconProps & { name: string }): React.ReactElement | null {
-  // Dinamik olarak component yükle
   const IconComponent = React.useMemo(
     () =>
-      dynamic(() => import('lucide-react').then(mod => mod[name as keyof typeof mod]), {
-        loading: () => <span className="icon-loading w-5 h-5"></span>,
-        ssr: false,
-      }),
+      dynamic<IconProps>(
+        async () => {
+          const mod: LucideModule = await import('lucide-react');
+          const component = mod[name as keyof LucideModule];
+
+          if (typeof component === 'function') {
+            return component as React.ComponentType<IconProps>;
+          }
+
+          if (process.env.NODE_ENV !== 'production') {
+            console.warn(`Icon "${name}" lucide-react paketinde bulunamadı.`);
+          }
+
+          return MissingIcon;
+        },
+        {
+          loading: () => <span className="icon-loading w-5 h-5" />,
+          ssr: false,
+        }
+      ),
     [name]
   );
 

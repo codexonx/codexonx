@@ -1,4 +1,5 @@
-import express from 'express';
+import { raw, Router } from 'express';
+
 import {
   createCustomer,
   createPaymentIntent,
@@ -7,10 +8,10 @@ import {
 } from '../controllers/payments';
 import { authenticate } from '../middlewares/auth';
 
-const router = express.Router();
+const router = Router();
 
 // Webhook endpoints don't need authentication
-router.post('/webhook/stripe', express.raw({ type: 'application/json' }), handleWebhook);
+router.post('/webhook/stripe', raw({ type: 'application/json' }), handleWebhook);
 
 // All other payment routes require authentication
 router.use(authenticate);

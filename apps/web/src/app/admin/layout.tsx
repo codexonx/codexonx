@@ -1,18 +1,14 @@
-// Admin layout server component - burada metadata tanımlanabilir
-import React from 'react';
+import type { Metadata } from 'next';
+import AdminClientWrapper from '@/components/admin/admin-client-wrapper';
 
-// Metadata tanımını burada yapıyoruz (server component kısmı)
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Codexonx Admin Panel',
   description: 'Codexonx yönetim paneli',
 };
 
-// Admin Client Wrapper'a yönlendiriyoruz
-import AdminClientWrapper from '@/components/admin/admin-client-wrapper';
-
-type AdminLayoutProps = {
+interface AdminLayoutProps {
   children: React.ReactNode;
-};
+}
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   return <AdminClientWrapper>{children}</AdminClientWrapper>;

@@ -4,12 +4,10 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
-import axios from 'axios';
-import { AppError } from '../middlewares/errorHandler';
 
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
+import { AppError } from '../middlewares/errorHandler';
 
 // AI isteği için validasyon şeması
 const aiRequestSchema = z.object({
@@ -63,14 +61,7 @@ const codeCompletionSchema = z.object({
  */
 export const queryAI = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const {
-      prompt,
-      model = 'gpt-4o',
-      temperature = 0.7,
-      maxTokens = 2048,
-      files,
-      context,
-    } = aiRequestSchema.parse(req.body);
+    const { prompt, model = 'gpt-4o', files } = aiRequestSchema.parse(req.body);
 
     // Gerçek API'ye istek göndermek yerine simüle edilmiş yanıt
     // Gerçek uygulamada OpenAI API'sine istek gönderin
@@ -78,7 +69,7 @@ export const queryAI = async (req: Request, res: Response, next: NextFunction) =
 
     // Kullanım istatistiği ve log
     if (req.user) {
-      await prisma.aiRequestLog.create({
+      await prisma.aIRequestLog.create({
         data: {
           userId: req.user.id,
           prompt,
@@ -118,7 +109,7 @@ export const chat = async (req: Request, res: Response, next: NextFunction) => {
 
     // Kullanım istatistiği ve log
     if (req.user) {
-      await prisma.aiRequestLog.create({
+      await prisma.aIRequestLog.create({
         data: {
           userId: req.user.id,
           prompt: lastUserMessage,
@@ -157,7 +148,7 @@ export const completeCode = async (req: Request, res: Response, next: NextFuncti
 
     // Kullanım istatistiği ve log
     if (req.user) {
-      await prisma.aiRequestLog.create({
+      await prisma.aIRequestLog.create({
         data: {
           userId: req.user.id,
           prompt: `Code completion: ${language}`,
@@ -197,7 +188,7 @@ export const improveCode = async (req: Request, res: Response, next: NextFunctio
 
     // Kullanım istatistiği ve log
     if (req.user) {
-      await prisma.aiRequestLog.create({
+      await prisma.aIRequestLog.create({
         data: {
           userId: req.user.id,
           prompt: `Code improvement: ${language}`,
@@ -232,6 +223,10 @@ export const getUsageStats = async (req: Request, res: Response, next: NextFunct
     const { userId } = req.params;
 
     // Yalnızca yöneticiler başkalarının istatistiklerini görüntüleyebilir
+    if (!req.user) {
+      return next(new AppError('Kullanıcı oturumu bulunamadı', 401));
+    }
+
     if (userId !== req.user.id && req.user.role !== 'ADMIN') {
       return next(new AppError('Bu istatistiklere erişim yetkiniz yok', 403));
     }
@@ -242,7 +237,7 @@ export const getUsageStats = async (req: Request, res: Response, next: NextFunct
 
     const stats = await prisma.$transaction([
       // Toplam token kullanımı
-      prisma.aiRequestLog.aggregate({
+      prisma.aIRequestLog.aggregate({
         where: {
           userId,
           createdAt: { gte: thirtyDaysAgo },
@@ -253,7 +248,7 @@ export const getUsageStats = async (req: Request, res: Response, next: NextFunct
       }),
 
       // Günlük kullanım
-      prisma.aiRequestLog.groupBy({
+      prisma.aIRequestLog.groupBy({
         by: ['createdAt'],
         where: {
           userId,
@@ -268,7 +263,7 @@ export const getUsageStats = async (req: Request, res: Response, next: NextFunct
       }),
 
       // Model kullanımı
-      prisma.aiRequestLog.groupBy({
+      prisma.aIRequestLog.groupBy({
         by: ['model'],
         where: {
           userId,

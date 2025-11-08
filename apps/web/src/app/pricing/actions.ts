@@ -14,6 +14,8 @@ export async function createCheckoutSession(priceId: string) {
     return redirect('/auth/login?from=/pricing');
   }
 
+  const userId = (session.user as { id?: string | null })?.id ?? '';
+
   // Checkout session oluştur
   const checkoutSession = await stripe.checkout.sessions.create({
     mode: 'subscription',
@@ -27,7 +29,7 @@ export async function createCheckoutSession(priceId: string) {
     success_url: absoluteUrl('/dashboard?success=true'),
     cancel_url: absoluteUrl('/pricing?canceled=true'),
     metadata: {
-      userId: session.user.id || '',
+      userId,
     },
   });
 

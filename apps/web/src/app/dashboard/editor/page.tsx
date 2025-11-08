@@ -4,7 +4,7 @@
 // TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve Monaco Editor
 // arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Folder, File, Plus, Search, Save, Play, Settings, MessageSquare, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -79,6 +79,12 @@ export default function EditorPage() {
   const activeFile = files.find(file => file.id === activeFileId);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
+  const updateFileContent = useCallback((fileId: string, content: string) => {
+    setFiles(prevFiles =>
+      prevFiles.map(file => (file.id === fileId ? { ...file, content } : file))
+    );
+  }, []);
+
   // Monaco Editor hook kullanımı
   const { editorContainer, editorInstance, isEditorReady } = useMonacoEditor({
     language: activeFile?.language || 'javascript',
@@ -115,7 +121,7 @@ export default function EditorPage() {
       const disposable = editorInstance.onDidChangeModelContent(handleChange);
       return () => disposable.dispose();
     }
-  }, [isEditorReady, editorInstance, activeFile]);
+  }, [isEditorReady, editorInstance, activeFile, updateFileContent]);
 
   // Chat mesajlarına otomatik scroll
   useEffect(() => {
@@ -123,11 +129,6 @@ export default function EditorPage() {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [chatHistory]);
-
-  // Dosya içeriğini güncelle
-  const updateFileContent = (fileId: string, content: string) => {
-    setFiles(files.map(f => (f.id === fileId ? { ...f, content } : f)));
-  };
 
   // Dosya oluşturma fonksiyonu
   const handleCreateFile = () => {

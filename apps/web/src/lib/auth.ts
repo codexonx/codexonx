@@ -3,7 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GitHubProvider from 'next-auth/providers/github';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { db } from './db';
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
@@ -57,11 +57,19 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id;
-        session.user.name = token.name;
-        session.user.email = token.email;
-        session.user.image = token.picture;
+      if (token && session.user) {
+        if (typeof token.id === 'string') {
+          session.user.id = token.id;
+        }
+        if (typeof token.name === 'string') {
+          session.user.name = token.name;
+        }
+        if (typeof token.email === 'string') {
+          session.user.email = token.email;
+        }
+        if (typeof token.picture === 'string') {
+          session.user.image = token.picture;
+        }
       }
 
       return session;

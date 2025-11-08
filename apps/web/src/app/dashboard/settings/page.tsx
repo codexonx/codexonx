@@ -1,12 +1,9 @@
 'use client';
 
-// @ts-nocheck
-// TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
-// arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
-
 import { cn } from '@/lib/utils';
 
-import React, { useState } from 'react';
+import React, { useState, type ChangeEvent, type HTMLAttributes } from 'react';
+import Image from 'next/image';
 import {
   User,
   Bell,
@@ -34,22 +31,52 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-// Basit bir Separator bileşeni tanımlıyoruz
-const Separator = ({ className, ...props }) => (
-  <div className={cn('h-[1px] w-full bg-border', className)} {...props} />
-);
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
+interface NotificationSettings {
+  email: boolean;
+  push: boolean;
+  updates: boolean;
+  newsletter: boolean;
+}
+
+interface ProfileSettings {
+  name: string;
+  email: string;
+  bio: string;
+  github: string;
+  twitter: string;
+  linkedin: string;
+}
+
+type WordWrapOption = 'on' | 'off' | 'wordWrapColumn';
+
+interface EditorSettings {
+  fontSize: number;
+  tabSize: number;
+  wordWrap: WordWrapOption;
+  lineNumbers: boolean;
+  autoSave: boolean;
+  formatOnSave: boolean;
+  minimap: boolean;
+  suggestions: boolean;
+}
+
+// Basit bir Separator bileşeni tanımlıyoruz
+const Separator = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn('h-px w-full bg-border', className)} {...props} />
+);
+
 export default function SettingsPage() {
-  const [theme, setTheme] = useState('system');
-  const [editorTheme, setEditorTheme] = useState('vs-dark');
-  const [notifications, setNotifications] = useState({
+  const [theme, setTheme] = useState<'system' | 'light' | 'dark'>('system');
+  const [editorTheme, setEditorTheme] = useState<'vs-dark' | 'vs' | 'hc-black'>('vs-dark');
+  const [notifications, setNotifications] = useState<NotificationSettings>({
     email: true,
     push: false,
     updates: true,
     newsletter: false,
   });
-  const [profile, setProfile] = useState({
+  const [profile, setProfile] = useState<ProfileSettings>({
     name: 'Kullanıcı Adı',
     email: 'kullanici@mail.com',
     bio: 'Yazılım geliştirici ve teknoloji meraklısı. Web, mobil ve AI projelerinde çalışıyorum.',
@@ -57,7 +84,7 @@ export default function SettingsPage() {
     twitter: 'kullanici',
     linkedin: 'kullanici',
   });
-  const [editorSettings, setEditorSettings] = useState({
+  const [editorSettings, setEditorSettings] = useState<EditorSettings>({
     fontSize: 14,
     tabSize: 2,
     wordWrap: 'on',
@@ -69,24 +96,27 @@ export default function SettingsPage() {
   });
 
   // Tema değiştirme
-  const handleThemeChange = (newTheme: string) => {
+  const handleThemeChange = (newTheme: 'system' | 'light' | 'dark') => {
     setTheme(newTheme);
     // Burada gerçekte tema değiştirme işlemi yapılacak
   };
 
   // Profil güncelleme
-  const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+  const handleProfileChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.currentTarget;
     setProfile(prev => ({ ...prev, [name]: value }));
   };
 
   // Editör ayarları güncelleme
-  const handleEditorSettingChange = (setting: string, value: any) => {
+  const handleEditorSettingChange = <K extends keyof EditorSettings>(
+    setting: K,
+    value: EditorSettings[K]
+  ) => {
     setEditorSettings(prev => ({ ...prev, [setting]: value }));
   };
 
   // Bildirim ayarları değiştirme
-  const handleNotificationChange = (type: string, checked: boolean) => {
+  const handleNotificationChange = (type: keyof NotificationSettings, checked: boolean) => {
     setNotifications(prev => ({ ...prev, [type]: checked }));
   };
 
@@ -135,7 +165,13 @@ export default function SettingsPage() {
             <CardContent className="space-y-8">
               <div className="flex flex-col md:flex-row md:items-center gap-6">
                 <div className="relative h-24 w-24 overflow-hidden rounded-full bg-muted">
-                  <img src="/avatar.png" alt="Avatar" className="h-full w-full object-cover" />
+                  <Image
+                    src="/avatar.png"
+                    alt="Avatar"
+                    fill
+                    sizes="96px"
+                    className="object-cover"
+                  />
                   <div className="absolute inset-0 flex items-center justify-center bg-muted text-lg font-medium opacity-0">
                     KA
                   </div>
@@ -320,6 +356,7 @@ export default function SettingsPage() {
                     title="Dil Seçimi"
                     aria-label="Dil Seçimi"
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    defaultValue="tr"
                   >
                     <option value="tr">Türkçe</option>
                     <option value="en">English</option>
@@ -349,7 +386,9 @@ export default function SettingsPage() {
                   <div>
                     <RadioGroup
                       defaultValue={editorTheme}
-                      onValueChange={value => setEditorTheme(value)}
+                      onValueChange={value =>
+                        setEditorTheme(value as 'vs-dark' | 'vs' | 'hc-black')
+                      }
                       className="grid grid-cols-1 gap-4"
                     >
                       <div>
@@ -443,7 +482,9 @@ export default function SettingsPage() {
                     title="Kelime Kaydırma Seçenekleri"
                     aria-label="Kelime Kaydırma Seçenekleri"
                     value={editorSettings.wordWrap}
-                    onChange={e => handleEditorSettingChange('wordWrap', e.target.value)}
+                    onChange={e =>
+                      handleEditorSettingChange('wordWrap', e.target.value as WordWrapOption)
+                    }
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     <option value="off">Kapalı</option>

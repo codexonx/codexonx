@@ -1,0 +1,6 @@
+.monaco-editor-container {
+  width: var(--monaco-editor-width, 100%);
+  height: var(--monaco-editor-height, 100%);
+  overflow: hidden;
+  position: relative;
+}

@@ -108,11 +108,14 @@ export const authService = {
    */
   login: async (credentials: { email: string; password: string }) => {
     try {
-      const response = await apiClient.post('/auth/login', credentials);
+      const response = await apiClient.post<{ token?: string }>('/auth/login', credentials);
+      const token = response.data?.token;
+
       // Token'ı kaydet
-      if (typeof window !== 'undefined' && response.token) {
-        localStorage.setItem('token', response.token);
+      if (typeof window !== 'undefined' && token) {
+        localStorage.setItem('token', token);
       }
+
       return response;
     } catch (error) {
       throw error;

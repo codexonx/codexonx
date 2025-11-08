@@ -503,7 +503,12 @@ export default function SettingsPage() {
 }
 
 // Klavye kısayolu öğesi
-function ShortcutItem({ keys, description }) {
+interface ShortcutItemProps {
+  keys: string[];
+  description: string;
+}
+
+function ShortcutItem({ keys, description }: ShortcutItemProps) {
   return (
     <li className="flex items-center justify-between text-sm">
       <span className="text-gray-400">{description}</span>

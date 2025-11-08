@@ -3,11 +3,12 @@
  * Yapay zeka kod yazma API'si için rotaları tanımlar
  */
 
-import express from 'express';
-import { authenticate, restrictTo } from '../middlewares/auth';
-import { queryAI, chat, completeCode, improveCode, getUsageStats } from '../controllers/ai-code';
+import { Router } from 'express';
 
-const router = express.Router();
+import { queryAI, chat, completeCode, improveCode, getUsageStats } from '../controllers/ai-code';
+import { authenticate, restrictTo } from '../middlewares/auth';
+
+const router = Router();
 
 // Tüm rotalar için kimlik doğrulama gerekli
 router.use(authenticate);

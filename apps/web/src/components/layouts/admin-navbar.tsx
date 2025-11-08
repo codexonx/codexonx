@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import {
   LayoutDashboard,
@@ -199,40 +199,37 @@ export function AdminNavbar() {
             <div className="flex items-center space-x-2">
               {/* Search Bar */}
               <div className="hidden md:flex items-center relative">
-                <AnimatePresence>
-                  {searchOpen ? (
-                    <motion.div
-                      className="relative"
-                      variants={searchVariants}
-                      initial="closed"
-                      animate="open"
-                      exit="closed"
-                    >
-                      <input
-                        type="text"
-                        placeholder={t('common.search')}
-                        className="h-9 w-full rounded-md border border-input bg-transparent py-1 pl-10 pr-4 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                        autoFocus
-                        onBlur={() => setSearchOpen(false)}
-                      />
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <kbd className="pointer-events-none absolute top-1/2 transform -translate-y-1/2 right-3 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-                        <span className="text-xs">⌘</span>K
-                      </kbd>
-                    </motion.div>
-                  ) : (
-                    <motion.button
-                      onClick={() => setSearchOpen(true)}
-                      className="h-9 w-9 rounded-md flex items-center justify-center hover:bg-accent transition-colors"
-                      aria-label="Search"
-                      variants={itemVariants}
-                      initial="hidden"
-                      animate="visible"
-                    >
-                      <Search className="h-4 w-4" />
-                    </motion.button>
-                  )}
-                </AnimatePresence>
+                {searchOpen ? (
+                  <motion.div
+                    className="relative"
+                    variants={searchVariants}
+                    initial="closed"
+                    animate="open"
+                  >
+                    <input
+                      type="text"
+                      placeholder={t('common.search')}
+                      className="h-9 w-full rounded-md border border-input bg-transparent py-1 pl-10 pr-4 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      autoFocus
+                      onBlur={() => setSearchOpen(false)}
+                    />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <kbd className="pointer-events-none absolute top-1/2 transform -translate-y-1/2 right-3 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+                      <span className="text-xs">⌘</span>K
+                    </kbd>
+                  </motion.div>
+                ) : (
+                  <motion.button
+                    onClick={() => setSearchOpen(true)}
+                    className="h-9 w-9 rounded-md flex items-center justify-center hover:bg-accent transition-colors"
+                    aria-label="Search"
+                    variants={itemVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <Search className="h-4 w-4" />
+                  </motion.button>
+                )}
               </div>
 
               {/* Notification Center */}
@@ -267,86 +264,83 @@ export function AdminNavbar() {
                   />
                 </Button>
 
-                <AnimatePresence>
-                  {userMenuOpen && (
-                    <motion.div
-                      className="absolute right-0 mt-1 w-56 origin-top-right rounded-md border bg-popover text-popover-foreground shadow-lg"
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <div className="p-2">
-                        <div className="border-b pb-2 mb-2">
-                          <div className="px-2 py-1.5">
-                            <p className="text-sm font-semibold">Ali Kaan</p>
-                            <p className="text-xs text-muted-foreground">admin@codexonx.com</p>
-                          </div>
-                        </div>
-
-                        <Link
-                          href="/admin/profile"
-                          className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent"
-                          onClick={() => setUserMenuOpen(false)}
-                        >
-                          <User className="h-4 w-4" />
-                          {t('admin.profile')}
-                        </Link>
-
-                        <Link
-                          href="/admin/settings"
-                          className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent"
-                          onClick={() => setUserMenuOpen(false)}
-                        >
-                          <Settings className="h-4 w-4" />
-                          {t('admin.settings')}
-                        </Link>
-
-                        <div className="border-t mt-2 pt-2">
-                          <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm">
-                            <div className="flex items-center gap-1 flex-1">
-                              {languages.map(lang => (
-                                <button
-                                  key={lang.code}
-                                  onClick={() => {
-                                    changeLocale(lang.code as any);
-                                    setUserMenuOpen(false);
-                                  }}
-                                  className={`px-2 py-1 rounded text-xs ${
-                                    locale === lang.code
-                                      ? 'bg-primary text-primary-foreground'
-                                      : 'hover:bg-accent'
-                                  }`}
-                                >
-                                  {lang.code.toUpperCase()}
-                                </button>
-                              ))}
-                            </div>
-
-                            <Link
-                              href="/admin/support"
-                              className="text-xs text-muted-foreground hover:text-foreground"
-                              onClick={() => setUserMenuOpen(false)}
-                            >
-                              <HelpCircle className="h-3.5 w-3.5" />
-                            </Link>
-                          </div>
-
-                          <button
-                            className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-destructive/10 hover:text-destructive"
-                            onClick={() => {
-                              console.log('Çıkış yapılıyor');
-                              setUserMenuOpen(false);
-                            }}
-                          >
-                            <LogOut className="h-4 w-4" />
-                            {t('auth.logout')}
-                          </button>
+                {userMenuOpen && (
+                  <motion.div
+                    className="absolute right-0 mt-1 w-56 origin-top-right rounded-md border bg-popover text-popover-foreground shadow-lg"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div className="p-2">
+                      <div className="border-b pb-2 mb-2">
+                        <div className="px-2 py-1.5">
+                          <p className="text-sm font-semibold">Ali Kaan</p>
+                          <p className="text-xs text-muted-foreground">admin@codexonx.com</p>
                         </div>
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+
+                      <Link
+                        href="/admin/profile"
+                        className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <User className="h-4 w-4" />
+                        {t('admin.profile')}
+                      </Link>
+
+                      <Link
+                        href="/admin/settings"
+                        className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <Settings className="h-4 w-4" />
+                        {t('admin.settings')}
+                      </Link>
+
+                      <div className="border-t mt-2 pt-2">
+                        <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm">
+                          <div className="flex items-center gap-1 flex-1">
+                            {languages.map(lang => (
+                              <button
+                                key={lang.code}
+                                onClick={() => {
+                                  changeLocale(lang.code as any);
+                                  setUserMenuOpen(false);
+                                }}
+                                className={`px-2 py-1 rounded text-xs ${
+                                  locale === lang.code
+                                    ? 'bg-primary text-primary-foreground'
+                                    : 'hover:bg-accent'
+                                }`}
+                              >
+                                {lang.code.toUpperCase()}
+                              </button>
+                            ))}
+                          </div>
+
+                          <Link
+                            href="/admin/support"
+                            className="text-xs text-muted-foreground hover:text-foreground"
+                            onClick={() => setUserMenuOpen(false)}
+                          >
+                            <HelpCircle className="h-3.5 w-3.5" />
+                          </Link>
+                        </div>
+
+                        <button
+                          className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-destructive/10 hover:text-destructive"
+                          onClick={() => {
+                            console.log('Çıkış yapılıyor');
+                            setUserMenuOpen(false);
+                          }}
+                        >
+                          <LogOut className="h-4 w-4" />
+                          {t('auth.logout')}
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
               </div>
             </div>
           </div>
@@ -354,198 +348,186 @@ export function AdminNavbar() {
       </header>
 
       {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
+      {mobileMenuOpen && (
+        <motion.div
+          className="fixed inset-0 z-40 md:hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2 }}
+        >
+          {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 z-40 md:hidden"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            {/* Backdrop */}
-            <motion.div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setMobileMenuOpen(false)}
-            />
+            onClick={() => setMobileMenuOpen(false)}
+          />
 
-            {/* Menu Content */}
-            <motion.div
-              className="fixed inset-y-0 left-0 w-3/4 max-w-xs bg-background shadow-lg overflow-y-auto"
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-            >
-              <div className="p-4 border-b">
-                <Logo size="sm" />
-              </div>
-
-              <nav className="p-4">
-                <div className="space-y-1">
-                  {navItems.map(item => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`flex items-center py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                        item.active ? 'bg-primary text-primary-foreground' : 'hover:bg-accent'
-                      }`}
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <item.icon className="h-5 w-5 mr-3" />
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-
-                <div className="mt-6 pt-6 border-t">
-                  <div className="flex items-center mb-4">
-                    <span className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold mr-3">
-                      AK
-                    </span>
-                    <div>
-                      <p className="font-medium">Ali Kaan</p>
-                      <p className="text-xs text-muted-foreground">admin@codexonx.com</p>
-                    </div>
-                  </div>
-
-                  <button
-                    className="flex items-center justify-between w-full py-2 px-3 rounded-md text-sm font-medium hover:bg-accent"
-                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                  >
-                    <div className="flex items-center">
-                      {theme === 'dark' ? (
-                        <Sun className="h-5 w-5 mr-3" />
-                      ) : (
-                        <Moon className="h-5 w-5 mr-3" />
-                      )}
-                      {theme === 'dark' ? t('common.lightMode') : t('common.darkMode')}
-                    </div>
-                  </button>
-
-                  <div className="flex gap-1 py-2 px-3">
-                    {languages.map(lang => (
-                      <button
-                        key={lang.code}
-                        onClick={() => {
-                          changeLocale(lang.code as any);
-                          setMobileMenuOpen(false);
-                        }}
-                        className={`px-3 py-1.5 rounded text-xs ${
-                          locale === lang.code
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-accent/50 hover:bg-accent'
-                        }`}
-                      >
-                        {lang.code.toUpperCase()}
-                      </button>
-                    ))}
-                  </div>
-
-                  <button
-                    className="flex items-center w-full py-2 px-3 rounded-md text-sm font-medium text-destructive hover:bg-destructive/10 mt-2"
-                    onClick={() => {
-                      console.log('Çıkış yapılıyor');
-                      setMobileMenuOpen(false);
-                    }}
-                  >
-                    <LogOut className="h-5 w-5 mr-3" />
-                    {t('auth.logout')}
-                  </button>
-                </div>
-              </nav>
-
-              <div className="p-4 border-t mt-auto">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs text-muted-foreground">© 2025 Codexonx</p>
-                  <Link
-                    href="/admin/support"
-                    className="text-xs text-primary hover:underline"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {t('admin.getHelp')}
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Command Menu */}
-      <AnimatePresence>
-        {searchOpen && (
+          {/* Menu Content */}
           <motion.div
-            className="fixed inset-0 z-50 items-start justify-center hidden md:flex"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            className="fixed inset-y-0 left-0 w-3/4 max-w-xs bg-background shadow-lg overflow-y-auto"
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
           >
-            <motion.div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSearchOpen(false)}
-            />
+            <div className="p-4 border-b">
+              <Logo size="sm" />
+            </div>
 
-            <motion.div
-              className="relative w-full max-w-lg mt-32 overflow-hidden rounded-lg border bg-background shadow-lg"
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -20, opacity: 0 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-            >
-              <div className="flex items-center border-b p-4">
-                <Search className="h-4 w-4 mr-3 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder={t('common.searchCommands')}
-                  className="flex-1 bg-transparent outline-none"
-                  autoFocus
-                />
-                <kbd className="ml-2 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-                  <span className="text-xs">ESC</span>
-                </kbd>
-              </div>
-
-              <div className="p-2">
-                <p className="px-2 py-1.5 text-xs text-muted-foreground">
-                  {t('common.suggestions')}
-                </p>
-
-                {commandMenu.map(item => (
+            <nav className="p-4">
+              <div className="space-y-1">
+                {navItems.map(item => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm hover:bg-accent"
-                    onClick={() => setSearchOpen(false)}
+                    className={`flex items-center py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+                      item.active ? 'bg-primary text-primary-foreground' : 'hover:bg-accent'
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
                   >
-                    <span>{item.name}</span>
-                    <kbd className="ml-2 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-                      {item.shortcut}
-                    </kbd>
+                    <item.icon className="h-5 w-5 mr-3" />
+                    {item.name}
                   </Link>
                 ))}
               </div>
 
-              <div className="border-t p-2 text-center">
+              <div className="mt-6 pt-6 border-t">
+                <div className="flex items-center mb-4">
+                  <span className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold mr-3">
+                    AK
+                  </span>
+                  <div>
+                    <p className="font-medium">Ali Kaan</p>
+                    <p className="text-xs text-muted-foreground">admin@codexonx.com</p>
+                  </div>
+                </div>
+
                 <button
-                  className="px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
-                  onClick={() => setSearchOpen(false)}
+                  className="flex items-center justify-between w-full py-2 px-3 rounded-md text-sm font-medium hover:bg-accent"
+                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                 >
-                  <Terminal className="inline h-3 w-3 mr-1" />
-                  {t('common.pressKForCommands')}
+                  <div className="flex items-center">
+                    {theme === 'dark' ? (
+                      <Sun className="h-5 w-5 mr-3" />
+                    ) : (
+                      <Moon className="h-5 w-5 mr-3" />
+                    )}
+                    {theme === 'dark' ? t('common.lightMode') : t('common.darkMode')}
+                  </div>
+                </button>
+
+                <div className="flex gap-1 py-2 px-3">
+                  {languages.map(lang => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        changeLocale(lang.code as any);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`px-3 py-1.5 rounded text-xs ${
+                        locale === lang.code
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-accent/50 hover:bg-accent'
+                      }`}
+                    >
+                      {lang.code.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  className="flex items-center w-full py-2 px-3 rounded-md text-sm font-medium text-destructive hover:bg-destructive/10 mt-2"
+                  onClick={() => {
+                    console.log('Çıkış yapılıyor');
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  <LogOut className="h-5 w-5 mr-3" />
+                  {t('auth.logout')}
                 </button>
               </div>
-            </motion.div>
+            </nav>
+
+            <div className="p-4 border-t mt-auto">
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-muted-foreground">© 2025 Codexonx</p>
+                <Link
+                  href="/admin/support"
+                  className="text-xs text-primary hover:underline"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t('admin.getHelp')}
+                </Link>
+              </div>
+            </div>
           </motion.div>
-        )}
-      </AnimatePresence>
+        </motion.div>
+      )}
+
+      {/* Command Menu */}
+      {searchOpen && (
+        <motion.div
+          className="fixed inset-0 z-50 items-start justify-center hidden md:flex"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2 }}
+        >
+          <motion.div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            onClick={() => setSearchOpen(false)}
+          />
+
+          <motion.div
+            className="relative w-full max-w-lg mt-32 overflow-hidden rounded-lg border bg-background shadow-lg"
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+          >
+            <div className="flex items-center border-b p-4">
+              <Search className="h-4 w-4 mr-3 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder={t('common.searchCommands')}
+                className="flex-1 bg-transparent outline-none"
+                autoFocus
+              />
+              <kbd className="ml-2 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+                <span className="text-xs">ESC</span>
+              </kbd>
+            </div>
+
+            <div className="p-2">
+              <p className="px-2 py-1.5 text-xs text-muted-foreground">{t('common.suggestions')}</p>
+
+              {commandMenu.map(item => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm hover:bg-accent"
+                  onClick={() => setSearchOpen(false)}
+                >
+                  <span>{item.name}</span>
+                  <kbd className="ml-2 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+                    {item.shortcut}
+                  </kbd>
+                </Link>
+              ))}
+            </div>
+
+            <div className="border-t p-2 text-center">
+              <button
+                className="px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
+                onClick={() => setSearchOpen(false)}
+              >
+                <Terminal className="inline h-3 w-3 mr-1" />
+                {t('common.pressKForCommands')}
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
 
       {/* Spacer for fixed navbar */}
       <div className="h-16" />

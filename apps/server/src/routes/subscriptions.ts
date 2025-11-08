@@ -1,4 +1,5 @@
-import express from 'express';
+import { Router } from 'express';
+
 import {
   getSubscriptions,
   getSubscription,
@@ -9,7 +10,7 @@ import {
 } from '../controllers/subscriptions';
 import { authenticate } from '../middlewares/auth';
 
-const router = express.Router();
+const router = Router();
 
 // All subscription routes require authentication
 router.use(authenticate);

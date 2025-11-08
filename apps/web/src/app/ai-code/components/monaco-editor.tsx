@@ -4,7 +4,7 @@
 // TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
 // arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
 
-import React, { useRef, useEffect, useState, Suspense, lazy } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { useTheme } from 'next-themes';
 
 // Monaco Editor stil dosyasını içe aktar
@@ -27,6 +27,17 @@ interface MonacoEditorProps {
   width?: string;
 }
 
+const BASE_EDITOR_OPTIONS: monaco.editor.IStandaloneEditorConstructionOptions = {
+  automaticLayout: true,
+  minimap: { enabled: true },
+  scrollBeyondLastLine: false,
+  fontSize: 14,
+  lineNumbers: 'on',
+  folding: true,
+  tabSize: 2,
+  wordWrap: 'on',
+};
+
 export default function MonacoEditor({
   value = '',
   language = 'javascript',
@@ -37,84 +48,128 @@ export default function MonacoEditor({
   height = '100%',
   width = '100%',
 }: MonacoEditorProps) {
-  const editorRef = useRef<HTMLDivElement>(null);
-  const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const { theme: systemTheme } = useTheme();
   const [isEditorReady, setIsEditorReady] = useState(false);
 
-  // Editör tema seçimi
-  const theme = propTheme || (systemTheme === 'dark' ? 'vs-dark' : 'vs-light');
+  const resolvedTheme = useMemo(
+    () => propTheme || (systemTheme === 'dark' ? 'vs-dark' : 'vs-light'),
+    [propTheme, systemTheme]
+  );
 
-  // Monaco editörünü başlat
+  const editorOptions = useMemo(
+    () => ({
+      ...BASE_EDITOR_OPTIONS,
+      ...options,
+    }),
+    [options]
+  );
+
+  const onChangeRef = useRef(onChange);
   useEffect(() => {
-    if (editorRef.current) {
-      // Monaco editörü oluştur
-      const editor = monaco.editor.create(editorRef.current, {
-        value,
-        language,
-        theme,
-        automaticLayout: true,
-        minimap: { enabled: true },
-        scrollBeyondLastLine: false,
-        fontSize: 14,
-        lineNumbers: 'on',
-        folding: true,
-        tabSize: 2,
-        wordWrap: 'on',
-        ...options,
-      });
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
-      // Referansı kaydet
-      monacoEditorRef.current = editor;
+  const onMountRef = useRef(onMount);
+  useEffect(() => {
+    onMountRef.current = onMount;
+  }, [onMount]);
 
-      // Hazır olduğunu bildir
-      setIsEditorReady(true);
+  useEffect(() => {
+    if (!containerRef.current || !monaco || editorRef.current) {
+      return;
+    }
 
-      // onMount callback'i çağır
-      if (onMount) {
-        onMount(editor);
+    const editor = monaco.editor.create(containerRef.current, {
+      ...editorOptions,
+      value,
+      language,
+      theme: resolvedTheme,
+    });
+
+    editorRef.current = editor;
+    setIsEditorReady(true);
+
+    if (onMountRef.current) {
+      onMountRef.current(editor);
+    }
+
+    const subscription = editor.onDidChangeModelContent(() => {
+      if (onChangeRef.current) {
+        onChangeRef.current(editor.getValue());
       }
+    });
 
-      // Değişiklikleri izle
-      const subscription = editor.onDidChangeModelContent(() => {
-        if (onChange) {
-          onChange(editor.getValue());
-        }
-      });
+    return () => {
+      subscription.dispose();
+      editor.dispose();
+      editorRef.current = null;
+      setIsEditorReady(false);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-      // Temizlik
-      return () => {
-        subscription.dispose();
-        editor.dispose();
-      };
-    }
-  }, [editorRef.current]);
-
-  // Değer değişirse güncelle
   useEffect(() => {
-    if (monacoEditorRef.current && value !== monacoEditorRef.current.getValue()) {
-      monacoEditorRef.current.setValue(value);
+    if (!isEditorReady || !editorRef.current) {
+      return;
     }
-  }, [value]);
 
-  // Dil değişirse güncelle
+    const editor = editorRef.current as unknown as {
+      updateOptions: (options: monaco.editor.IStandaloneEditorConstructionOptions) => void;
+    };
+    editor.updateOptions(editorOptions);
+  }, [editorOptions, isEditorReady]);
+
   useEffect(() => {
-    if (monacoEditorRef.current) {
-      const model = monacoEditorRef.current.getModel();
-      if (model) {
-        monaco.editor.setModelLanguage(model, language);
-      }
+    if (!isEditorReady || !editorRef.current) {
+      return;
     }
-  }, [language]);
 
-  // Tema değişirse güncelle
+    const currentValue = editorRef.current.getValue();
+    if (currentValue !== value) {
+      editorRef.current.setValue(value);
+    }
+  }, [value, isEditorReady]);
+
   useEffect(() => {
-    monaco.editor.setTheme(theme);
-  }, [theme]);
+    if (!isEditorReady || !editorRef.current) {
+      return;
+    }
+
+    const model = editorRef.current.getModel();
+    if (model) {
+      monaco.editor.setModelLanguage(model, language);
+    }
+  }, [language, isEditorReady]);
+
+  useEffect(() => {
+    if (isEditorReady) {
+      monaco.editor.setTheme(resolvedTheme);
+    }
+  }, [resolvedTheme, isEditorReady]);
+
+  useEffect(() => {
+    if (!isEditorReady || !editorRef.current) {
+      return;
+    }
+
+    const editor = editorRef.current as unknown as { layout: () => void };
+    editor.layout();
+  }, [height, width, isEditorReady]);
+
+  useEffect(() => {
+    if (!containerRef.current) {
+      return;
+    }
+
+    containerRef.current.style.setProperty('--monaco-editor-height', height);
+    containerRef.current.style.setProperty('--monaco-editor-width', width);
+  }, [height, width]);
 
   return (
     <div
-      ref={editorRef}
+      ref={containerRef}
       className="monaco-editor-container"
       data-testid="monaco-editor"
       aria-label="Monaco kod editörü"

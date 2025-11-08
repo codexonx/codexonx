@@ -1,10 +1,6 @@
 'use client';
 
-// @ts-nocheck
-// TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
-// arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
-
-import { useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { motion } from 'framer-motion';
 import {
   Code,
@@ -21,8 +17,28 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 
+type TemplateCategory = 'frontend' | 'backend' | 'fullstack' | 'mobile' | 'data';
+type TemplateLanguage = 'typescript' | 'javascript' | 'python' | 'html' | 'css';
+type TemplateLevel = 'başlangıç' | 'orta' | 'ileri';
+
+interface Template {
+  id: string;
+  name: string;
+  description: string;
+  category: TemplateCategory;
+  language: TemplateLanguage;
+  level: TemplateLevel;
+  stars: number;
+  author: string;
+  lastUpdated: string;
+}
+
+interface TemplateCardProps {
+  template: Template;
+}
+
 // Şablon kategorileri
-const categories = [
+const categories: Array<{ id: 'all' | TemplateCategory; name: string }> = [
   { id: 'all', name: 'Tüm Şablonlar' },
   { id: 'frontend', name: 'Frontend' },
   { id: 'backend', name: 'Backend' },
@@ -32,7 +48,7 @@ const categories = [
 ];
 
 // Demo şablonlar
-const templates = [
+const templates: Template[] = [
   {
     id: 'react-todo',
     name: 'React Todo Uygulaması',
@@ -127,7 +143,7 @@ const templates = [
 ];
 
 // Dil ikonları ve renkleri
-const languageColors = {
+const languageColors: Record<TemplateLanguage, string> = {
   typescript: 'text-blue-400',
   javascript: 'text-yellow-400',
   python: 'text-green-500',
@@ -136,7 +152,7 @@ const languageColors = {
 };
 
 // Zorluk seviyesi
-const levelBadges = {
+const levelBadges: Record<TemplateLevel, string> = {
   başlangıç: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
   orta: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
   ileri: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
@@ -144,8 +160,8 @@ const levelBadges = {
 
 export default function TemplatesPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [activeSort, setActiveSort] = useState('popular');
+  const [activeCategory, setActiveCategory] = useState<'all' | TemplateCategory>('all');
+  const [activeSort, setActiveSort] = useState<'popular' | 'newest'>('popular');
   const [showFilters, setShowFilters] = useState(false);
 
   // Şablonları filtrele
@@ -195,7 +211,9 @@ export default function TemplatesPage() {
                 placeholder="Şablon ara..."
                 className="pl-10 bg-slate-900 border-slate-700 text-white"
                 value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
+                onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                  setSearchTerm(event.currentTarget.value)
+                }
               />
             </div>
 
@@ -218,32 +236,18 @@ export default function TemplatesPage() {
                     <div className="p-3 border-b border-slate-800">
                       <h3 className="text-sm font-medium">Sırala</h3>
                       <div className="mt-2 space-y-1">
-                        <div className="flex items-center">
-                          <input
-                            type="radio"
-                            id="sort-popular"
-                            name="sort"
-                            className="mr-2"
-                            checked={activeSort === 'popular'}
-                            onChange={() => setActiveSort('popular')}
-                          />
-                          <label htmlFor="sort-popular" className="text-sm">
-                            Popüler
-                          </label>
-                        </div>
-                        <div className="flex items-center">
-                          <input
-                            type="radio"
-                            id="sort-newest"
-                            name="sort"
-                            className="mr-2"
-                            checked={activeSort === 'newest'}
-                            onChange={() => setActiveSort('newest')}
-                          />
-                          <label htmlFor="sort-newest" className="text-sm">
-                            En Yeni
-                          </label>
-                        </div>
+                        <button
+                          className={`w-full text-left px-3 py-2 rounded-md text-sm ${activeSort === 'popular' ? 'bg-slate-800 text-blue-400' : 'text-gray-300 hover:bg-slate-800'}`}
+                          onClick={() => setActiveSort('popular')}
+                        >
+                          Popüler
+                        </button>
+                        <button
+                          className={`w-full text-left px-3 py-2 rounded-md text-sm ${activeSort === 'newest' ? 'bg-slate-800 text-blue-400' : 'text-gray-300 hover:bg-slate-800'}`}
+                          onClick={() => setActiveSort('newest')}
+                        >
+                          En Yeni
+                        </button>
                       </div>
                     </div>
 
@@ -311,7 +315,7 @@ export default function TemplatesPage() {
 }
 
 // Şablon kartı komponenti
-function TemplateCard({ template }) {
+function TemplateCard({ template }: TemplateCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}

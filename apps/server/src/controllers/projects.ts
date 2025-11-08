@@ -1,28 +1,50 @@
-import { Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
-import { z } from 'zod';
+import { NextFunction, Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { AppError } from '../middlewares/errorHandler';
+import { z } from 'zod';
 
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
+import { AppError } from '../middlewares/errorHandler';
 
 // Validation schemas
 const projectSchema = z.object({
   name: z.string().min(2, 'Proje adı en az 2 karakter olmalıdır'),
   description: z.string().optional(),
+  visibility: z.enum(['PRIVATE', 'INTERNAL', 'PUBLIC']).optional(),
 });
+
+const ensureAuthenticatedUser = (req: Request, next: NextFunction) => {
+  if (!req.user) {
+    next(new AppError('Kullanıcı bilgisi bulunamadı', 401));
+    return null;
+  }
+  return req.user;
+};
+
+const ensureActiveWorkspace = (req: Request, next: NextFunction) => {
+  const user = ensureAuthenticatedUser(req, next);
+  if (!user) {
+    return null;
+  }
+
+  if (!user.activeWorkspace) {
+    next(new AppError('İşlem yapabilmek için bir çalışma alanı seçmelisiniz.', 400));
+    return null;
+  }
+
+  return user.activeWorkspace;
+};
 
 // Get all projects for current user
 export const getProjects = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.user) {
-      return next(new AppError('Kullanıcı bilgisi bulunamadı', 401));
-    }
+    const workspace = ensureActiveWorkspace(req, next);
+    if (!workspace) return;
 
     const projects = await prisma.project.findMany({
       where: {
-        userId: req.user.id,
+        workspaceId: workspace.id,
       },
+      orderBy: { createdAt: 'desc' },
     });
 
     res.status(200).json({
@@ -40,31 +62,40 @@ export const getProjects = async (req: Request, res: Response, next: NextFunctio
 // Get single project
 export const getProject = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const workspace = ensureActiveWorkspace(req, next);
+    if (!workspace) return;
     const { id } = req.params;
 
     const project = await prisma.project.findUnique({
       where: {
         id,
       },
+      include: {
+        workspace: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            plan: true,
+            description: true,
+          },
+        },
+      },
     });
 
-    if (!project) {
+    if (!project || project.workspaceId !== workspace.id) {
       return next(new AppError('Proje bulunamadı', 404));
     }
 
-    // Check if user exists and owns the project
-    if (!req.user) {
-      return next(new AppError('Kullanıcı bilgisi bulunamadı', 401));
-    }
-
-    if (project.userId !== req.user.id && req.user.role !== 'ADMIN') {
-      return next(new AppError('Bu projeye erişim yetkiniz yok', 403));
-    }
+    const { workspace: workspaceDetails, ...projectData } = project;
 
     res.status(200).json({
       status: 'success',
       data: {
-        project,
+        project: {
+          ...projectData,
+          workspace: workspaceDetails,
+        },
       },
     });
   } catch (err) {
@@ -75,17 +106,32 @@ export const getProject = async (req: Request, res: Response, next: NextFunction
 // Create new project
 export const createProject = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, description } = projectSchema.parse(req.body);
+    const workspace = ensureActiveWorkspace(req, next);
+    if (!workspace) return;
 
-    if (!req.user) {
-      return next(new AppError('Kullanıcı bilgisi bulunamadı', 401));
+    const parsedBody = projectSchema.safeParse(req.body);
+
+    if (!parsedBody.success) {
+      const errors = parsedBody.error.issues.map(issue => ({
+        field: issue.path.join('.') || 'body',
+        message: issue.message,
+      }));
+
+      return res.status(400).json({
+        status: 'fail',
+        errors,
+      });
     }
+
+    const { name, description, visibility } = parsedBody.data;
 
     const project = await prisma.project.create({
       data: {
         name,
         description,
-        userId: req.user.id,
+        visibility: visibility ?? 'PRIVATE',
+        workspaceId: workspace.id,
+        createdById: req.user?.id,
         apiKey: uuidv4(),
       },
     });
@@ -104,27 +150,35 @@ export const createProject = async (req: Request, res: Response, next: NextFunct
 // Update project
 export const updateProject = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const workspace = ensureActiveWorkspace(req, next);
+    if (!workspace) return;
     const { id } = req.params;
-    const { name, description } = projectSchema.parse(req.body);
+    const parsedBody = projectSchema.safeParse(req.body);
+
+    if (!parsedBody.success) {
+      const errors = parsedBody.error.issues.map(issue => ({
+        field: issue.path.join('.') || 'body',
+        message: issue.message,
+      }));
+
+      return res.status(400).json({
+        status: 'fail',
+        errors,
+      });
+    }
+
+    const { name, description, visibility } = parsedBody.data;
 
     // Find project first to check ownership
     const existingProject = await prisma.project.findUnique({
       where: {
         id,
+        workspaceId: workspace.id,
       },
     });
 
     if (!existingProject) {
       return next(new AppError('Proje bulunamadı', 404));
-    }
-
-    // Check if user exists and owns the project
-    if (!req.user) {
-      return next(new AppError('Kullanıcı bilgisi bulunamadı', 401));
-    }
-
-    if (existingProject.userId !== req.user.id && req.user.role !== 'ADMIN') {
-      return next(new AppError('Bu projeyi düzenleme yetkiniz yok', 403));
     }
 
     // Update project
@@ -135,6 +189,7 @@ export const updateProject = async (req: Request, res: Response, next: NextFunct
       data: {
         name,
         description,
+        visibility: visibility ?? existingProject.visibility,
       },
     });
 
@@ -152,26 +207,20 @@ export const updateProject = async (req: Request, res: Response, next: NextFunct
 // Delete project
 export const deleteProject = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const workspace = ensureActiveWorkspace(req, next);
+    if (!workspace) return;
     const { id } = req.params;
 
     // Find project first to check ownership
     const existingProject = await prisma.project.findUnique({
       where: {
         id,
+        workspaceId: workspace.id,
       },
     });
 
     if (!existingProject) {
       return next(new AppError('Proje bulunamadı', 404));
-    }
-
-    // Check if user exists and owns the project
-    if (!req.user) {
-      return next(new AppError('Kullanıcı bilgisi bulunamadı', 401));
-    }
-
-    if (existingProject.userId !== req.user.id && req.user.role !== 'ADMIN') {
-      return next(new AppError('Bu projeyi silme yetkiniz yok', 403));
     }
 
     // Delete project
@@ -181,10 +230,7 @@ export const deleteProject = async (req: Request, res: Response, next: NextFunct
       },
     });
 
-    res.status(204).json({
-      status: 'success',
-      data: null,
-    });
+    res.status(204).send();
   } catch (err) {
     next(err);
   }
@@ -193,26 +239,20 @@ export const deleteProject = async (req: Request, res: Response, next: NextFunct
 // Regenerate API key
 export const regenerateApiKey = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const workspace = ensureActiveWorkspace(req, next);
+    if (!workspace) return;
     const { id } = req.params;
 
     // Find project first to check ownership
     const existingProject = await prisma.project.findUnique({
       where: {
         id,
+        workspaceId: workspace.id,
       },
     });
 
     if (!existingProject) {
       return next(new AppError('Proje bulunamadı', 404));
-    }
-
-    // Check if user exists and owns the project
-    if (!req.user) {
-      return next(new AppError('Kullanıcı bilgisi bulunamadı', 401));
-    }
-
-    if (existingProject.userId !== req.user.id && req.user.role !== 'ADMIN') {
-      return next(new AppError('Bu projenin API anahtarını yenileme yetkiniz yok', 403));
     }
 
     // Update project with new API key

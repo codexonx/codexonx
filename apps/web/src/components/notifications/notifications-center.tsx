@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Bell, Check, X, ChevronDown, ChevronUp, Filter, Loader2 } from 'lucide-react';
+import { Bell, Check, X, ChevronDown, ChevronUp, Filter, Loader } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -191,7 +191,10 @@ export function NotificationsCenter({
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 sm:w-96 p-0">
-        <Tabs defaultValue={activeTab} onValueChange={v => setActiveTab(v as 'all' | 'unread')}>
+        <Tabs
+          defaultValue={activeTab}
+          onValueChange={value => setActiveTab(value as 'all' | 'unread')}
+        >
           <div className="flex items-center justify-between border-b px-3 py-2">
             <h4 className="font-medium">Bildirimler</h4>
             <div className="flex gap-1">
@@ -248,7 +251,7 @@ export function NotificationsCenter({
     if (isLoading) {
       return (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin text-primary/70" />
+          {isLoading ? <Loader className="h-4 w-4 animate-spin" /> : <Bell className="h-4 w-4" />}
         </div>
       );
     }

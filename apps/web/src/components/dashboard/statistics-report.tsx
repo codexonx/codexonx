@@ -22,8 +22,8 @@ import {
   FilePieChart,
   Calendar,
   Share2,
-  Loader2,
-  BarChart,
+  Loader,
+  BarChart2 as BarChart,
 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 
@@ -207,7 +207,7 @@ export function StatisticsReport({
     return (
       <div className="flex h-96 items-center justify-center">
         <div className="text-center">
-          <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
+          <Loader className="mx-auto h-8 w-8 animate-spin text-primary" />
           <p className="mt-2 text-sm text-muted-foreground">Rapor yükleniyor...</p>
         </div>
       </div>
@@ -255,7 +255,7 @@ export function StatisticsReport({
 
             <Button variant="outline" size="sm" disabled={exportLoading} onClick={handleExport}>
               {exportLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader className="h-4 w-4 animate-spin" />
               ) : (
                 <Download className="h-4 w-4 mr-2" />
               )}

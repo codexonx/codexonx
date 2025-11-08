@@ -1,5 +1,4 @@
 // Jest test setup file
-import { PrismaClient } from '@prisma/client';
 import { Request, Response, NextFunction } from 'express';
 
 // Mock modules
@@ -46,7 +45,12 @@ process.env.JWT_EXPIRES_IN = '1h';
 jest.mock('../middlewares/auth', () => {
   return {
     protect: jest.fn((req: Request, res: Response, next: NextFunction) => {
-      req.user = { id: 'user-1', email: 'test@example.com', role: 'USER' };
+      req.user = {
+        id: 'user-1',
+        email: 'test@example.com',
+        role: 'USER',
+        workspaces: [],
+      };
       next();
     }),
     restrictTo: jest.fn(() => (req: Request, res: Response, next: NextFunction) => {

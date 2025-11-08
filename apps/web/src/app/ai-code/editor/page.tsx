@@ -1,10 +1,6 @@
 'use client';
 
-// @ts-nocheck
-// TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
-// arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, type ChangeEvent, type FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import {
   ChevronRight,
@@ -27,12 +23,24 @@ import Link from 'next/link';
 import MonacoEditor, { setupMonaco } from '../components/monaco-editor';
 import { simulateAIResponse } from '../components/ai-api';
 
+type FileItem = {
+  id: string;
+  name: string;
+  content: string;
+};
+
+type ChatMessage = {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+};
+
 // Monaco editör kurulumunu başlat
 setupMonaco();
 
 export default function EditorPage() {
   // Dosya yönetimi state'leri
-  const [files, setFiles] = useState([
+  const [files, setFiles] = useState<FileItem[]>([
     {
       id: '1',
       name: 'main.js',
@@ -53,8 +61,8 @@ export default function EditorPage() {
     },
   ]);
 
-  const [activeFile, setActiveFile] = useState(files[0]);
-  const [messages, setMessages] = useState([]);
+  const [activeFile, setActiveFile] = useState<FileItem>(files[0]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [activeTab, setActiveTab] = useState('editor');
   const [isLoading, setIsLoading] = useState(false);
@@ -62,31 +70,45 @@ export default function EditorPage() {
   const [editorReady, setEditorReady] = useState(false);
 
   // Monaco editör referansı
-  const editorRef = useRef(null);
+  const editorRef = useRef<unknown>(null);
 
   // Mesaj giriş alanı değişikliği
-  const handleInputChange = e => {
-    setInput(e.target.value);
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setInput(event.currentTarget.value);
   };
 
   // Mesaj gönderme işlemi
-  const handleSubmit = async e => {
-    e.preventDefault();
-    if (!input.trim()) return;
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!input.trim()) {
+      return;
+    }
 
-    const userMessage = { role: 'user', content: input };
-    setMessages([...messages, userMessage]);
+    const userMessage: ChatMessage = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      content: input,
+    };
+
+    setMessages(prevMessages => [...prevMessages, userMessage]);
     setInput('');
     setIsLoading(true);
 
     try {
       // AI yanıtını simüle et
       const aiResponse = await simulateAIResponse(input, activeFile);
-      setMessages(prevMessages => [...prevMessages, { role: 'assistant', content: aiResponse }]);
-    } catch (error) {
+      const assistantMessage: ChatMessage = {
+        id: `assistant-${Date.now()}`,
+        role: 'assistant',
+        content: aiResponse,
+      };
+
+      setMessages(prevMessages => [...prevMessages, assistantMessage]);
+    } catch (_error) {
       setMessages(prevMessages => [
         ...prevMessages,
         {
+          id: `assistant-error-${Date.now()}`,
           role: 'assistant',
           content: 'Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.',
         },
@@ -97,8 +119,8 @@ export default function EditorPage() {
   };
 
   // Dosya içeriğini güncelleme
-  const updateFileContent = newContent => {
-    const updatedFile = { ...activeFile, content: newContent };
+  const updateFileContent = (newContent: string) => {
+    const updatedFile: FileItem = { ...activeFile, content: newContent };
     setActiveFile(updatedFile);
 
     const updatedFiles = files.map(file => (file.id === activeFile.id ? updatedFile : file));
@@ -118,7 +140,7 @@ export default function EditorPage() {
         if (activeFile.name.endsWith('.js')) {
           // JavaScript kodunu çalıştır
           const originalConsoleLog = console.log;
-          const logs = [];
+          const logs: string[] = [];
 
           console.log = (...args) => {
             logs.push(args.join(' '));
@@ -129,8 +151,9 @@ export default function EditorPage() {
             // Eval yerine Function kullanarak daha güvenli çalıştırma
             const func = new Function(activeFile.content);
             func();
-          } catch (error) {
-            logs.push(`Hata: ${error.message}`);
+          } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            logs.push(`Hata: ${message}`);
           }
 
           console.log = originalConsoleLog;
@@ -144,8 +167,9 @@ export default function EditorPage() {
         }
 
         setCodeOutput(output);
-      } catch (error) {
-        setCodeOutput(`Çalıştırma hatası: ${error.message}`);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        setCodeOutput(`Çalıştırma hatası: ${message}`);
       } finally {
         setIsLoading(false);
       }
@@ -155,23 +179,64 @@ export default function EditorPage() {
   // Yeni dosya ekleme
   const addNewFile = () => {
     const fileName = prompt('Yeni dosya adını giriniz:');
-    if (!fileName) return;
+    if (!fileName) {
+      return;
+    }
 
     const newFileId = `file-${Date.now()}`;
-    const newFile = {
+    const newFile: FileItem = {
       id: newFileId,
       name: fileName,
       content: `// ${fileName} dosyası\n\n`,
     };
 
-    setFiles([...files, newFile]);
+    setFiles(prevFiles => [...prevFiles, newFile]);
     setActiveFile(newFile);
   };
 
   // Editör hazır olduğunda
-  const handleEditorDidMount = editor => {
+  const handleEditorDidMount = (editor: unknown) => {
     editorRef.current = editor;
     setEditorReady(true);
+  };
+
+  const escapeHtml = (unsafe: string): string => {
+    return unsafe
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  };
+
+  const formatMessage = (content: string): string => {
+    return content.replace(/```(.*?)\n([\s\S]*?)```/g, (match, language, code) => {
+      const lang = typeof language === 'string' && language.trim() !== '' ? language : 'plaintext';
+      return `<pre class="bg-slate-800 p-3 rounded-md overflow-x-auto mt-2 mb-2"><code class="language-${lang}">${escapeHtml(code)}</code></pre>`;
+    });
+  };
+
+  const getLanguageForFile = (fileName: string): string => {
+    const extension = fileName.split('.').pop()?.toLowerCase() ?? '';
+    const languageMap: Record<string, string> = {
+      js: 'javascript',
+      jsx: 'javascript',
+      ts: 'typescript',
+      tsx: 'typescript',
+      html: 'html',
+      css: 'css',
+      json: 'json',
+      md: 'markdown',
+      py: 'python',
+      php: 'php',
+      java: 'java',
+      c: 'c',
+      cpp: 'cpp',
+      go: 'go',
+      rs: 'rust',
+    };
+
+    return languageMap[extension] || 'plaintext';
   };
 
   return (
@@ -337,7 +402,7 @@ export default function EditorPage() {
                 <div className="flex-1 overflow-auto p-3 space-y-4">
                   {messages.map(message => (
                     <div
-                      key={message.role === 'assistant' ? 'assistant' : message.content}
+                      key={message.id}
                       className={`flex ${message.role === 'assistant' ? 'justify-start' : 'justify-end'}`}
                     >
                       <div
@@ -420,45 +485,4 @@ export default function EditorPage() {
       </motion.div>
     </div>
   );
-
-  // Kod blokları için escape HTML
-  const escapeHtml = unsafe => {
-    return unsafe
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  };
-
-  // AI mesajlarının içeriğini biçimlendirme
-  const formatMessage = content => {
-    return content.replace(/```(.*?)\n([\s\S]*?)```/g, (match, language, code) => {
-      return `<pre class="bg-slate-800 p-3 rounded-md overflow-x-auto mt-2 mb-2"><code class="language-${language}">${escapeHtml(code)}</code></pre>`;
-    });
-  };
-
-  // Dosya diline göre Monaco dili belirle
-  const getLanguageForFile = fileName => {
-    const extension = fileName.split('.').pop().toLowerCase();
-    const languageMap = {
-      js: 'javascript',
-      jsx: 'javascript',
-      ts: 'typescript',
-      tsx: 'typescript',
-      html: 'html',
-      css: 'css',
-      json: 'json',
-      md: 'markdown',
-      py: 'python',
-      php: 'php',
-      java: 'java',
-      c: 'c',
-      cpp: 'cpp',
-      go: 'go',
-      rs: 'rust',
-    };
-
-    return languageMap[extension] || 'plaintext';
-  };
 }

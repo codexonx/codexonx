@@ -1,9 +1,5 @@
 'use client';
 
-// @ts-nocheck
-// TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
-// arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -28,8 +24,33 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
+type TabKey = 'newest' | 'featured' | 'popular' | 'unanswered';
+
+interface CommunityUser {
+  name: string;
+  avatar: string;
+}
+
+interface CommunityQuestion {
+  id: string;
+  title: string;
+  body: string;
+  tags: string[];
+  votes: number;
+  answers: number;
+  views: number;
+  user: CommunityUser;
+  created: string;
+  featured: boolean;
+}
+
+interface PopularTag {
+  name: string;
+  count: number;
+}
+
 // Örnek soru verileri
-const demoQuestions = [
+const demoQuestions: CommunityQuestion[] = [
   {
     id: 'q1',
     title: "Next.js 14'te App Router ile Server Components nasıl kullanılır?",
@@ -108,7 +129,7 @@ const demoQuestions = [
 ];
 
 // Örnek popüler etiketler
-const popularTags = [
+const popularTags: PopularTag[] = [
   { name: 'react', count: 1432 },
   { name: 'javascript', count: 986 },
   { name: 'typescript', count: 754 },
@@ -122,9 +143,9 @@ const popularTags = [
 
 export default function CommunityPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('newest');
+  const [activeTab, setActiveTab] = useState<TabKey>('newest');
   const [activeTagFilter, setActiveTagFilter] = useState('');
-  const [questions, setQuestions] = useState(demoQuestions);
+  const [questions, setQuestions] = useState<CommunityQuestion[]>(demoQuestions);
 
   // Soruları filtrele
   const filteredQuestions = questions.filter(question => {
@@ -196,7 +217,11 @@ export default function CommunityPage() {
           {/* Ana İçerik */}
           <div className="flex-1">
             {/* Sekmeler */}
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+            <Tabs
+              value={activeTab}
+              onValueChange={(value: string) => setActiveTab(value as TabKey)}
+              className="mb-6"
+            >
               <TabsList className="bg-slate-900 border-slate-700">
                 <TabsTrigger value="newest" className="data-[state=active]:bg-slate-800">
                   En Yeni
@@ -340,7 +365,11 @@ export default function CommunityPage() {
 }
 
 // Soru kartı komponenti
-function QuestionCard({ question }) {
+interface QuestionCardProps {
+  question: CommunityQuestion;
+}
+
+function QuestionCard({ question }: QuestionCardProps) {
   return (
     <motion.li
       initial={{ opacity: 0, y: 10 }}

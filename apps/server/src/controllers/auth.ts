@@ -1,10 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import argon2 from 'argon2';
-import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction } from 'express';
+import jwt, { type Secret, type SignOptions } from 'jsonwebtoken';
 import { z } from 'zod';
+
 import { AppError } from '../middlewares/errorHandler';
 import { sendEmail } from '../utils/email';
+import { logger } from '../utils/logger';
 import { generateToken } from '../utils/token';
 
 const prisma = new PrismaClient();
@@ -32,23 +34,42 @@ const resetPasswordSchema = z.object({
 
 // Register a new user
 export const register = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    // Validate input
-    const { email, password, name } = registerSchema.parse(req.body);
+  let currentStep = 'init';
 
-    // Check if user already exists
+  try {
+    logger.info('Register isteği alındı', { email: req.body?.email });
+
+    currentStep = 'validate-body';
+    const parsedBody = registerSchema.safeParse(req.body);
+    if (!parsedBody.success) {
+      const validation = parsedBody.error.flatten();
+      logger.warn('Register doğrulama hatası', validation);
+      return res.status(400).json({
+        status: 'error',
+        message: 'Geçersiz kayıt verileri',
+        errors: validation,
+      });
+    }
+
+    const { email, password, name } = parsedBody.data;
+
+    logger.debug('Register - mevcut kullanıcı kontrolü', { email });
+    currentStep = 'find-existing-user';
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
 
     if (existingUser) {
+      logger.warn('Register - kullanıcı zaten mevcut', { email });
       return next(new AppError('Bu e-posta adresi zaten kullanımda', 409));
     }
 
-    // Hash password
+    logger.debug('Register - şifre hashleniyor', { email });
+    currentStep = 'hash-password';
     const hashedPassword = await argon2.hash(password);
 
-    // Create user
+    logger.debug('Register - kullanıcı oluşturuluyor', { email });
+    currentStep = 'create-user';
     const user = await prisma.user.create({
       data: {
         email,
@@ -57,11 +78,13 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
       },
     });
 
-    // Generate verification token
+    logger.debug('Register - doğrulama tokenı oluşturuluyor', { userId: user.id });
+    currentStep = 'create-token';
     const verificationToken = await generateToken(user.id, 'VERIFY_EMAIL', '1d');
 
-    // Send verification email
     const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken.token}`;
+    logger.debug('Register - doğrulama e-postası gönderiliyor', { email });
+    currentStep = 'send-email';
     await sendEmail({
       to: email,
       subject: 'E-posta Adresinizi Doğrulayın',
@@ -77,12 +100,22 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
       `,
     });
 
+    logger.info('Register başarıyla tamamlandı', { userId: user.id });
     res.status(201).json({
       status: 'success',
       message: 'Kayıt başarılı. Lütfen e-postanızı doğrulayın.',
     });
   } catch (err) {
-    next(err);
+    logger.error('Register endpoint hatası:', { err, currentStep });
+    if (err instanceof AppError) {
+      return next(err);
+    }
+
+    return res.status(500).json({
+      status: 'error',
+      message: err instanceof Error ? err.message : 'Bilinmeyen hata',
+      step: currentStep,
+    });
   }
 };
 
@@ -113,11 +146,14 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     }
 
     // Generate JWT token
-    const token = jwt.sign(
-      { id: user.id, role: user.role },
-      process.env.JWT_SECRET || 'your_jwt_secret',
-      { expiresIn: process.env.JWT_EXPIRES_IN || '1d' }
-    );
+    const secret: Secret = process.env.JWT_SECRET ?? 'your_jwt_secret';
+    const expiresIn: SignOptions['expiresIn'] = (process.env.JWT_EXPIRES_IN ??
+      '1d') as SignOptions['expiresIn'];
+    const signOptions: SignOptions = {
+      expiresIn,
+    };
+
+    const token = jwt.sign({ id: user.id, role: user.role }, secret, signOptions);
 
     // Remove password from output
     const { password: _, ...userWithoutPassword } = user;
@@ -127,6 +163,23 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       token,
       data: {
         user: userWithoutPassword,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const me = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.user) {
+      return next(new AppError('Kullanıcı oturumu bulunamadı', 401));
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user: req.user,
       },
     });
   } catch (err) {

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 // Due to compatibility issues with lucide-react, we're using a simplified approach
 // with a single known icon for now
@@ -210,19 +210,16 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           <div className="flex-1 overflow-y-auto py-4">
             {sidebarSections.map((section, idx) => (
               <div key={idx} className="px-3 py-2">
-                <AnimatePresence mode="wait">
-                  {!sidebarCollapsed && (
-                    <motion.h3
-                      className="mb-2 px-4 text-xs font-medium uppercase tracking-wider text-muted-foreground"
-                      initial="collapsed"
-                      animate="expanded"
-                      exit="collapsed"
-                      variants={itemVariants}
-                    >
-                      {section.title}
-                    </motion.h3>
-                  )}
-                </AnimatePresence>
+                {!sidebarCollapsed && (
+                  <motion.h3
+                    className="mb-2 px-4 text-xs font-medium uppercase tracking-wider text-muted-foreground"
+                    initial="collapsed"
+                    animate="expanded"
+                    variants={itemVariants}
+                  >
+                    {section.title}
+                  </motion.h3>
+                )}
 
                 <ul className="space-y-1">
                   {section.links.map(link => (
@@ -240,18 +237,15 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                             link.active ? 'text-primary-foreground' : 'text-muted-foreground'
                           )}
                         />
-                        <AnimatePresence mode="wait">
-                          {!sidebarCollapsed && (
-                            <motion.span
-                              initial="collapsed"
-                              animate="expanded"
-                              exit="collapsed"
-                              variants={itemVariants}
-                            >
-                              {link.name}
-                            </motion.span>
-                          )}
-                        </AnimatePresence>
+                        {!sidebarCollapsed && (
+                          <motion.span
+                            initial="collapsed"
+                            animate="expanded"
+                            variants={itemVariants}
+                          >
+                            {link.name}
+                          </motion.span>
+                        )}
                       </Link>
                     </li>
                   ))}

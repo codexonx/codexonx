@@ -1,10 +1,6 @@
 'use client';
 
-// @ts-nocheck
-// TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
-// arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
-
-import { useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { motion } from 'framer-motion';
 import {
   Plus,
@@ -34,8 +30,20 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 
+type ProjectLanguage = 'typescript' | 'javascript' | 'python' | 'html' | 'css';
+
+interface Project {
+  id: string;
+  name: string;
+  description: string;
+  lastUpdated: string;
+  favorite: boolean;
+  language: ProjectLanguage;
+  files: number;
+}
+
 // Örnek proje verileri
-const demoProjects = [
+const demoProjects: Project[] = [
   {
     id: 'proj-1',
     name: 'Web Uygulaması',
@@ -75,7 +83,7 @@ const demoProjects = [
 ];
 
 // Dil ikonları ve renkleri
-const languageColors = {
+const languageColors: Record<ProjectLanguage, string> = {
   typescript: 'text-blue-400',
   javascript: 'text-yellow-400',
   python: 'text-green-500',
@@ -84,12 +92,12 @@ const languageColors = {
 };
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState(demoProjects);
+  const [projects, setProjects] = useState<Project[]>(demoProjects);
   const [searchTerm, setSearchTerm] = useState('');
   const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
   const [newProjectName, setNewProjectName] = useState('');
   const [newProjectDescription, setNewProjectDescription] = useState('');
-  const [newProjectLanguage, setNewProjectLanguage] = useState('typescript');
+  const [newProjectLanguage, setNewProjectLanguage] = useState<ProjectLanguage>('typescript');
 
   // Projeleri filtrele
   const filteredProjects = projects.filter(
@@ -104,9 +112,11 @@ export default function ProjectsPage() {
 
   // Yeni proje oluştur
   const handleCreateProject = () => {
-    if (!newProjectName.trim()) return;
+    if (!newProjectName.trim()) {
+      return;
+    }
 
-    const newProject = {
+    const newProject: Project = {
       id: `proj-${projects.length + 1}`,
       name: newProjectName,
       description: newProjectDescription || 'Açıklama yok',
@@ -116,7 +126,7 @@ export default function ProjectsPage() {
       files: 0,
     };
 
-    setProjects([...projects, newProject]);
+    setProjects(prevProjects => [...prevProjects, newProject]);
     setNewProjectDialogOpen(false);
     setNewProjectName('');
     setNewProjectDescription('');
@@ -124,9 +134,9 @@ export default function ProjectsPage() {
   };
 
   // Favori durumunu değiştir
-  const toggleFavorite = id => {
-    setProjects(
-      projects.map(project =>
+  const toggleFavorite = (id: string) => {
+    setProjects(prevProjects =>
+      prevProjects.map(project =>
         project.id === id ? { ...project, favorite: !project.favorite } : project
       )
     );
@@ -195,7 +205,9 @@ export default function ProjectsPage() {
                       id="language"
                       className="w-full rounded-md bg-slate-800 border-slate-700 text-white px-3 py-2 text-sm"
                       value={newProjectLanguage}
-                      onChange={e => setNewProjectLanguage(e.target.value)}
+                      onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+                        setNewProjectLanguage(event.currentTarget.value as ProjectLanguage)
+                      }
                     >
                       <option value="typescript">TypeScript</option>
                       <option value="javascript">JavaScript</option>
@@ -324,7 +336,14 @@ export default function ProjectsPage() {
 }
 
 // Proje listesi komponenti
-function ProjectList({ title, projects, emptyMessage, toggleFavorite }) {
+interface ProjectListProps {
+  title: string;
+  projects: Project[];
+  emptyMessage: string;
+  toggleFavorite: (id: string) => void;
+}
+
+function ProjectList({ title, projects, emptyMessage, toggleFavorite }: ProjectListProps) {
   if (projects.length === 0) {
     return (
       <div className="mb-8">
@@ -412,7 +431,13 @@ function ProjectList({ title, projects, emptyMessage, toggleFavorite }) {
 }
 
 // Şablon kart komponenti
-function TemplateCard({ title, description, language }) {
+interface TemplateCardProps {
+  title: string;
+  description: string;
+  language: ProjectLanguage;
+}
+
+function TemplateCard({ title, description, language }: TemplateCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}

@@ -22,7 +22,9 @@ const nextConfig = {
   },
   experimental: {
     instrumentationHook: true,
-    serverComponentsExternalPackages: ['@prisma/client', 'bcryptjs'],
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
   },
   webpack: (config, { isServer, dev }) => {
     // Monaco Editor webpack yapılandırması
@@ -40,6 +42,12 @@ const nextConfig = {
       test: /\.wasm$/,
       type: 'asset/resource',
     });
+
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      'framer-motion': require.resolve('framer-motion'),
+    };
 
     return config;
   },

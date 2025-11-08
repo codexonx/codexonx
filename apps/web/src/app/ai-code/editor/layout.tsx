@@ -14,7 +14,7 @@ import {
   PanelLeft,
   Code,
   ChevronLeft,
-  Folders,
+  Folder,
   Users,
   LayoutGrid,
 } from 'lucide-react';
@@ -109,7 +109,7 @@ export default function EditorLayout({ children }: { children: React.ReactNode }
                   } py-2 text-gray-300 hover:bg-slate-800 hover:text-white transition-colors`}
                   title="Projelerim"
                 >
-                  <Folders className="h-5 w-5" />
+                  <Folder className="h-5 w-5" />
                   {!collapsed && <span className="ml-3">Projelerim</span>}
                 </Link>
               </li>

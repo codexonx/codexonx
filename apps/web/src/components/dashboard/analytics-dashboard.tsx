@@ -22,6 +22,7 @@ interface ProjectDataPoint {
 interface ChartDataItem {
   name: string;
   value: number;
+  [key: string]: string | number;
 }
 
 interface AnalyticsData {
@@ -52,7 +53,7 @@ import {
   ArrowDown,
   Calendar,
   LineChart,
-  BarChart,
+  BarChart2 as BarChart,
   PieChart,
 } from 'lucide-react';
 import { useI18n } from '@/contexts/i18n-context';

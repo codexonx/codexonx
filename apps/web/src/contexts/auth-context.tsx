@@ -4,6 +4,8 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { useRouter, usePathname } from 'next/navigation';
 import { api } from '@/services/api';
 
+const hasApiUrl = Boolean(process.env.NEXT_PUBLIC_API_URL);
+
 interface User {
   id: string;
   email: string;
@@ -34,6 +36,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // İlk yüklemede kimlik doğrulama
   useEffect(() => {
+    if (!hasApiUrl) {
+      console.warn('NEXT_PUBLIC_API_URL tanımlı değil. Kimlik doğrulama istekleri devre dışı.');
+      setIsLoading(false);
+      return;
+    }
+
     const token = localStorage.getItem('auth_token');
 
     if (!token) {
@@ -61,7 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Korumalı sayfaları kontrol et
   useEffect(() => {
     // Kimlik doğrulama hala yükleniyor
-    if (isLoading) return;
+    if (isLoading || !hasApiUrl) return;
 
     // Public sayfalar her zaman erişilebilir
     const publicPages = ['/', '/login', '/register', '/about', '/contact', '/plans'];
@@ -75,6 +83,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Login işlemi
   const login = async (email: string, password: string): Promise<boolean> => {
+    if (!hasApiUrl) {
+      console.warn('NEXT_PUBLIC_API_URL tanımlı değil. Login isteği gönderilmedi.');
+      return false;
+    }
+
     try {
       setIsLoading(true);
       const response = await api.auth.login(email, password);
@@ -107,6 +120,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string;
     name: string;
   }): Promise<boolean> => {
+    if (!hasApiUrl) {
+      console.warn('NEXT_PUBLIC_API_URL tanımlı değil. Register isteği gönderilmedi.');
+      return false;
+    }
+
     try {
       setIsLoading(true);
       const response = await api.auth.register(userData);

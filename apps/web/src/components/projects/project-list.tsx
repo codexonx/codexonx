@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApi } from '@/hooks/use-api';
 import { Button } from '@/components/ui/button';
@@ -12,8 +12,17 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Pencil, Trash2, Plus, RefreshCw, Key, ExternalLink, Loader2 } from 'lucide-react';
+import {
+  Pencil,
+  Trash2,
+  Plus,
+  RefreshCcw as RefreshCw,
+  Key,
+  ExternalLink,
+  Loader,
+} from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { useWorkspace } from '@/contexts/workspace-context';
 
 interface Project {
   id: string;
@@ -27,21 +36,26 @@ interface Project {
 export function ProjectList() {
   const router = useRouter();
   const { getProjects, deleteProject, isLoading, error } = useApi();
+  const { activeWorkspaceId, activeWorkspace, isLoading: workspaceLoading } = useWorkspace();
 
   const [projects, setProjects] = useState<Project[]>([]);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [showApiKey, setShowApiKey] = useState<Record<string, boolean>>({});
 
   // Projeleri yükle
-  useEffect(() => {
-    fetchProjects();
-  }, []);
+  const fetchProjects = useCallback(async () => {
+    if (!activeWorkspaceId) {
+      return;
+    }
 
-  const fetchProjects = async () => {
-    const response = await getProjects(data => {
+    await getProjects(data => {
       setProjects(data.data);
     });
-  };
+  }, [getProjects, activeWorkspaceId]);
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects, activeWorkspaceId]);
 
   // Proje silme
   const handleDelete = async (id: string) => {
@@ -50,7 +64,7 @@ export function ProjectList() {
 
       await deleteProject(id, () => {
         // Başarılı silme
-        setProjects(projects.filter(project => project.id !== id));
+        setProjects(prevProjects => prevProjects.filter(project => project.id !== id));
       });
 
       setIsDeleting(null);
@@ -79,10 +93,10 @@ export function ProjectList() {
     }
   };
 
-  if (isLoading) {
+  if (workspaceLoading || !activeWorkspaceId || isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+        <Loader className="w-6 h-6 animate-spin text-primary" />
         <span className="ml-2">Projeler yükleniyor...</span>
       </div>
     );
@@ -103,7 +117,11 @@ export function ProjectList() {
   if (projects.length === 0) {
     return (
       <div className="text-center py-12">
-        <h3 className="text-lg font-medium mb-2">Henüz hiç projeniz yok</h3>
+        <h3 className="text-lg font-medium mb-2">
+          {activeWorkspace
+            ? `${activeWorkspace.name} workspace içinde henüz proje yok`
+            : 'Henüz proje yok'}
+        </h3>
         <p className="text-muted-foreground mb-6">Yeni bir proje ekleyerek başlayabilirsiniz</p>
         <Button onClick={() => router.push('/admin/projects/new')}>
           <Plus className="w-4 h-4 mr-2" />
@@ -132,7 +150,7 @@ export function ProjectList() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="flex-grow">
+          <CardContent className="grow">
             <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
               {project.description || 'Açıklama yok'}
             </p>
@@ -140,13 +158,13 @@ export function ProjectList() {
             <div className="mt-2">
               <div className="text-xs font-medium text-muted-foreground mb-1">API Anahtarı</div>
               <div className="flex items-center bg-muted p-2 rounded-md overflow-hidden">
-                <code className="text-xs truncate flex-grow">
+                <code className="text-xs truncate grow">
                   {showApiKey[project.id] ? project.apiKey : '•'.repeat(32)}
                 </code>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="ml-2 h-6 w-6 p-0 flex-shrink-0"
+                  className="ml-2 h-6 w-6 p-0 shrink-0"
                   onClick={() => toggleApiKey(project.id)}
                 >
                   <Key className="h-3 w-3" />
@@ -182,7 +200,7 @@ export function ProjectList() {
                 disabled={isDeleting === project.id}
               >
                 {isDeleting === project.id ? (
-                  <Loader2 className="w-3 h-3 animate-spin" />
+                  <Loader className="w-3 h-3 animate-spin" />
                 ) : (
                   <Trash2 className="w-3 h-3 mr-0 sm:mr-2" />
                 )}

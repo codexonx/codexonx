@@ -19,6 +19,7 @@ import {
   AreaChart,
   Area,
 } from 'recharts';
+import type { PieLabelRenderProps } from 'recharts';
 
 // Renk paleti
 const COLORS = [
@@ -31,6 +32,12 @@ const COLORS = [
   '#06b6d4',
   '#84cc16',
 ];
+
+const renderPieLabel = ({ name, percent }: PieLabelRenderProps) => {
+  const displayName = typeof name === 'string' ? name : String(name ?? '');
+  const percentage = typeof percent === 'number' ? Math.round(percent * 100) : 0;
+  return `${displayName}: ${percentage}%`;
+};
 
 // Ülke bazlı kullanıcı dağılımı için veriler
 const countryData = [
@@ -308,7 +315,7 @@ export default function UserAnalyticsPage() {
                   cx="50%"
                   cy="50%"
                   labelLine={true}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  label={renderPieLabel}
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
@@ -394,7 +401,7 @@ export default function UserAnalyticsPage() {
                   cx="50%"
                   cy="50%"
                   labelLine={true}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  label={renderPieLabel}
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"

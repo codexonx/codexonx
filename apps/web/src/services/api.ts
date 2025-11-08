@@ -5,12 +5,16 @@
  */
 
 // API'nin temel URL'i
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 /**
  * Fetch ile API istekleri yapan yardımcı fonksiyon
  */
 async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  if (!API_URL) {
+    throw new Error('API URL is not configured. Set NEXT_PUBLIC_API_URL to enable API requests.');
+  }
+
   const url = `${API_URL}${endpoint}`;
 
   const defaultHeaders: Record<string, string> = {
@@ -21,6 +25,17 @@ async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise
   const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
   if (token) {
     defaultHeaders['Authorization'] = `Bearer ${token}`;
+  }
+
+  if (typeof window !== 'undefined') {
+    const activeWorkspaceId = localStorage.getItem('active_workspace_id');
+    const activeWorkspaceSlug = localStorage.getItem('active_workspace_slug');
+
+    if (activeWorkspaceId) {
+      defaultHeaders['x-workspace-id'] = activeWorkspaceId;
+    } else if (activeWorkspaceSlug) {
+      defaultHeaders['x-workspace-slug'] = activeWorkspaceSlug;
+    }
   }
 
   const response = await fetch(url, {
@@ -135,6 +150,14 @@ export const api = {
       customerId?: string;
     }) =>
       fetchAPI<{ clientSecret: string; paymentIntentId: string }>('/payments/payment-intents', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+  },
+
+  waitlist: {
+    join: (data: { name: string; email: string; teamSize: string }) =>
+      fetchAPI<{ status: string; message: string }>('/waitlist', {
         method: 'POST',
         body: JSON.stringify(data),
       }),

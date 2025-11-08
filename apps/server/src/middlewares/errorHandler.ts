@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
+import { logger } from '../utils/logger';
+
 export class AppError extends Error {
   statusCode: number;
   isOperational: boolean;
@@ -16,13 +18,13 @@ export const errorHandler = (
   err: Error | AppError,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   let error = { ...err } as any;
   error.message = err.message;
 
   // Log error
-  console.error('ERROR 💥', err);
+  logger.error('ERROR 💥', err);
 
   // Specific error handling
   if (err.name === 'ValidationError') {
@@ -55,7 +57,7 @@ export const errorHandler = (
   }
 
   // For unknown errors
-  console.error('Unknown error:', error);
+  logger.error('Unknown error:', error);
   return res.status(500).json({
     status: 'error',
     message: 'Something went wrong',

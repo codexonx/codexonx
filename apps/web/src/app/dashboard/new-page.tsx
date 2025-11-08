@@ -14,6 +14,7 @@ import {
   Database,
   Zap,
   Plus,
+  Search,
 } from 'lucide-react';
 import { CodexonxButton } from '@/components/custom/CodexonxButton';
 import { CodexonxCard } from '@/components/custom/CodexonxCard';
@@ -30,13 +31,10 @@ import {
   Input,
   VStack,
   HStack,
-  InputElement,
   StackProps,
   Stack,
   IconButtonProps,
-  InputElementProps,
 } from '@chakra-ui/react';
-import { FiSearch } from 'react-icons/fi';
 
 // Özellikler
 const features = [
@@ -164,7 +162,7 @@ export default function DashboardPage() {
       {/* Arama Çubuğu */}
       <InputGroup maxW="2xl" mb={8}>
         <InputLeftElement pointerEvents="none">
-          <FiSearch color="gray.500" />
+          <Search size={18} className="text-gray-400" />
         </InputLeftElement>
         <Input
           placeholder="Proje, şablon veya komut ara..."

@@ -4,7 +4,8 @@
 // TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve Radix UI/Lucide
 // arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import Image from 'next/image';
 import {
   Search,
   Plus,
@@ -68,7 +69,9 @@ export default function ProductsPage() {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState('all');
+  type TabFilter = 'all' | 'active' | 'inactive' | 'draft';
+
+  const [activeTab, setActiveTab] = useState<TabFilter>('all');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -84,7 +87,10 @@ export default function ProductsPage() {
   });
 
   // Simüle edilmiş kategoriler
-  const categories = ['Teknoloji', 'Giyim', 'Ev Eşyaları', 'Kitaplar', 'Spor', 'Müzik', 'Oyunlar'];
+  const categories = useMemo(
+    () => ['Teknoloji', 'Giyim', 'Ev Eşyaları', 'Kitaplar', 'Spor', 'Müzik', 'Oyunlar'],
+    []
+  );
 
   // Simüle edilmiş ürün verileri
   useEffect(() => {
@@ -119,7 +125,7 @@ export default function ProductsPage() {
     };
 
     fetchProducts();
-  }, []);
+  }, [categories]);
 
   // Arama ve filtreleme
   useEffect(() => {
@@ -141,7 +147,8 @@ export default function ProductsPage() {
     }
 
     setFilteredProducts(filtered);
-  }, [searchQuery, products, activeTab]);
+    // categories değişmediği sürece referansı sabit olduğundan ekstra yeniden hesaplama olmayacak
+  }, [searchQuery, products, activeTab, categories]);
 
   // Tarih formatı
   const formatDate = (dateString: string) => {
@@ -434,12 +441,14 @@ export default function ProductsPage() {
           </DialogHeader>
           <div className="py-4">
             <div className="flex items-center gap-3 p-3 border rounded-md bg-muted/50">
-              <div className="h-10 w-10 rounded-md bg-muted/30 flex items-center justify-center overflow-hidden">
+              <div className="relative h-10 w-10 rounded-md bg-muted/30 flex items-center justify-center overflow-hidden">
                 {selectedProduct && (
-                  <img
+                  <Image
                     src={selectedProduct.imageUrl}
                     alt={selectedProduct.name}
-                    className="h-full w-full object-cover"
+                    fill
+                    sizes="40px"
+                    className="object-cover"
                   />
                 )}
               </div>
@@ -549,7 +558,11 @@ export default function ProductsPage() {
         </DropdownMenu>
       </div>
       {/* Sekmeler */}
-      <Tabs defaultValue="all" className="w-full" onValueChange={value => setActiveTab(value)}>
+      <Tabs
+        defaultValue="all"
+        className="w-full"
+        onValueChange={value => setActiveTab(value as TabFilter)}
+      >
         <TabsList>
           <TabsTrigger value="all">Tüm Ürünler</TabsTrigger>
           <TabsTrigger value="active">Aktif</TabsTrigger>
@@ -590,11 +603,13 @@ export default function ProductsPage() {
                 >
                   <td className="p-4 align-middle">
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-md bg-muted/30 flex items-center justify-center overflow-hidden">
-                        <img
+                      <div className="relative h-10 w-10 rounded-md bg-muted/30 flex items-center justify-center overflow-hidden">
+                        <Image
                           src={product.imageUrl}
                           alt={product.name}
-                          className="h-full w-full object-cover"
+                          fill
+                          sizes="40px"
+                          className="object-cover"
                         />
                       </div>
                       <div>

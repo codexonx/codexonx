@@ -1,5 +1,8 @@
+import express, { json } from 'express';
 import request from 'supertest';
-import express from 'express';
+
+import prisma from '../lib/prisma';
+
 import {
   createProject,
   getProjects,
@@ -8,7 +11,6 @@ import {
   deleteProject,
   regenerateApiKey,
 } from './projects';
-import prisma from '../lib/prisma';
 
 // Mock prisma client
 jest.mock('../lib/prisma', () => ({
@@ -29,7 +31,31 @@ describe('Projects Controller', () => {
 
   beforeAll(() => {
     app = express();
-    app.use(express.json());
+    app.use(json());
+    app.use((req, _res, next) => {
+      req.user = {
+        id: 'test-user',
+        email: 'test@example.com',
+        role: 'USER',
+        workspaces: [
+          {
+            id: 'workspace-1',
+            name: 'Workspace One',
+            slug: 'workspace-one',
+            role: 'OWNER',
+            plan: 'PRO',
+          },
+        ],
+        activeWorkspace: {
+          id: 'workspace-1',
+          name: 'Workspace One',
+          slug: 'workspace-one',
+          role: 'OWNER',
+          plan: 'PRO',
+        },
+      };
+      next();
+    });
     app.post('/api/projects', createProject);
     app.get('/api/projects', getProjects);
     app.get('/api/projects/:id', getProject);
@@ -49,41 +75,49 @@ describe('Projects Controller', () => {
         name: 'Test Project',
         description: 'Test Description',
         apiKey: 'test_api_key',
-        userId: 'user-1',
+        workspaceId: 'workspace-1',
+        visibility: 'PRIVATE',
         createdAt: new Date(),
         updatedAt: new Date(),
       };
 
       (prisma.project.create as jest.Mock).mockResolvedValue(mockProject);
-      (prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: 'user-1' });
 
       const response = await request(app).post('/api/projects').send({
         name: 'Test Project',
         description: 'Test Description',
-        userId: 'user-1',
       });
 
       expect(response.status).toBe(201);
-      expect(response.body).toEqual(mockProject);
-      expect(prisma.project.create).toHaveBeenCalled();
+      expect(response.body).toEqual({
+        status: 'success',
+        data: {
+          project: {
+            id: mockProject.id,
+            name: mockProject.name,
+            description: mockProject.description,
+            apiKey: mockProject.apiKey,
+            workspaceId: mockProject.workspaceId,
+            visibility: mockProject.visibility,
+            createdAt: mockProject.createdAt.toISOString(),
+            updatedAt: mockProject.updatedAt.toISOString(),
+            createdById: undefined,
+          },
+        },
+      });
+      expect(prisma.project.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          name: 'Test Project',
+          description: 'Test Description',
+          workspaceId: 'workspace-1',
+        }),
+      });
     });
 
     it('should return 400 if required fields are missing', async () => {
       const response = await request(app).post('/api/projects').send({});
 
       expect(response.status).toBe(400);
-    });
-
-    it('should return 404 if user not found', async () => {
-      (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
-
-      const response = await request(app).post('/api/projects').send({
-        name: 'Test Project',
-        description: 'Test Description',
-        userId: 'non-existent-user',
-      });
-
-      expect(response.status).toBe(404);
     });
   });
 
@@ -95,7 +129,8 @@ describe('Projects Controller', () => {
           name: 'Project 1',
           description: 'Description 1',
           apiKey: 'key_1',
-          userId: 'user-1',
+          workspaceId: 'workspace-1',
+          visibility: 'PRIVATE',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -104,7 +139,8 @@ describe('Projects Controller', () => {
           name: 'Project 2',
           description: 'Description 2',
           apiKey: 'key_2',
-          userId: 'user-1',
+          workspaceId: 'workspace-1',
+          visibility: 'PRIVATE',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -115,17 +151,34 @@ describe('Projects Controller', () => {
       const response = await request(app).get('/api/projects');
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(mockProjects);
+      expect(response.body).toEqual({
+        status: 'success',
+        results: mockProjects.length,
+        data: {
+          projects: mockProjects.map(project => ({
+            id: project.id,
+            name: project.name,
+            description: project.description,
+            apiKey: project.apiKey,
+            workspaceId: project.workspaceId,
+            visibility: project.visibility,
+            createdAt: project.createdAt.toISOString(),
+            updatedAt: project.updatedAt.toISOString(),
+            createdById: undefined,
+          })),
+        },
+      });
     });
 
-    it('should filter projects by userId if provided', async () => {
+    it('should query projects scoped to active workspace', async () => {
       const mockProjects = [
         {
           id: '1',
           name: 'Project 1',
           description: 'Description 1',
           apiKey: 'key_1',
-          userId: 'user-1',
+          workspaceId: 'workspace-1',
+          visibility: 'PRIVATE',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -133,12 +186,12 @@ describe('Projects Controller', () => {
 
       (prisma.project.findMany as jest.Mock).mockResolvedValue(mockProjects);
 
-      const response = await request(app).get('/api/projects').query({ userId: 'user-1' });
+      const response = await request(app).get('/api/projects');
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(mockProjects);
       expect(prisma.project.findMany).toHaveBeenCalledWith({
-        where: { userId: 'user-1' },
+        where: { workspaceId: 'workspace-1' },
+        orderBy: { createdAt: 'desc' },
       });
     });
   });
@@ -150,9 +203,16 @@ describe('Projects Controller', () => {
         name: 'Test Project',
         description: 'Test Description',
         apiKey: 'test_api_key',
-        userId: 'user-1',
+        workspaceId: 'workspace-1',
         createdAt: new Date(),
         updatedAt: new Date(),
+        workspace: {
+          id: 'workspace-1',
+          name: 'Workspace One',
+          slug: 'workspace-one',
+          plan: 'PRO',
+          description: 'Test Workspace',
+        },
       };
 
       (prisma.project.findUnique as jest.Mock).mockResolvedValue(mockProject);
@@ -160,13 +220,52 @@ describe('Projects Controller', () => {
       const response = await request(app).get('/api/projects/1');
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(mockProject);
+      expect(response.body).toEqual({
+        status: 'success',
+        data: {
+          project: {
+            id: mockProject.id,
+            name: mockProject.name,
+            description: mockProject.description,
+            apiKey: mockProject.apiKey,
+            workspaceId: mockProject.workspaceId,
+            createdAt: mockProject.createdAt.toISOString(),
+            updatedAt: mockProject.updatedAt.toISOString(),
+            workspace: mockProject.workspace,
+          },
+        },
+      });
     });
 
     it('should return 404 if project not found', async () => {
       (prisma.project.findUnique as jest.Mock).mockResolvedValue(null);
 
       const response = await request(app).get('/api/projects/non-existent');
+
+      expect(response.status).toBe(404);
+    });
+
+    it('should return 404 if project belongs to different workspace', async () => {
+      const mockProject = {
+        id: '2',
+        name: 'Other Project',
+        description: 'Other Description',
+        apiKey: 'other_api_key',
+        workspaceId: 'workspace-2',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        workspace: {
+          id: 'workspace-2',
+          name: 'Workspace Two',
+          slug: 'workspace-two',
+          plan: 'FREE',
+          description: null,
+        },
+      };
+
+      (prisma.project.findUnique as jest.Mock).mockResolvedValue(mockProject);
+
+      const response = await request(app).get('/api/projects/2');
 
       expect(response.status).toBe(404);
     });
@@ -179,7 +278,8 @@ describe('Projects Controller', () => {
         name: 'Updated Project',
         description: 'Updated Description',
         apiKey: 'test_api_key',
-        userId: 'user-1',
+        workspaceId: 'workspace-1',
+        visibility: 'PRIVATE',
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -188,6 +288,8 @@ describe('Projects Controller', () => {
         id: '1',
         name: 'Test Project',
         description: 'Test Description',
+        workspaceId: 'workspace-1',
+        visibility: 'PRIVATE',
       });
 
       (prisma.project.update as jest.Mock).mockResolvedValue(mockUpdatedProject);
@@ -198,7 +300,22 @@ describe('Projects Controller', () => {
       });
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(mockUpdatedProject);
+      expect(response.body).toEqual({
+        status: 'success',
+        data: {
+          project: {
+            id: mockUpdatedProject.id,
+            name: mockUpdatedProject.name,
+            description: mockUpdatedProject.description,
+            apiKey: mockUpdatedProject.apiKey,
+            workspaceId: mockUpdatedProject.workspaceId,
+            visibility: mockUpdatedProject.visibility,
+            createdAt: mockUpdatedProject.createdAt.toISOString(),
+            updatedAt: mockUpdatedProject.updatedAt.toISOString(),
+            createdById: undefined,
+          },
+        },
+      });
     });
 
     it('should return 404 if project not found', async () => {
@@ -217,6 +334,7 @@ describe('Projects Controller', () => {
       (prisma.project.findUnique as jest.Mock).mockResolvedValue({
         id: '1',
         name: 'Test Project',
+        workspaceId: 'workspace-1',
       });
 
       (prisma.project.delete as jest.Mock).mockResolvedValue({});
@@ -224,6 +342,7 @@ describe('Projects Controller', () => {
       const response = await request(app).delete('/api/projects/1');
 
       expect(response.status).toBe(204);
+      expect(response.body).toEqual({});
     });
 
     it('should return 404 if project not found', async () => {
@@ -240,13 +359,23 @@ describe('Projects Controller', () => {
       const mockProject = {
         id: '1',
         name: 'Test Project',
+        description: 'Test Description',
         apiKey: 'old_api_key',
+        workspaceId: 'workspace-1',
+        visibility: 'PRIVATE',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       const mockUpdatedProject = {
         id: '1',
         name: 'Test Project',
+        description: 'Test Description',
         apiKey: 'new_api_key',
+        workspaceId: 'workspace-1',
+        visibility: 'PRIVATE',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       (prisma.project.findUnique as jest.Mock).mockResolvedValue(mockProject);
@@ -255,8 +384,23 @@ describe('Projects Controller', () => {
       const response = await request(app).post('/api/projects/1/refresh-key');
 
       expect(response.status).toBe(200);
-      expect(response.body.apiKey).toBe('new_api_key');
-      expect(response.body.apiKey).not.toBe('old_api_key');
+      expect(response.body).toEqual({
+        status: 'success',
+        data: {
+          project: {
+            id: mockUpdatedProject.id,
+            name: mockUpdatedProject.name,
+            description: mockUpdatedProject.description,
+            apiKey: mockUpdatedProject.apiKey,
+            workspaceId: mockUpdatedProject.workspaceId,
+            visibility: mockUpdatedProject.visibility,
+            createdAt: mockUpdatedProject.createdAt.toISOString(),
+            updatedAt: mockUpdatedProject.updatedAt.toISOString(),
+            createdById: undefined,
+          },
+        },
+      });
+      expect(response.body.data.project.apiKey).not.toBe(mockProject.apiKey);
     });
 
     it('should return 404 if project not found', async () => {

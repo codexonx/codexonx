@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
-import { z } from 'zod';
 // Stripe entegrasyonu için
 import Stripe from 'stripe';
+import { z } from 'zod';
+
+import { logger } from '../utils/logger';
 
 // Stripe yapılandırması
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
@@ -51,7 +53,7 @@ export const createCustomer = async (req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
-    console.error('Müşteri oluşturma hatası:', error);
+    logger.error('Müşteri oluşturma hatası:', error);
     return res.status(500).json({ error: error.message || 'Sunucu hatası' });
   }
 };
@@ -89,7 +91,7 @@ export const createPaymentIntent = async (req: Request, res: Response) => {
       status: paymentIntent.status,
     });
   } catch (error: any) {
-    console.error('Ödeme oluşturma hatası:', error);
+    logger.error('Ödeme oluşturma hatası:', error);
     return res.status(500).json({ error: error.message || 'Sunucu hatası' });
   }
 };
@@ -124,7 +126,7 @@ export const createSubscription = async (req: Request, res: Response) => {
       status: subscription.status,
     });
   } catch (error: any) {
-    console.error('Abonelik oluşturma hatası:', error);
+    logger.error('Abonelik oluşturma hatası:', error);
     return res.status(500).json({ error: error.message || 'Sunucu hatası' });
   }
 };
@@ -148,7 +150,7 @@ export const cancelSubscription = async (req: Request, res: Response) => {
       canceledAt: canceledSubscription.canceled_at,
     });
   } catch (error: any) {
-    console.error('Abonelik iptal hatası:', error);
+    logger.error('Abonelik iptal hatası:', error);
     return res.status(500).json({ error: error.message || 'Sunucu hatası' });
   }
 };
@@ -167,36 +169,36 @@ export const handleWebhook = async (req: Request, res: Response) => {
   try {
     const event = stripe.webhooks.constructEvent(req.body, sig as string, webhookSecret);
 
-    // Webhook olay türüne göre işlem
+    const eventObject = event.data.object;
+
     switch (event.type) {
-      case 'payment_intent.succeeded':
-        // Ödeme başarılı olduğunda
-        const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        console.log('Başarılı ödeme:', paymentIntent.id);
+      case 'payment_intent.succeeded': {
+        const paymentIntent = eventObject as Stripe.PaymentIntent;
+        logger.info('Başarılı ödeme işlendi', { paymentIntentId: paymentIntent.id });
         // TODO: Veritabanına başarılı ödeme bilgisini kaydet
         break;
-
-      case 'invoice.payment_succeeded':
-        // Fatura ödemesi başarılı olduğunda
-        const invoice = event.data.object as Stripe.Invoice;
-        console.log('Fatura ödendi:', invoice.id);
+      }
+      case 'invoice.payment_succeeded': {
+        const invoice = eventObject as Stripe.Invoice;
+        logger.info('Fatura ödemesi işlendi', { invoiceId: invoice.id });
         // TODO: Abonelik durumunu güncelle
         break;
-
-      case 'customer.subscription.deleted':
-        // Abonelik iptal edildiğinde
-        const subscription = event.data.object as Stripe.Subscription;
-        console.log('Abonelik iptal edildi:', subscription.id);
+      }
+      case 'customer.subscription.deleted': {
+        const subscription = eventObject as Stripe.Subscription;
+        logger.info('Abonelik iptal edildi', { subscriptionId: subscription.id });
         // TODO: Kullanıcı abonelik durumunu güncelle
         break;
-
-      default:
-        console.log(`Bilinmeyen olay tipi: ${event.type}`);
+      }
+      default: {
+        logger.debug('İşlenmeyen Stripe olayı alındı', { type: event.type });
+        break;
+      }
     }
 
     return res.status(200).json({ received: true });
   } catch (error: any) {
-    console.error('Webhook işleme hatası:', error);
+    logger.error('Webhook işleme hatası:', error);
     return res.status(400).json({ error: `Webhook hatası: ${error.message}` });
   }
 };
@@ -216,7 +218,7 @@ export const getPrices = async (req: Request, res: Response) => {
       data: prices.data,
     });
   } catch (error: any) {
-    console.error('Fiyat listesi hatası:', error);
+    logger.error('Fiyat listesi hatası:', error);
     return res.status(500).json({ error: error.message || 'Sunucu hatası' });
   }
 };

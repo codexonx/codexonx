@@ -22,10 +22,16 @@ declare module 'lucide-react' {
   export const Activity: IconComponent;
   export const AlertCircle: IconComponent;
   export const ArrowRight: IconComponent;
+  export const ArrowLeft: IconComponent;
+  export const ArrowUp: IconComponent;
+  export const ArrowDown: IconComponent;
+  export const ArrowUpRight: IconComponent;
   export const ArrowUpDown: IconComponent;
   export const BookOpen: IconComponent;
   export const Briefcase: IconComponent;
   export const BarChart2: IconComponent;
+  export const LineChart: IconComponent;
+  export const PieChart: IconComponent;
   export const Bell: IconComponent;
   export const Book: IconComponent;
   export const Calendar: IconComponent;
@@ -52,40 +58,66 @@ declare module 'lucide-react' {
   export const Eye: IconComponent;
   export const EyeOff: IconComponent;
   export const File: IconComponent;
+  export const FileBarChart: IconComponent;
+  export const FileBarChart2: IconComponent;
   export const FileCode: IconComponent;
+  export const FilePieChart: IconComponent;
+  export const FileSpreadsheet: IconComponent;
   export const FileText: IconComponent;
   export const Filter: IconComponent;
   export const Folder: IconComponent;
+  export const FolderPlus: IconComponent;
   export const Github: IconComponent;
   export const GitBranch: IconComponent;
   export const Home: IconComponent;
   export const Info: IconComponent;
   export const Layers: IconComponent;
+  export const Braces: IconComponent;
+  export const Key: IconComponent;
   export const Link2: IconComponent;
   export const Lock: IconComponent;
   export const LogOut: IconComponent;
   export const LucideTerminalSquare: IconComponent;
   export const Mail: IconComponent;
+  export const Phone: IconComponent;
   export const Menu: IconComponent;
   export const MessageSquare: IconComponent;
+  export const MessageCircle: IconComponent;
   export const MoreHorizontal: IconComponent;
   export const MoreVertical: IconComponent;
+  export const Package: IconComponent;
+  export const GaugeCircle: IconComponent;
+  export const CreditCard: IconComponent;
+  export const Lightbulb: IconComponent;
   export const PanelLeft: IconComponent;
   export const Play: IconComponent;
+  export const Pause: IconComponent;
   export const Plus: IconComponent;
   export const PlayCircle: IconComponent;
   export const PlusCircle: IconComponent;
+  export const Bookmark: IconComponent;
+  export const Pencil: IconComponent;
   export const Save: IconComponent;
+  export const Send: IconComponent;
+  export const Loader: IconComponent;
+  export const Clipboard: IconComponent;
   export const Search: IconComponent;
   export const Server: IconComponent;
   export const Settings: IconComponent;
+  export const Settings2: IconComponent;
   export const Shield: IconComponent;
   export const Sparkles: IconComponent;
   export const Star: IconComponent;
+  export const StarOff: IconComponent;
   export const Square: IconComponent;
+  export const Share2: IconComponent;
   export const Tag: IconComponent;
   export const Terminal: IconComponent;
   export const TerminalSquare: IconComponent;
+  export const HardDrive: IconComponent;
+  export const RefreshCcw: IconComponent;
+  export const RotateCcw: IconComponent;
+  export const SlidersHorizontal: IconComponent;
   export const ThumbsUp: IconComponent;
   export const Trash2: IconComponent;
   export const TrendingDown: IconComponent;
@@ -95,11 +127,23 @@ declare module 'lucide-react' {
   export const Zap: IconComponent;
   export const Globe: IconComponent;
   export const Laptop: IconComponent;
+  export const FastForward: IconComponent;
+  export const Smartphone: IconComponent;
+  export const Tablet: IconComponent;
+  export const Building: IconComponent;
+  export const Languages: IconComponent;
+  export const Brush: IconComponent;
   export const LayoutGrid: IconComponent;
+  export const Keyboard: IconComponent;
+  export const Monitor: IconComponent;
+  export const LayoutDashboard: IconComponent;
   export const Linkedin: IconComponent;
   export const Link2: IconComponent;
   export const Lock: IconComponent;
   export const MapPin: IconComponent;
+  export const Camera: IconComponent;
+  export const Heart: IconComponent;
+  export const HelpCircle: IconComponent;
   export const Moon: IconComponent;
   export const Sun: IconComponent;
   export const Twitter: IconComponent;
@@ -184,27 +228,6 @@ declare module 'framer-motion' {
   }
 
   export type Easing = Array<number> | string | ((t: number) => number);
-}
-
-// Radix UI hata çözümü
-declare module '@radix-ui/react-tabs' {
-  import React from 'react';
-
-  export interface TabsProps {
-    defaultValue?: string;
-    value?: string;
-    onValueChange?: (value: string) => void;
-    orientation?: 'horizontal' | 'vertical';
-    dir?: 'ltr' | 'rtl';
-    activationMode?: 'automatic' | 'manual';
-    className?: string;
-    children?: React.ReactNode;
-  }
-
-  export const Tabs: React.FC<TabsProps>;
-  export const TabsList: React.FC<any>;
-  export const TabsTrigger: React.FC<any>;
-  export const TabsContent: React.FC<any>;
 }
 
 // Monaco Editor hata çözümü

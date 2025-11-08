@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { I18nProvider } from '@/contexts/i18n-context';
 import { AuthProvider } from '@/contexts/auth-context';
+import { WorkspaceProvider } from '@/contexts/workspace-context';
 import RegisterServiceWorker from './register-sw';
 import { FloatingFeedback } from '@/components/feedback/floating-feedback';
 import { ChakraUIProvider } from '@/providers/chakra-provider';
@@ -42,12 +43,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             disableTransitionOnChange
           >
             <AuthProvider>
-              <ChakraUIProvider>
-                <RegisterServiceWorker />
-                {children}
-                <Toaster />
-                <FloatingFeedback />
-              </ChakraUIProvider>
+              <WorkspaceProvider>
+                <ChakraUIProvider>
+                  <RegisterServiceWorker />
+                  {children}
+                  <Toaster />
+                  <FloatingFeedback />
+                </ChakraUIProvider>
+              </WorkspaceProvider>
             </AuthProvider>
           </ThemeProvider>
         </I18nProvider>

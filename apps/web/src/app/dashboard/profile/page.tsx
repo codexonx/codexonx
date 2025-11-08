@@ -1,10 +1,7 @@
 'use client';
 
-// @ts-nocheck
-// TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
-// arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
-
-import React, { useState } from 'react';
+import React, { useState, type FormEvent, type ChangeEvent, type HTMLAttributes } from 'react';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import {
   User,
@@ -36,13 +33,63 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
+// Tip tanımları
+type ActivityType = 'project' | 'comment' | 'star';
+
+interface UserSocials {
+  github?: string;
+  twitter?: string;
+  linkedin?: string;
+}
+
+interface UserStats {
+  projects: number;
+  followers: number;
+  following: number;
+  contributions: number;
+}
+
+interface UserActivity {
+  id: number;
+  type: ActivityType;
+  action: string;
+  target: string;
+  date: string;
+  url: string;
+}
+
+interface UserProject {
+  id: string;
+  name: string;
+  description: string;
+  language: keyof typeof languageColors;
+  stars: number;
+  lastUpdate: string;
+}
+
+interface UserData {
+  name: string;
+  username: string;
+  role: string;
+  email: string;
+  website?: string;
+  location?: string;
+  company?: string;
+  joinDate: string;
+  bio: string;
+  skills: string[];
+  socials: UserSocials;
+  stats: UserStats;
+  activity: UserActivity[];
+}
+
 // Separator bileşeni
-const Separator = ({ className, ...props }) => (
-  <div className={cn('h-[1px] w-full bg-border my-4', className)} {...props} />
+const Separator = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn('h-px w-full bg-border my-4', className)} {...props} />
 );
 
 // Örnek kullanıcı verileri
-const userData = {
+const userData: UserData = {
   name: 'Ahmet Yılmaz',
   username: 'ahmetyilmaz',
   role: 'Yazılım Geliştirici',
@@ -93,7 +140,7 @@ const userData = {
 };
 
 // Örnek projeler
-const userProjects = [
+const userProjects: UserProject[] = [
   {
     id: 'proj1',
     name: 'AI Metin Editörü',
@@ -121,7 +168,7 @@ const userProjects = [
 ];
 
 // Dil renkleri
-const languageColors = {
+const languageColors: Record<string, string> = {
   javascript: 'bg-yellow-400',
   typescript: 'bg-blue-500',
   python: 'bg-green-500',
@@ -130,7 +177,7 @@ const languageColors = {
 };
 
 // Aktivite ikon bileşeni
-const ActivityIcon = ({ type }) => {
+const ActivityIcon = ({ type }: { type: ActivityType }) => {
   switch (type) {
     case 'project':
       return <PlusCircle className="h-4 w-4 text-green-500" />;
@@ -149,8 +196,8 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState(userData);
 
   // Profil düzenleme fonksiyonu
-  const handleProfileUpdate = e => {
-    e.preventDefault();
+  const handleProfileUpdate = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setIsEditing(false);
     // Gerçek bir uygulamada burada API çağrısı yapılacak
   };
@@ -183,10 +230,12 @@ export default function ProfilePage() {
             <CardHeader className="pb-2">
               <div className="flex flex-col items-center">
                 <div className="relative h-24 w-24 overflow-hidden rounded-full bg-muted mb-4">
-                  <img
+                  <Image
                     src="/avatar.png"
                     alt={profile.name}
-                    className="h-full w-full object-cover"
+                    fill
+                    sizes="96px"
+                    className="object-cover"
                   />
                 </div>
                 <CardTitle className="text-xl">{profile.name}</CardTitle>
@@ -327,7 +376,9 @@ export default function ProfilePage() {
                     <Input
                       id="name"
                       value={profile.name}
-                      onChange={e => setProfile({ ...profile, name: e.target.value })}
+                      onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                        setProfile({ ...profile, name: event.currentTarget.value })
+                      }
                     />
                   </div>
 
@@ -338,7 +389,9 @@ export default function ProfilePage() {
                     <Input
                       id="username"
                       value={profile.username}
-                      onChange={e => setProfile({ ...profile, username: e.target.value })}
+                      onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                        setProfile({ ...profile, username: event.currentTarget.value })
+                      }
                     />
                   </div>
 
@@ -350,7 +403,9 @@ export default function ProfilePage() {
                       id="bio"
                       className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       value={profile.bio}
-                      onChange={e => setProfile({ ...profile, bio: e.target.value })}
+                      onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
+                        setProfile({ ...profile, bio: event.currentTarget.value })
+                      }
                     />
                   </div>
 
@@ -362,7 +417,9 @@ export default function ProfilePage() {
                       <Input
                         id="location"
                         value={profile.location}
-                        onChange={e => setProfile({ ...profile, location: e.target.value })}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                          setProfile({ ...profile, location: event.currentTarget.value })
+                        }
                       />
                     </div>
 
@@ -373,7 +430,9 @@ export default function ProfilePage() {
                       <Input
                         id="company"
                         value={profile.company}
-                        onChange={e => setProfile({ ...profile, company: e.target.value })}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                          setProfile({ ...profile, company: event.currentTarget.value })
+                        }
                       />
                     </div>
                   </div>
@@ -385,7 +444,9 @@ export default function ProfilePage() {
                     <Input
                       id="website"
                       value={profile.website}
-                      onChange={e => setProfile({ ...profile, website: e.target.value })}
+                      onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                        setProfile({ ...profile, website: event.currentTarget.value })
+                      }
                     />
                   </div>
 

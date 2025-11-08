@@ -1,10 +1,9 @@
 'use client';
 
-// @ts-nocheck
 // TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
 // arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
 
-import React, { useState } from 'react';
+import React, { useState, type HTMLAttributes, type ChangeEvent } from 'react';
 import { cn } from '@/lib/utils';
 import {
   Globe,
@@ -32,13 +31,51 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
+// Tip tanımları
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+
+type ParameterLocation = 'path' | 'query' | 'body' | 'header' | 'object';
+
+interface ApiParameter {
+  name: string;
+  type: string;
+  required: boolean;
+  description: string;
+  in?: ParameterLocation;
+}
+
+interface ApiResponse {
+  code: number;
+  description: string;
+  example: unknown;
+}
+
+interface ApiEndpoint {
+  id: string;
+  method: HttpMethod;
+  path: string;
+  description: string;
+  requiresAuth: boolean;
+  parameters: ApiParameter[];
+  responses: ApiResponse[];
+}
+
+interface ApiGroup {
+  id: string;
+  name: string;
+  description: string;
+  icon: React.ReactNode;
+  endpoints: ApiEndpoint[];
+  isFiltered?: boolean;
+}
+
 // Separator bileşeni
-const Separator = ({ className, ...props }) => (
-  <div className={cn('h-[1px] w-full bg-border my-4', className)} {...props} />
+const Separator = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn('h-px w-full bg-border my-4', className)} {...props} />
 );
 
 // HTTP metod renkleri
-const methodColors = {
+const methodColors: Record<HttpMethod, string> = {
   GET: 'bg-blue-500',
   POST: 'bg-green-500',
   PUT: 'bg-yellow-500',
@@ -47,7 +84,7 @@ const methodColors = {
 };
 
 // API endpoint grupları
-const apiGroups = [
+const apiGroups: ApiGroup[] = [
   {
     id: 'authentication',
     name: 'Kimlik Doğrulama',
@@ -346,11 +383,11 @@ const apiGroups = [
 
 export default function ApiDocsPage() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [expandedGroup, setExpandedGroup] = useState('authentication');
+  const [expandedGroup, setExpandedGroup] = useState<string | null>('authentication');
   const [selectedEndpoint, setSelectedEndpoint] = useState('login');
 
   // Seçili endpoint'i bul
-  const getSelectedEndpoint = () => {
+  const getSelectedEndpoint = (): (ApiEndpoint & { groupName: string }) | null => {
     for (const group of apiGroups) {
       const endpoint = group.endpoints.find(e => e.id === selectedEndpoint);
       if (endpoint) {
@@ -361,14 +398,16 @@ export default function ApiDocsPage() {
   };
 
   // Arama
-  const filteredGroups = apiGroups
+  const filteredGroups: ApiGroup[] = apiGroups
     .map(group => {
       const filteredEndpoints = searchQuery
-        ? group.endpoints.filter(
-            endpoint =>
-              endpoint.path.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              endpoint.description.toLowerCase().includes(searchQuery.toLowerCase())
-          )
+        ? group.endpoints.filter(endpoint => {
+            const query = searchQuery.toLowerCase();
+            return (
+              endpoint.path.toLowerCase().includes(query) ||
+              endpoint.description.toLowerCase().includes(query)
+            );
+          })
         : group.endpoints;
 
       return {
@@ -380,12 +419,12 @@ export default function ApiDocsPage() {
     .filter(group => !searchQuery || group.isFiltered);
 
   // Kod örneği oluştur
-  const generateCodeExample = endpoint => {
+  const generateCodeExample = (endpoint: (ApiEndpoint & { groupName: string }) | null): string => {
     if (!endpoint) return '';
 
     const params = endpoint.parameters
       .filter(param => !param.in || param.in !== 'path')
-      .reduce((acc, param) => {
+      .reduce<Record<string, string | number>>((acc, param) => {
         if (param.required) {
           acc[param.name] = param.type === 'string' ? 'value' : 1;
         }
@@ -425,7 +464,7 @@ axios.${endpoint.method.toLowerCase()}("${url}"${Object.keys(params).length > 0 
 
       <div className="flex flex-col md:flex-row gap-6">
         {/* Sol Kenar Çubuğu - Endpoint Listesi */}
-        <div className="w-full md:w-64 lg:w-80 flex-shrink-0">
+        <div className="w-full md:w-64 lg:w-80 shrink-0">
           <div className="mb-4">
             <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -434,7 +473,9 @@ axios.${endpoint.method.toLowerCase()}("${url}"${Object.keys(params).length > 0 
                 placeholder="API uç noktalarını arayın..."
                 className="pl-9"
                 value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
+                onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                  setSearchQuery(event.currentTarget.value)
+                }
               />
             </div>
           </div>

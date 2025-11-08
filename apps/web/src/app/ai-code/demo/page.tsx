@@ -514,12 +514,12 @@ export default function DemoPage() {
   };
 
   // Format code with syntax highlighting
-  const formatCode = code => {
+  const formatCode = (code: string): string => {
     return code.replace(/\/\/ (.*)/g, '<span class="text-green-400">// $1</span>');
   };
 
   // Format AI response with syntax highlighting for code blocks
-  const formatResponse = response => {
+  const formatResponse = (response: string): string => {
     return response.replace(/```(.*?)\n([\s\S]*?)```/g, (match, language, code) => {
       return `<div class="bg-slate-900 rounded-md p-4 my-4 overflow-auto">
                 <pre><code class="language-${language || 'javascript'}">${code}</code></pre>

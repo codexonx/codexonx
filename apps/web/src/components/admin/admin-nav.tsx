@@ -7,7 +7,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import * as Icons from 'lucide-react';
 import { CXLogo } from '@/components/ui/cx-logo';
@@ -216,23 +216,21 @@ export function AdminNav({ isCollapsed = false }) {
           </button>
 
           {/* Alt grup öğeleri */}
-          <AnimatePresence>
-            {openGroups[item.label.toLowerCase()] && !isCollapsed && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="overflow-hidden"
-              >
-                <div className="pl-6 space-y-1">
-                  {item.children?.map((child, childIndex) =>
-                    renderNavItem(child, childIndex, depth + 1)
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {openGroups[item.label.toLowerCase()] && !isCollapsed && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+            >
+              <div className="pl-6 space-y-1">
+                {item.children?.map((child, childIndex) =>
+                  renderNavItem(child, childIndex, depth + 1)
+                )}
+              </div>
+            </motion.div>
+          )}
         </div>
       );
     }

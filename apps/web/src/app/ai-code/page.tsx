@@ -163,14 +163,14 @@ export default function AICodeHome() {
             <div className="text-sm text-gray-400">aicoder.js</div>
           </div>
           <div className="p-4 text-sm font-mono text-gray-300">
-            <div className="text-gray-500">// Kodunuzu AI'ya sorun</div>
+            <div className="text-gray-500">{`// Kodunuzu AI'ya sorun`}</div>
             <div className="text-blue-400">
               function <span className="text-yellow-400">createSmartComponent</span>
               {'('}
               <span className="text-green-400">config</span>
               {')'} {'{'}
             </div>
-            <div className="pl-4 text-gray-300">// AI tarafından tamamlanacak kod</div>
+            <div className="pl-4 text-gray-300">{`// AI tarafından tamamlanacak kod`}</div>
             <div className="pl-4 text-gray-300">
               const {'{'} type, props {'}'} = config;
             </div>
@@ -178,10 +178,10 @@ export default function AICodeHome() {
             <div className="pl-4 text-blue-400">
               if <span className="text-gray-300">(</span>
               <span className="text-green-400">type</span> ==={' '}
-              <span className="text-orange-400">'react'</span>
+              <span className="text-orange-400">&apos;react&apos;</span>
               <span className="text-gray-300">)</span> {'{'}
             </div>
-            <div className="pl-8 text-gray-300">// React bileşeni oluştur</div>
+            <div className="pl-8 text-gray-300">{`// React bileşeni oluştur`}</div>
             <div className="pl-8 text-yellow-400">
               return <span className="text-blue-400">new</span> ReactComponent
               <span className="text-gray-300">(props);</span>
@@ -190,12 +190,10 @@ export default function AICodeHome() {
               {'}'} <span className="text-blue-400">else if</span>{' '}
               <span className="text-gray-300">(</span>
               <span className="text-green-400">type</span> ==={' '}
-              <span className="text-orange-400">'vue'</span>
+              <span className="text-orange-400">&apos;vue&apos;</span>
               <span className="text-gray-300">)</span> {'{'}
             </div>
-            <div className="pl-8 text-blue-400">
-              // <span className="text-gray-500">AI buradan devam edecek...</span>
-            </div>
+            <div className="pl-8 text-blue-400">{/* AI buradan devam edecek... */}</div>
             <div className="pl-8 text-gray-300">
               <span className="bg-blue-500/20 px-1">return new VueComponent(props);</span>
             </div>

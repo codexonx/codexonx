@@ -1,26 +1,25 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
+
+import prisma from '../lib/prisma';
+
 import { AppError } from './errorHandler';
 
-const prisma = new PrismaClient();
+type WorkspaceIdentifier = { id: string; type: 'id' } | { slug: string; type: 'slug' } | null;
 
-// Define a User type for better typing
-type User = {
-  id: string;
-  email: string;
-  role: string;
-  [key: string]: any;
-};
-
-// Extended Request interface to include user property
-declare global {
-  namespace Express {
-    interface Request {
-      user?: User;
-    }
+const resolveWorkspaceIdentifier = (req: Request): WorkspaceIdentifier => {
+  const idHeader = req.headers['x-workspace-id'];
+  if (typeof idHeader === 'string' && idHeader.trim()) {
+    return { id: idHeader.trim(), type: 'id' };
   }
-}
+
+  const slugHeader = req.headers['x-workspace-slug'];
+  if (typeof slugHeader === 'string' && slugHeader.trim()) {
+    return { slug: slugHeader.trim(), type: 'slug' };
+  }
+
+  return null;
+};
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -39,19 +38,82 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret') as any;
 
-    // Check if user still exists
-    const user = await prisma.user.findUnique({
+    // Check if user still exists and load memberships
+    const userWithMemberships = await prisma.user.findUnique({
       where: { id: decoded.id },
+      include: {
+        ownedWorkspaces: true,
+        workspaceMemberships: {
+          include: {
+            workspace: true,
+          },
+        },
+      },
     });
 
-    if (!user) {
+    if (!userWithMemberships) {
       return next(new AppError("Bu token'a sahip kullanıcı artık mevcut değil.", 401));
     }
 
-    // Grant access to protected route
-    req.user = user;
+    const workspaceIdentifier = resolveWorkspaceIdentifier(req);
+
+    type MembershipWithWorkspace = (typeof userWithMemberships.workspaceMemberships)[number];
+    type OwnedWorkspace = (typeof userWithMemberships.ownedWorkspaces)[number];
+
+    const membershipSummaries: UserWorkspaceSummary[] = [];
+
+    if (userWithMemberships.workspaceMemberships) {
+      membershipSummaries.push(
+        ...userWithMemberships.workspaceMemberships.map(
+          (membership: MembershipWithWorkspace): UserWorkspaceSummary => ({
+            id: membership.workspaceId,
+            name: membership.workspace.name,
+            slug: membership.workspace.slug,
+            role: membership.role,
+            plan: membership.workspace.plan,
+          })
+        )
+      );
+    }
+
+    if (userWithMemberships.ownedWorkspaces) {
+      membershipSummaries.push(
+        ...userWithMemberships.ownedWorkspaces.map(
+          (workspace: OwnedWorkspace): UserWorkspaceSummary => ({
+            id: workspace.id,
+            name: workspace.name,
+            slug: workspace.slug,
+            role: 'OWNER',
+            plan: workspace.plan,
+          })
+        )
+      );
+    }
+
+    const activeWorkspace = workspaceIdentifier
+      ? membershipSummaries.find(workspace => {
+          if (workspaceIdentifier.type === 'id') {
+            return workspace.id === workspaceIdentifier.id;
+          }
+          return workspace.slug === workspaceIdentifier.slug;
+        })
+      : undefined;
+
+    if (workspaceIdentifier && !activeWorkspace) {
+      return next(new AppError('Bu workspace üzerinde yetkiniz bulunmuyor.', 403));
+    }
+
+    // Grant access to protected route with context
+    req.user = {
+      id: userWithMemberships.id,
+      email: userWithMemberships.email,
+      role: userWithMemberships.role,
+      workspaces: membershipSummaries,
+      activeWorkspace,
+    };
+
     next();
-  } catch (err) {
+  } catch (_error) {
     return next(new AppError('Geçersiz token. Lütfen tekrar giriş yapın.', 401));
   }
 };
@@ -65,6 +127,24 @@ export const restrictTo = (...roles: string[]) => {
 
     if (!roles.includes(req.user.role)) {
       return next(new AppError('Bu işlemi gerçekleştirmek için yetkiniz yok.', 403));
+    }
+
+    next();
+  };
+};
+
+export const requireWorkspaceRole = (...roles: WorkspaceRole[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      return next(new AppError('Giriş yapmadınız. Lütfen giriş yapın.', 401));
+    }
+
+    if (!req.user.activeWorkspace) {
+      return next(new AppError('Bir workspace seçmeniz gerekiyor.', 400));
+    }
+
+    if (!roles.includes(req.user.activeWorkspace.role)) {
+      return next(new AppError('Bu workspace üzerinde yetkiniz yok.', 403));
     }
 
     next();

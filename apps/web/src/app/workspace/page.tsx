@@ -8,20 +8,38 @@ import {
   PlusCircle,
   Settings,
   Key,
-  BarChart,
+  BarChart2 as BarChart,
   LayoutGrid,
   LogOut,
   ChevronDown,
 } from 'lucide-react';
+import { useWorkspace } from '@/contexts/workspace-context';
 
 export default function WorkspacePage() {
+  const { workspaces, activeWorkspaceId, activeWorkspace, setActiveWorkspace, isLoading } =
+    useWorkspace();
   const [activeProject, setActiveProject] = useState<string | null>(null);
 
-  // Mock data
   const projects = [
     { id: '1', name: 'API Projesi', apiKey: 'pk_test_123456789', status: 'active' },
     { id: '2', name: 'Web Uygulaması', apiKey: 'pk_test_987654321', status: 'active' },
   ];
+
+  const handleWorkspaceChange = (workspaceId: string) => {
+    setActiveWorkspace(workspaceId);
+    setActiveProject(null);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          Workspace bilgileri yükleniyor...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen">
@@ -30,6 +48,26 @@ export default function WorkspacePage() {
         <div className="p-4 flex items-center space-x-2 border-b">
           <Code className="h-6 w-6" />
           <span className="font-bold">Codexonx</span>
+        </div>
+        <div className="px-4 pt-4">
+          <label htmlFor="workspace-select" className="text-xs text-muted-foreground">
+            Aktif Workspace
+          </label>
+          <select
+            id="workspace-select"
+            className="mt-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+            value={activeWorkspaceId ?? ''}
+            onChange={event => handleWorkspaceChange(event.target.value)}
+          >
+            {workspaces.map(workspace => (
+              <option key={workspace.id} value={workspace.id}>
+                {workspace.name} ({workspace.plan})
+              </option>
+            ))}
+          </select>
+          <p className="mt-2 text-[11px] text-muted-foreground leading-relaxed">
+            Seçiminiz tarayıcınıza kaydedilir ve API çağrıları aynı workspace bağlamında yapılır.
+          </p>
         </div>
         <nav className="flex-1 p-4 space-y-2">
           <Link
@@ -73,8 +111,10 @@ export default function WorkspacePage() {
                 <span className="text-sm font-medium">AK</span>
               </div>
               <div className="text-sm">
-                <div className="font-medium">Ali Kullanıcı</div>
-                <div className="text-xs text-muted-foreground">Pro Plan</div>
+                <div className="font-medium">{activeWorkspace?.name ?? 'Workspace seçin'}</div>
+                <div className="text-xs text-muted-foreground">
+                  Plan: {activeWorkspace?.plan ?? '-'}
+                </div>
               </div>
             </div>
             <Button variant="ghost" size="icon" title="Çıkış yap" aria-label="Çıkış yap">

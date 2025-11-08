@@ -1,10 +1,6 @@
 'use client';
 
-// @ts-nocheck
-// TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
-// arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
-
-import React, { useState } from 'react';
+import React, { useState, type HTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 import {
   Search,
@@ -32,13 +28,34 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-// Separator bileşeni
-const Separator = ({ className, ...props }) => (
-  <div className={cn('h-[1px] w-full bg-border my-4', className)} {...props} />
+type TemplateType = 'official' | 'community';
+type TemplateCategory = 'frontend' | 'backend' | 'fullstack' | 'data' | 'cloud';
+type TemplateLanguage = 'javascript' | 'typescript' | 'python' | 'java' | 'go';
+
+interface Template {
+  id: string;
+  name: string;
+  description: string;
+  category: TemplateCategory | 'fullstack';
+  language: TemplateLanguage;
+  stars: number;
+  forks: number;
+  type: TemplateType;
+  createdBy: string;
+  tags: string[];
+}
+
+interface Category {
+  id: 'all' | TemplateCategory;
+  name: string;
+  icon: React.ReactNode;
+}
+
+const Separator = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn('h-px w-full bg-border my-4', className)} {...props} />
 );
 
-// Örnek şablonlar
-const templates = [
+const templates: Template[] = [
   {
     id: 't1',
     name: 'React Component Library',
@@ -114,7 +131,7 @@ const templates = [
 ];
 
 // Kategoriler
-const categories = [
+const categories: Category[] = [
   { id: 'all', name: 'Tümü', icon: <Code className="h-4 w-4" /> },
   { id: 'frontend', name: 'Frontend', icon: <Globe className="h-4 w-4" /> },
   { id: 'backend', name: 'Backend', icon: <Database className="h-4 w-4" /> },
@@ -124,7 +141,7 @@ const categories = [
 ];
 
 // Dil renkleri
-const languageColors = {
+const languageColors: Record<TemplateLanguage, string> = {
   javascript: 'bg-yellow-400',
   typescript: 'bg-blue-500',
   python: 'bg-green-500',
@@ -135,20 +152,22 @@ const languageColors = {
 export default function TemplatesPage() {
   const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState<Category['id']>('all');
 
   // Şablonları filtreleme
   const filteredTemplates = templates
     .filter(
-      template =>
+      (template: Template) =>
         template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         template.description.toLowerCase().includes(searchQuery.toLowerCase())
     )
-    .filter(template => selectedCategory === 'all' || template.category === selectedCategory);
+    .filter(
+      (template: Template) => selectedCategory === 'all' || template.category === selectedCategory
+    );
 
   // Filtrele: Resmi / Topluluk
-  const officialTemplates = filteredTemplates.filter(t => t.type === 'official');
-  const communityTemplates = filteredTemplates.filter(t => t.type === 'community');
+  const officialTemplates = filteredTemplates.filter(template => template.type === 'official');
+  const communityTemplates = filteredTemplates.filter(template => template.type === 'community');
 
   return (
     <div className="space-y-6">
@@ -251,7 +270,7 @@ export default function TemplatesPage() {
 }
 
 // Şablon Kartı Bileşeni
-function TemplateCard({ template }) {
+function TemplateCard({ template }: { template: Template }) {
   return (
     <Card className="overflow-hidden">
       <CardHeader className="p-4">
@@ -273,7 +292,7 @@ function TemplateCard({ template }) {
 
       <CardContent className="p-4 pt-0">
         <div className="flex flex-wrap gap-2 mb-3">
-          {template.tags.slice(0, 3).map(tag => (
+          {template.tags.slice(0, 3).map((tag: string) => (
             <Badge key={tag} variant="outline" className="text-xs">
               {tag}
             </Badge>

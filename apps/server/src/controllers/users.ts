@@ -1,9 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
-import { AppError } from '../middlewares/errorHandler';
 
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
+import { AppError } from '../middlewares/errorHandler';
 
 // Validation schemas
 const updateUserSchema = z.object({
@@ -12,6 +11,10 @@ const updateUserSchema = z.object({
 
 // Get current user
 export const getMe = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return next(new AppError('Kullanıcı oturumu bulunamadı', 401));
+  }
+
   req.params.id = req.user.id;
   next();
 };
@@ -19,6 +22,10 @@ export const getMe = (req: Request, res: Response, next: NextFunction) => {
 // Update current user
 export const updateMe = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    if (!req.user) {
+      return next(new AppError('Kullanıcı oturumu bulunamadı', 401));
+    }
+
     // Validate input
     const { name } = updateUserSchema.parse(req.body);
 
@@ -42,13 +49,10 @@ export const updateMe = async (req: Request, res: Response, next: NextFunction) 
       },
     });
 
-    // Remove password from response
-    const { password, ...userWithoutPassword } = updatedUser;
-
     res.status(200).json({
       status: 'success',
       data: {
-        user: userWithoutPassword,
+        user: updatedUser,
       },
     });
   } catch (err) {

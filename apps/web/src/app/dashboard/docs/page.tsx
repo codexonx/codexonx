@@ -1,10 +1,6 @@
 'use client';
 
-// @ts-nocheck
-// TypeScript hatalarını görmezden geliyoruz çünkü bunlar React ve UI kütüphaneleri
-// arasındaki tip uyumsuzluklarından kaynaklanıyor ve işlevselliği etkilemiyor
-
-import React, { useState } from 'react';
+import React, { useState, type HTMLAttributes, type ChangeEvent } from 'react';
 import { cn } from '@/lib/utils';
 import {
   Search,
@@ -22,13 +18,37 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
+interface DocLink {
+  id: string;
+  title: string;
+  slug: string;
+}
+
+interface DocCategory {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  color: string;
+  docs: DocLink[];
+}
+
+interface PopularDoc extends DocLink {
+  category: string;
+}
+
+interface FlattenedDoc extends DocLink {
+  categoryId: string;
+  categoryTitle: string;
+}
+
 // Separator bileşeni
-const Separator = ({ className, ...props }) => (
-  <div className={cn('h-[1px] w-full bg-border my-4', className)} {...props} />
+const Separator = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn('h-px w-full bg-border my-4', className)} {...props} />
 );
 
 // Örnek dökümantasyon kategorileri
-const docCategories = [
+const docCategories: DocCategory[] = [
   {
     id: 'getting-started',
     title: 'Başlangıç',
@@ -128,7 +148,7 @@ const docCategories = [
 ];
 
 // Örnek popüler belgeler
-const popularDocs = [
+const popularDocs: PopularDoc[] = [
   {
     id: 'quickstart',
     title: 'Hızlı Başlangıç',
@@ -155,7 +175,7 @@ export default function DocsPage() {
   const [activeDocId, setActiveDocId] = useState('');
 
   // Aramalarda kullanmak için tüm dökümanların düz listesini oluştur
-  const allDocs = docCategories.flatMap(category =>
+  const allDocs: FlattenedDoc[] = docCategories.flatMap(category =>
     category.docs.map(doc => ({
       ...doc,
       categoryId: category.id,
@@ -164,12 +184,12 @@ export default function DocsPage() {
   );
 
   // Arama sonuçları
-  const searchResults = searchQuery
+  const searchResults: FlattenedDoc[] = searchQuery
     ? allDocs.filter(doc => doc.title.toLowerCase().includes(searchQuery.toLowerCase()))
     : [];
 
   // Belirli bir belgeyi göster
-  const handleDocClick = slug => {
+  const handleDocClick = (slug: string) => {
     // Gerçek uygulamada burada belge içeriği yüklenecek
     setActiveDocId(slug);
 
@@ -193,7 +213,9 @@ export default function DocsPage() {
           placeholder="Belgelerde arayın..."
           className="pl-9"
           value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
+          onChange={(event: ChangeEvent<HTMLInputElement>) =>
+            setSearchQuery(event.currentTarget.value)
+          }
         />
 
         {/* Arama Sonuçları Dropdown */}

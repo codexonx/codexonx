@@ -1,11 +1,10 @@
-import { PrismaClient } from '@prisma/client';
 import { randomBytes } from 'crypto';
 
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 type TokenType = 'RESET_PASSWORD' | 'VERIFY_EMAIL';
 
-export const generateToken = async (userId: string, type: TokenType, expiresIn: string = '1d') => {
+export const generateToken = async (userId: string, type: TokenType, expiresIn = '1d') => {
   // Generate random token
   const token = randomBytes(32).toString('hex');
 

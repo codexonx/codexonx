@@ -11,7 +11,7 @@ import {
   ChevronRight,
   SlidersHorizontal,
   ExternalLink,
-  BarChart,
+  BarChart2 as BarChart,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 

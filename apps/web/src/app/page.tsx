@@ -1,468 +1,179 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { ArrowRight, Code, Laptop, Lock, BarChart, Shield } from 'lucide-react';
+'use client';
 
-export default function Home() {
+import { MarketingHero } from '@/components/marketing/hero';
+import { FeatureGrid } from '@/components/marketing/feature-grid';
+import { SectionHeader } from '@/components/marketing/section-header';
+import Link from 'next/link';
+import Image from 'next/image';
+import { WaitlistForm } from '@/components/marketing/waitlist-form';
+
+const productivityFeatures = [
+  {
+    title: 'Çoklu ajan planlayıcı',
+    description:
+      'Story, task ve PR süreçlerini otomatik planlayan yapay zeka akışı aynı anda birden fazla ajanla birlikte çalışır.',
+    icon: <span className="text-lg">🤖</span>,
+    badge: 'Yakında',
+  },
+  {
+    title: 'Akıllı test üretimi',
+    description:
+      'Kod değişikliklerinizi analiz ederek ünit, entegrasyon ve uçtan uca test önerileri sunar; CI/CD hatalarını azaltır.',
+    icon: <span className="text-lg">🧪</span>,
+  },
+  {
+    title: 'Bağlam duyarlı kod editörü',
+    description:
+      'Kod tabanınız, dokümantasyon ve verilmiş kararları anlık olarak bağlama alıp daha isabetli öneriler üretir.',
+    icon: <span className="text-lg">🧠</span>,
+  },
+  {
+    title: 'Takım içi hikâye panosu',
+    description:
+      'Ekip arkadaşlarınızla AI destekli brief paylaşın, anlık yorum bırakın, teslimatların görünürlüğünü artırın.',
+    icon: <span className="text-lg">🗂️</span>,
+  },
+  {
+    title: 'Kişiselleştirilmiş akışlar',
+    description:
+      'Sık kullandığınız pattern’leri öğrenir, size özel şablonlar ve kod snippet’leri üretir.',
+    icon: <span className="text-lg">✨</span>,
+  },
+  {
+    title: 'Gelişmiş güvenlik ve uyumluluk',
+    description:
+      'Veri maskeleme, audit log ve BYO model entegrasyonu ile kurumsal gereksinimlere uyum sağlar.',
+    icon: <span className="text-lg">🛡️</span>,
+  },
+];
+
+const collaborationFeatures = [
+  {
+    title: 'Gerçek zamanlı eş-yazım',
+    description:
+      'Takım arkadaşlarınızla aynı dosyada, aynı anda düzenleme yapın ve değişiklikleri canlı izleyin.',
+    icon: <span className="text-lg">👥</span>,
+  },
+  {
+    title: 'Akıllı bildirimler',
+    description:
+      'CI hataları, kod review yorumları ve üretkenlik önerileri için özelleştirilebilir bildirim akışı.',
+    icon: <span className="text-lg">🔔</span>,
+  },
+  {
+    title: 'Slack & Teams entegrasyonu',
+    description:
+      'AI özetleri, PR raporları ve görev atamalarını tercih ettiğiniz iletişim kanallarına taşıyın.',
+    icon: <span className="text-lg">💬</span>,
+  },
+];
+
+export default function Page() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="container sticky top-0 z-40 bg-background">
-        <div className="flex h-16 items-center justify-between py-4">
-          <div className="flex gap-6 md:gap-10">
-            <Link href="/" className="flex items-center space-x-2">
-              <Code className="h-6 w-6" />
-              <span className="font-bold inline-block">Codexonx</span>
-            </Link>
-            <nav className="hidden md:flex gap-6">
-              <Link href="#features" className="text-sm font-medium hover:text-primary">
-                Özellikler
-              </Link>
-              <Link href="#pricing" className="text-sm font-medium hover:text-primary">
-                Fiyatlandırma
-              </Link>
-              <Link href="#contact" className="text-sm font-medium hover:text-primary">
-                İletişim
-              </Link>
-            </nav>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link href="/auth/login">
-              <Button variant="ghost" size="sm">
-                Giriş
-              </Button>
-            </Link>
-            <Link href="/auth/register">
-              <Button size="sm">Kayıt Ol</Button>
-            </Link>
-          </div>
-        </div>
-      </header>
-      <main className="flex-1">
-        <section className="py-20 md:py-28">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <main className="flex-1 overflow-hidden">
+        <MarketingHero />
+        <FeatureGrid
+          eyebrow="Üretkenlik Odaklı"
+          title="Kod akışınızı hızlandıran özellikler"
+          description="Kod yazma, test etme ve dağıtım süreçlerini tek bir masaüstü uygulamasında birleştiren AI destekli deneyim."
+          features={productivityFeatures}
+        />
+        <FeatureGrid
+          eyebrow="Takımda güç"
+          title="İşbirliği ve iletişim yeniden tanımlanıyor"
+          description="CodeXonX Desk, yalnızca kod yazmayı değil, ekip koordinasyonunu da AI ile optimize eder."
+          features={collaborationFeatures}
+          columns={2}
+        />
+
+        <section id="product-tour" className="relative overflow-hidden py-24">
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-primary/10 via-transparent to-background" />
           <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
-                  Yazılım Projeleriniz İçin Güçlü Platform
-                </h1>
-                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                  Projelerinizi güvenle yönetin, API anahtarlarınızı oluşturun ve modern bir arayüz
-                  ile her şeyi kontrol edin.
+            <SectionHeader
+              eyebrow="Ürün Turuna Bakın"
+              title="Kod editörünüz, terminaliniz ve AI orkestrasyonunuz tek ekranda"
+              description="Windsurf tarzı şerit görünümü ile kodlama, test ve görev yönetimini bir arada deneyimleyin."
+              align="left"
+            />
+            <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+              <div className="space-y-6 text-base text-muted-foreground">
+                <p>
+                  Masaüstü uygulamamız, repolarınızı içe aktarmanızla birlikte otomatik olarak
+                  bağlam çıkarır; AI ajanları kod tabanını inceler ve proje durumunuzu birkaç
+                  dakikada özetler.
                 </p>
+                <p>
+                  Terminal entegrasyonuyla testleri çalıştırabilir, hataları AI’ye açıklatabilir ve
+                  önerilen düzeltmeleri tek tıkla uygulayabilirsiniz. Her işlem günlüklenir, ekip
+                  arkadaşlarınızla paylaşılabilir.
+                </p>
+                <p>
+                  Uygulama içinde yerleşik görev panosu, AI tarafından önerilen sprint planlarını
+                  incelemenize, düzenlemenize ve diğer ekip üyelerine atamanıza izin verir.
+                </p>
+                <div className="mt-8 flex flex-wrap items-center gap-4">
+                  <Link
+                    href="#get-started"
+                    className="rounded-full border border-primary bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
+                  >
+                    Demo talep et
+                  </Link>
+                  <Link
+                    href="/docs"
+                    className="text-sm font-semibold text-primary transition hover:text-primary/80"
+                  >
+                    Teknik dokümantasyonu incele →
+                  </Link>
+                </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/auth/register">
-                  <Button size="lg" className="gap-2">
-                    Hemen Başla
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
-                <Link href="#features">
-                  <Button size="lg" variant="outline">
-                    Özelliklere Göz At
-                  </Button>
-                </Link>
+              <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-card/80 p-4 shadow-xl shadow-primary/20">
+                <div className="flex items-center justify-between rounded-2xl border border-border/80 bg-background/70 px-5 py-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                    Aktif Workspace
+                  </div>
+                  <span className="text-xs text-muted-foreground">AI Sync: Açık</span>
+                </div>
+                <div className="relative mt-4 overflow-hidden rounded-2xl">
+                  <Image
+                    src="/images/product-tour.png"
+                    alt="CodeXonX Desk ürün turu"
+                    width={1280}
+                    height={720}
+                    priority
+                    className="h-auto w-full"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </section>
-        <section id="features" className="bg-muted py-16">
+
+        <section id="get-started" className="relative py-24">
           <div className="container px-4 md:px-6">
-            <h2 className="text-2xl font-bold text-center mb-12">Öne Çıkan Özellikler</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="flex flex-col items-center text-center p-6 bg-background rounded-lg shadow">
-                <Laptop className="h-12 w-12 mb-4 text-primary" />
-                <h3 className="text-xl font-bold mb-2">Modern Dashboard</h3>
-                <p className="text-gray-500 dark:text-gray-400">
-                  Projelerinizi yönetmek için kullanıcı dostu, modern bir kontrol paneli.
-                </p>
+            <div className="grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
+              <div className="space-y-6">
+                <SectionHeader
+                  eyebrow="Erken erişim"
+                  title="CodeXonX Desk beta listesine katılın"
+                  description="Takımınızla birlikte masaüstü AI editörümüzü ilk deneyenlerden olun. Sınırlı sayıda davet göndereceğiz."
+                  align="left"
+                >
+                  <div className="mt-6 grid gap-4 text-sm text-muted-foreground">
+                    <p>• Şirket içi pilot uygulama desteği</p>
+                    <p>• Özel başarı metrikleri takibi ve raporlama</p>
+                    <p>• AI ile kod review, test üretimi ve görev planlama</p>
+                  </div>
+                </SectionHeader>
               </div>
-              <div className="flex flex-col items-center text-center p-6 bg-background rounded-lg shadow">
-                <Lock className="h-12 w-12 mb-4 text-primary" />
-                <h3 className="text-xl font-bold mb-2">Güvenli API Anahtarları</h3>
-                <p className="text-gray-500 dark:text-gray-400">
-                  API anahtarlarını güvenle oluşturun, yönetin ve izleyin.
-                </p>
-              </div>
-              <div className="flex flex-col items-center text-center p-6 bg-background rounded-lg shadow">
-                <BarChart className="h-12 w-12 mb-4 text-primary" />
-                <h3 className="text-xl font-bold mb-2">Detaylı Analitikler</h3>
-                <p className="text-gray-500 dark:text-gray-400">
-                  Kullanım verilerinizi gerçek zamanlı olarak görüntüleyin ve analiz edin.
-                </p>
-              </div>
-              <div className="flex flex-col items-center text-center p-6 bg-background rounded-lg shadow">
-                <Shield className="h-12 w-12 mb-4 text-primary" />
-                <h3 className="text-xl font-bold mb-2">Gelişmiş Güvenlik</h3>
-                <p className="text-gray-500 dark:text-gray-400">
-                  Verileriniz en son güvenlik önlemleriyle korunur.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section id="pricing" className="py-16">
-          <div className="container px-4 md:px-6">
-            <h2 className="text-2xl font-bold text-center mb-12">Fiyatlandırma Planları</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="flex flex-col p-6 bg-background rounded-lg shadow border">
-                <h3 className="text-2xl font-bold mb-2">Ücretsiz</h3>
-                <p className="text-4xl font-bold mb-2">
-                  ₺0<span className="text-lg font-normal text-gray-500">/ay</span>
-                </p>
-                <p className="text-gray-500 dark:text-gray-400 mb-6">
-                  Küçük projeler için ideal başlangıç planı.
-                </p>
-                <ul className="mb-6 space-y-2 flex-1">
-                  <li className="flex items-center">
-                    <svg
-                      className="h-4 w-4 mr-2 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                    2 Proje
-                  </li>
-                  <li className="flex items-center">
-                    <svg
-                      className="h-4 w-4 mr-2 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                    Temel analitikler
-                  </li>
-                  <li className="flex items-center">
-                    <svg
-                      className="h-4 w-4 mr-2 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                    Topluluk desteği
-                  </li>
-                </ul>
-                <Link href="/auth/register">
-                  <Button className="w-full" variant="outline">
-                    Ücretsiz Başla
-                  </Button>
-                </Link>
-              </div>
-              <div className="flex flex-col p-6 bg-background rounded-lg shadow border border-primary relative">
-                <span className="absolute top-0 right-0 bg-primary text-primary-foreground px-3 py-1 rounded-bl-lg rounded-tr-lg text-xs font-bold">
-                  POPÜLER
-                </span>
-                <h3 className="text-2xl font-bold mb-2">Pro</h3>
-                <p className="text-4xl font-bold mb-2">
-                  ₺199<span className="text-lg font-normal text-gray-500">/ay</span>
-                </p>
-                <p className="text-gray-500 dark:text-gray-400 mb-6">
-                  Büyüyen projeler ve ekipler için.
-                </p>
-                <ul className="mb-6 space-y-2 flex-1">
-                  <li className="flex items-center">
-                    <svg
-                      className="h-4 w-4 mr-2 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                    10 Proje
-                  </li>
-                  <li className="flex items-center">
-                    <svg
-                      className="h-4 w-4 mr-2 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                    Gelişmiş analitikler
-                  </li>
-                  <li className="flex items-center">
-                    <svg
-                      className="h-4 w-4 mr-2 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                    Öncelikli e-posta desteği
-                  </li>
-                  <li className="flex items-center">
-                    <svg
-                      className="h-4 w-4 mr-2 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                    API geçmiş kayıtları (30 gün)
-                  </li>
-                </ul>
-                <Link href="/auth/register?plan=pro">
-                  <Button className="w-full">Planı Seç</Button>
-                </Link>
-              </div>
-              <div className="flex flex-col p-6 bg-background rounded-lg shadow border">
-                <h3 className="text-2xl font-bold mb-2">Enterprise</h3>
-                <p className="text-4xl font-bold mb-2">
-                  ₺699<span className="text-lg font-normal text-gray-500">/ay</span>
-                </p>
-                <p className="text-gray-500 dark:text-gray-400 mb-6">
-                  Büyük ölçekli işletmeler ve kurumsal kullanım için.
-                </p>
-                <ul className="mb-6 space-y-2 flex-1">
-                  <li className="flex items-center">
-                    <svg
-                      className="h-4 w-4 mr-2 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                    Sınırsız proje
-                  </li>
-                  <li className="flex items-center">
-                    <svg
-                      className="h-4 w-4 mr-2 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                    Özel analitikler
-                  </li>
-                  <li className="flex items-center">
-                    <svg
-                      className="h-4 w-4 mr-2 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                    7/24 öncelikli destek
-                  </li>
-                  <li className="flex items-center">
-                    <svg
-                      className="h-4 w-4 mr-2 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                    API geçmiş kayıtları (365 gün)
-                  </li>
-                  <li className="flex items-center">
-                    <svg
-                      className="h-4 w-4 mr-2 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                    Özel entegrasyon desteği
-                  </li>
-                </ul>
-                <Link href="/pricing">
-                  <Button className="w-full" variant="outline">
-                    Daha Fazla Bilgi
-                  </Button>
-                </Link>
+              <div className="rounded-3xl border border-border/70 bg-card/90 p-8 shadow-lg shadow-primary/20">
+                <WaitlistForm />
               </div>
             </div>
           </div>
         </section>
       </main>
-      <footer id="contact" className="py-6 md:py-12 border-t bg-muted">
-        <div className="container px-4 md:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Code className="h-6 w-6" />
-                <span className="font-bold">Codexonx</span>
-              </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Yazılım projeleriniz için güçlü bir platform çözümü.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-bold mb-4">Platform</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link
-                    href="#features"
-                    className="text-sm text-gray-500 hover:text-primary dark:text-gray-400"
-                  >
-                    Özellikler
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#pricing"
-                    className="text-sm text-gray-500 hover:text-primary dark:text-gray-400"
-                  >
-                    Fiyatlandırma
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/docs"
-                    className="text-sm text-gray-500 hover:text-primary dark:text-gray-400"
-                  >
-                    Dokümantasyon
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold mb-4">Şirket</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link
-                    href="/about"
-                    className="text-sm text-gray-500 hover:text-primary dark:text-gray-400"
-                  >
-                    Hakkımızda
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/blog"
-                    className="text-sm text-gray-500 hover:text-primary dark:text-gray-400"
-                  >
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/careers"
-                    className="text-sm text-gray-500 hover:text-primary dark:text-gray-400"
-                  >
-                    Kariyer
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold mb-4">İletişim</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a
-                    href="mailto:info@codexonx.com"
-                    className="text-sm text-gray-500 hover:text-primary dark:text-gray-400"
-                  >
-                    info@codexonx.com
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="tel:+902125551234"
-                    className="text-sm text-gray-500 hover:text-primary dark:text-gray-400"
-                  >
-                    +90 212 555 12 34
-                  </a>
-                </li>
-                <li>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">İstanbul, Türkiye</p>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t text-center">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              &copy; {new Date().getFullYear()} Codexonx. Tüm hakları saklıdır.
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
