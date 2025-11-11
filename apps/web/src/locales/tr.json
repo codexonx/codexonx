@@ -162,38 +162,38 @@
       "contact": "İletişim"
     },
     "hero": {
-      "betaTag": "Beta programı • 18 ekiple canlı öğrenme turu",
+      "betaTag": "Studio v1.3 • Auto-Apply pilotunda 24 takım",
       "title": {
-        "prefix": "Kod teslim süreçlerinizi",
-        "highlight": "ekibinizle birlikte",
-        "suffix": "yeniden tasarlayın"
+        "prefix": "AI önerilerini",
+        "highlight": "mikro görevlere",
+        "suffix": "dönüştürüp gerçekten uygulayın"
       },
       "description": {
-        "primary": "Codexonx, AI destekli çift yazarlık akışıyla CI/CD zincirinizi tek panelde birleştirir, güvenli API anahtar yönetimini standartlaştırır.",
-        "secondary": "Her sprint sonunda ekiplerinizle birlikte iterasyon yapabilmeniz için veri odaklı raporlar, paylaşılabilir özetler ve karar günlükleri sunuyoruz."
+        "primary": "Codexonx Studio, AI aksiyonlarını ürün sprintlerinize bağlar; auto-apply ile önerileri tek tıkla kod tabanınıza işler, run log paneliyle her adımı izlersiniz.",
+        "secondary": "Workspace senkronizasyonu, güvenli anahtar yönetimi ve karar günlükleri tek panelde birleşir. Takımınızın hangi öneriyi, ne zaman uyguladığını anında görün."
       },
-      "primaryCta": "Ücretsiz Deneme Başlat",
-      "secondaryCta": "30 Dakikalık Demo Planla",
+      "primaryCta": "Studio’yu Ücretsiz Dene",
+      "secondaryCta": "Canlı Demo Planla",
       "bullets": [
-        "Beta erişimi haftada 2 toplu oturum içerir",
-        "Zero-trust güvenlik mimarisi & KVKK uyum süreci"
+        "Auto-apply özelliği ile AI aksiyonları kod patch’ine dönüşür",
+        "Run log panosu sprint sonrası otomatik özetler üretir"
       ]
     },
     "stats": {
-      "heading": "Platform Metriği",
-      "description": "Codexonx ile ekipleriniz üretkenliği artırırken dağıtım sürelerini azaltır.",
+      "heading": "Studio etkisi",
+      "description": "Pilot ekiplerimiz AI aksiyonlarını görev akışına bağlayarak üretkenliği ölçümlüyor.",
       "items": [
         {
-          "value": "48",
-          "label": "Aktif Workspace"
+          "value": "31%",
+          "label": "Sprint başına hızlanma"
         },
         {
-          "value": "120K",
-          "label": "Aylık Kod Önerisi"
+          "value": "14.200",
+          "label": "Aylık auto-apply parçası"
         },
         {
-          "value": "<4 saat",
-          "label": "İlk Yanıt Süresi"
+          "value": "6 dk",
+          "label": "Öneriden deploy’a ortalama süre"
         }
       ]
     },
@@ -206,38 +206,38 @@
       "ctaLabel": "Daha fazla keşfet",
       "items": [
         {
-          "title": "Modern Gösterge Paneli",
-          "description": "Ekip akışınızı, aktif projeleri ve entegrasyonları tek bakışta yönetin. Canlı widget’lar ve kişiselleştirilebilir panellerle tam kontrol."
+          "title": "Auto-Apply Görevleri",
+          "description": "AI önerileri tek tıklamayla branch’lere uygulanır, Studio değişiklikleri run log’da açıklama notlarıyla kaydeder."
         },
         {
-          "title": "Güvenli API Anahtarları",
-          "description": "Zero-trust politikaları, anlık anahtar yenileme ve ayrıntılı erişim kayıtlarıyla güvenliği varsayılan olarak sağlayın."
+          "title": "Aksiyon Panosu",
+          "description": "Geliştirici, ürün ve güvenlik ekipleri için ortak pano: hangi öneri uygulandı, kim onayladı, hangi ortamda canlı oldu."
         },
         {
-          "title": "Derin Analitik",
-          "description": "AI destekli raporlar, trend tahminleri ve kişisel metrik setleri ile karar alma süreçlerinizi hızlandırın."
+          "title": "Run Log Arama",
+          "description": "Log panelinde doğal dil ile arama yapın, auto-apply sürecinin hangi commit’e dönüştüğünü saniyeler içinde bulun."
         },
         {
-          "title": "Kurumsal Güvenlik",
-          "description": "SOC 2 uyumluluğu, şifrelenmiş veri depolama ve role dayalı izin yönetimi ile kurum standartlarını karşılayın."
+          "title": "Senkron Workspace",
+          "description": "Git, bulut dağıtımları ve Slack senkronizasyonu ile ekipleriniz aynı gerçek zamanlı bağlamı paylaşır."
         }
       ]
     },
     "trust": {
       "heading": "Güvenin Dayanakları",
-      "description": "Beta sürecindeyken bile şeffaf ilerliyor ve ekiplerle birlikte yapılandırıyoruz.",
+      "description": "Pilot takımlarımızla birlikte kod önerilerinin gerçekten uygulandığı şeffaf süreçler tasarlıyoruz.",
       "items": [
         {
           "title": "GDPR ve KVKK uyumlu",
-          "description": "Avrupa ve Türkiye veri koruma standartlarına göre tasarlanmış süreçler."
+          "description": "Avrupa ve Türkiye veri koruma standartlarına göre tasarlanmış süreçler. Workspace verileri ayrı tenantlarda saklanır."
         },
         {
           "title": "SOC 2 Type I denetimi",
-          "description": "2025 Q4 öncesi rapor paylaşımı için bağımsız denetim sürecindeyiz."
+          "description": "2025 Q4 öncesi rapor paylaşımı için bağımsız denetim sürecindeyiz; run log kayıtları denetim kapsamına hazır."
         },
         {
           "title": "18 pilot ekipten geri bildirim",
-          "description": "Beta programı İstanbul, Berlin ve Londra’daki ürün ekipleriyle yürütülüyor."
+          "description": "İstanbul, Berlin ve Londra’daki ürün ekipleri auto-apply ve run log deneyimini her hafta geri bildirimle şekillendiriyor."
         }
       ]
     },
@@ -246,16 +246,16 @@
       "description": "Geliştirme zincirinizdeki her adımı tek panelde bağlayın. Codexonx, koddan canlıya uzanan süreci otomatik takip eder.",
       "items": [
         {
-          "name": "GitOps & Repo Senkronu",
-          "description": "GitHub ve GitLab repolarınızı otomatik tarar, akıllı PR yorumları ve güvenli anahtar rotasyonu sağlar."
+          "name": "GitOps & PR Auto-merge",
+          "description": "GitHub/GitLab entegrasyonu auto-apply patch’lerini PR olarak açar, reviewer akışını otomatik tetikler."
         },
         {
-          "name": "Bulut Dağıtım Akışı",
-          "description": "Vercel ve AWS dağıtımlarınızı izleyerek her commit sonrası canlı pipeline sağlığını gösterir."
+          "name": "Bulut Dağıtım Durumu",
+          "description": "Vercel ve AWS dağıtımlarını izle, auto-apply sonrası hangi servislerin güncellendiğini run log ile eşleştir."
         },
         {
           "name": "Takım Bildirimleri",
-          "description": "Slack entegrasyonu ile kritik olaylar, onay akışları ve AI özetleri ekiplerle aynı anda paylaşılır."
+          "description": "Slack ve Teams entegrasyonları uygulanmış aksiyonları, geri alınan değişiklikleri ve risk uyarılarını instant olarak paylaşır."
         }
       ]
     },
@@ -264,21 +264,21 @@
       "description": "Ürünü birlikte şekillendirdiğimiz ekiplerden öne çıkan geri bildirimler.",
       "items": [
         {
-          "quote": "Codexonx ile pipeline sağlığını tek panelden izlemenin rahatlığını yaşıyoruz. Haftalık toplantılarımız gerçek veriye dayanıyor.",
+          "quote": "Auto-apply sayesinde AI önerileri backlog’a düşmeden kod tabanına giriyor. Run log kaydı sayesinde hangi değişimi kim onayladı net görünüyor.",
           "name": "Selin Arda",
           "role": "Platform Ekibi Lideri",
           "company": "Lunaris Labs",
           "region": "Berlin"
         },
         {
-          "quote": "Beta sürecinde bile destek ekibi dakikalar içinde dönüş yapıyor. Anahtar rotasyonu ve audit logları iç ekibimizin yükünü azalttı.",
+          "quote": "Studio run log araması, güvenlik uyarılarını saniyeler içinde bulmamı sağlıyor. Gün sonu raporlarını Slack’te otomatik paylaşıyoruz.",
           "name": "Jorge Méndez",
           "role": "DevOps Müdürü",
           "company": "AtlasPay",
           "region": "Madrid"
         },
         {
-          "quote": "Ürünümüzün EMEA lansmanı öncesinde güvenlik kontrollerini Codexonx ile test ettik. Takımın gerçek ihtiyaçlarına göre iterasyon yapmaları güven verici.",
+          "quote": "Ürün lansmanı öncesi mikro görevlerin hangi öneriden geldiğini takip etmek zorlayıcıydı. Codexonx Studio öneri → görev → deploy zincirini görünür kıldı.",
           "name": "Ebru Kahvecioğlu",
           "role": "CTO",
           "company": "NovaFleet",
@@ -288,7 +288,7 @@
     },
     "pricing": {
       "heading": "Fiyatlandırma Planları",
-      "subheading": "Esnek planlarımızla ihtiyaçlarınızı ölçeklendirin. Her plan Codexonx AI editörünü, güvenli API yönetimini ve workspace senkronizasyonunu içerir.",
+      "subheading": "Codexonx Studio auto-apply, run log ve güvenli workspace modülleri her planda yer alır. Ekibiniz büyüdükçe aksiyon akışınızı ölçeklendirin.",
       "currencyLabel": "Para Birimi",
       "currencyNotes": {
         "try": "Fiyatlar varsayılan olarak Türk Lirası üzerinden hesaplanır.",
@@ -298,9 +298,9 @@
       "currencyDisclaimer": "* Kurlar referans amaçlıdır ve faturalama sırasında güncel değere göre güncellenecektir.",
       "mostPopularBadge": "En Popüler",
       "roi": {
-        "free": "Freelance projelerde denemek için risk yok; temel özellikler ücretsiz.",
-        "enterprise": "Takım büyüklüğünüze göre özel fiyatlama ve SLA hazırlıyoruz.",
-        "team": "{{teamSize}} kişilik ekip için aylık yaklaşık {{formattedCost}}. Ortalama sprint başına ~8 saat geliştirici zamanı geri kazanılıyor."
+        "free": "Freelance projelerde auto-apply ve run log’u sınırlı workspace ile deneyin.",
+        "enterprise": "Takım büyüklüğü, uyumluluk gereksinimi ve auto-apply kapsamına göre özel teklif oluşturuyoruz.",
+        "team": "{{teamSize}} kişilik ekip için aylık yaklaşık {{formattedCost}}. Auto-apply, sprint başına ortalama 8 saat geliştirici zamanı kazandırıyor."
       },
       "plans": {
         "starter": {
@@ -309,8 +309,8 @@
           "tagline": "Bireysel geliştiriciler için ideal başlangıç.",
           "features": [
             "2 workspace",
-            "Sınırsız API anahtarı",
-            "7 günlük geçmiş kayıtları"
+            "Sınırlı auto-apply patch kuyruğu",
+            "7 günlük run log geçmişi"
           ],
           "cta": "Ücretsiz Başla"
         },
@@ -320,8 +320,8 @@
           "tagline": "Küçük ekipler için otomasyon ve analitik.",
           "features": [
             "10 workspace",
-            "Otomatik rotasyon",
-            "30 günlük geçmiş kayıtları",
+            "Sınırsız auto-apply",
+            "30 günlük run log geçmişi",
             "Öncelikli destek"
           ],
           "cta": "Planı Seç"
@@ -332,7 +332,7 @@
           "tagline": "Gelişmiş güvenlik, özel SLA ve yerinde entegrasyon.",
           "features": [
             "Sınırsız workspace",
-            "Özel dağıtım seçenekleri",
+            "Özel dağıtım ve gizli ortam opsiyonları",
             "SOC 2 / ISO 27001",
             "24/7 teknik ekip"
           ],
@@ -355,8 +355,8 @@
       ]
     },
     "cta": {
-      "title": "Takımınızın AI akışını hızlandırın",
-      "description": "Codexonx, güvenli workspace yönetimi, otomatik pipeline gözlemi ve AI destekli kod önerileri ile ürün teslim sürenizi kısaltır. Kurumsal entegrasyonlar için uzman ekibimiz hazır.",
+      "title": "AI aksiyonlarını canlı ürün çıktısına bağlayın",
+      "description": "Codexonx Studio auto-apply, run log ve aksiyon panosu ile öneriden deploy’a kadar zinciri görünür kılar. Kurumsal entegrasyonlar için uzman ekibimiz hazır.",
       "button": "Canlı Demo Talep Et",
       "linkLabel": "Dokümantasyonda ilerleyişe göz atın →"
     },
