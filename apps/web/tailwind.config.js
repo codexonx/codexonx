@@ -52,6 +52,10 @@ module.exports = {
         },
         'background-strong': 'hsl(var(--background-strong))',
         'background-muted': 'hsl(var(--background-muted))',
+        success: 'hsl(var(--token-color-success))',
+        warning: 'hsl(var(--token-color-warning))',
+        info: 'hsl(var(--token-color-info))',
+        danger: 'hsl(var(--token-color-danger))',
       },
       spacing: {
         '2xs': 'var(--token-space-2xs)',

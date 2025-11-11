@@ -598,7 +598,10 @@ export default function Home() {
         <section className="relative overflow-hidden py-28">
           <div className="absolute inset-0 bg-radial-ocean opacity-80" aria-hidden />
           <div className="absolute inset-0 bg-hero-grid opacity-30" aria-hidden />
-          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-primary/15 via-transparent to-transparent" aria-hidden />
+          <div
+            className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-primary/15 via-transparent to-transparent"
+            aria-hidden
+          />
           <div className="relative container grid gap-16 px-4 md:px-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
             <div className="space-y-8">
               <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-primary/90">
@@ -639,7 +642,10 @@ export default function Home() {
               </div>
               <ul className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
                 {heroBullets.map(bullet => (
-                  <li key={bullet} className="flex items-start gap-3 rounded-2xl border border-white/5 bg-background/40 p-4 backdrop-blur">
+                  <li
+                    key={bullet}
+                    className="flex items-start gap-3 rounded-2xl border border-white/5 bg-background/40 p-4 backdrop-blur"
+                  >
                     <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/15 text-primary">
                       <Check className="h-3.5 w-3.5" />
                     </span>
@@ -656,21 +662,31 @@ export default function Home() {
                     <dt className="text-xs font-medium uppercase tracking-[0.35em] text-muted-foreground/80">
                       {stat.label}
                     </dt>
-                    <dd className="mt-2 text-2xl font-semibold text-foreground md:text-3xl">{stat.value}</dd>
+                    <dd className="mt-2 text-2xl font-semibold text-foreground md:text-3xl">
+                      {stat.value}
+                    </dd>
                   </div>
                 ))}
               </dl>
             </div>
             <div className="relative">
-              <div className="absolute -inset-x-12 -inset-y-14 rounded-3xl bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/20 blur-3xl" aria-hidden />
+              <div
+                className="absolute -inset-x-12 -inset-y-14 rounded-3xl bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/20 blur-3xl"
+                aria-hidden
+              />
               <div className="relative space-y-6 rounded-3xl border border-white/10 bg-background/85 p-8 shadow-2xl shadow-primary/20 backdrop-blur">
                 <div className="flex items-center justify-between text-sm text-muted-foreground">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground/70">Aktivite Paneli</p>
-                    <p className="mt-1 text-base font-semibold text-foreground">Canlı Proje Akışı</p>
+                    <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground/70">
+                      Aktivite Paneli
+                    </p>
+                    <p className="mt-1 text-base font-semibold text-foreground">
+                      Canlı Proje Akışı
+                    </p>
                   </div>
                   <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-medium text-emerald-400">
-                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" /> Gerçek zamanlı
+                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" /> Gerçek
+                    zamanlı
                   </span>
                 </div>
                 <div className="space-y-4 text-sm text-muted-foreground">
@@ -687,14 +703,20 @@ export default function Home() {
                   </div>
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="rounded-2xl border border-white/5 bg-background/70 p-4">
-                      <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground/70">API Anahtarları</p>
-                      <p className="mt-3 truncate font-mono text-xs text-foreground/80">codexonx_live_ap-9d3f...5a2c</p>
+                      <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground/70">
+                        API Anahtarları
+                      </p>
+                      <p className="mt-3 truncate font-mono text-xs text-foreground/80">
+                        codexonx_live_ap-9d3f...5a2c
+                      </p>
                       <span className="mt-3 inline-flex h-7 items-center justify-center rounded-full bg-primary/15 px-3 text-xs font-medium text-primary">
                         rota açık
                       </span>
                     </div>
                     <div className="rounded-2xl border border-white/5 bg-background/70 p-4">
-                      <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground/70">Aktif Workspace</p>
+                      <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground/70">
+                        Aktif Workspace
+                      </p>
                       <p className="mt-3 text-xs text-muted-foreground">Design Systems • 12 üye</p>
                       <span className="mt-3 inline-flex h-7 items-center justify-center rounded-full bg-secondary/15 px-3 text-xs font-medium text-secondary">
                         senkron
@@ -705,7 +727,9 @@ export default function Home() {
                 <div className="flex items-center justify-between rounded-2xl border border-white/5 bg-background/70 p-4 text-xs text-muted-foreground">
                   <div>
                     <p className="font-medium text-foreground">Auto-merge düzeyi</p>
-                    <p className="mt-1 text-muted-foreground/80">Riskli PR'lar için otomatik strateji</p>
+                    <p className="mt-1 text-muted-foreground/80">
+                      Riskli PR'lar için otomatik strateji
+                    </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="flex h-2 w-24 overflow-hidden rounded-full bg-muted/40">
@@ -877,7 +901,10 @@ export default function Home() {
             className="absolute inset-0 bg-gradient-to-b from-primary/12 via-transparent to-background"
             aria-hidden
           />
-          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-secondary/20 via-transparent to-transparent" aria-hidden />
+          <div
+            className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-secondary/20 via-transparent to-transparent"
+            aria-hidden
+          />
           <div className="relative container px-4 md:px-6">
             <div className="flex flex-col gap-6 text-center md:flex-row md:items-end md:justify-between md:text-left">
               <div className="space-y-3">
@@ -936,7 +963,9 @@ export default function Home() {
                           </span>
                         ) : null}
                       </div>
-                      <p className="text-sm leading-relaxed text-muted-foreground">{plan.tagline}</p>
+                      <p className="text-sm leading-relaxed text-muted-foreground">
+                        {plan.tagline}
+                      </p>
                       <div className="space-y-2">
                         <span className="text-3xl font-semibold text-foreground">
                           {formatPlanPrice(plan.monthlyPriceTry, selectedCurrency)}
@@ -973,7 +1002,10 @@ export default function Home() {
                   <h3 className="text-lg font-semibold text-foreground">Sık Sorulan Sorular</h3>
                   <ul className="mt-4 space-y-4 text-left text-sm text-muted-foreground">
                     {pricingFaqItems.map(item => (
-                      <li key={item.key} className="rounded-2xl border border-white/5 bg-background/60 p-4">
+                      <li
+                        key={item.key}
+                        className="rounded-2xl border border-white/5 bg-background/60 p-4"
+                      >
                         <p className="text-sm font-semibold text-foreground">{item.question}</p>
                         <p className="mt-2 leading-relaxed">{item.answer}</p>
                       </li>
@@ -983,7 +1015,8 @@ export default function Home() {
                 <div className="rounded-3xl border border-white/10 bg-background/85 p-6 text-left text-sm text-muted-foreground">
                   <p className="font-medium text-foreground">Kurumsal plan mı arıyorsunuz?</p>
                   <p className="mt-2 leading-relaxed">
-                    Enterprise ekibimiz, özel güvenlik gereksinimleri ve SLA'ler için size rehberlik eder.
+                    Enterprise ekibimiz, özel güvenlik gereksinimleri ve SLA'ler için size rehberlik
+                    eder.
                   </p>
                   <Link
                     href={buildLocaleHref('/contact?topic=enterprise')}
