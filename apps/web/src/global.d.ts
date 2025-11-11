@@ -34,6 +34,7 @@ declare module 'lucide-react' {
   export const PieChart: IconComponent;
   export const Bell: IconComponent;
   export const Book: IconComponent;
+  export const Box: IconComponent;
   export const Calendar: IconComponent;
   export const CalendarRange: IconComponent;
   export const Check: IconComponent;
@@ -105,6 +106,7 @@ declare module 'lucide-react' {
   export const Server: IconComponent;
   export const Settings: IconComponent;
   export const Settings2: IconComponent;
+  export const Flame: IconComponent;
   export const Shield: IconComponent;
   export const Sparkles: IconComponent;
   export const Star: IconComponent;

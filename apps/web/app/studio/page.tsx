@@ -1847,7 +1847,7 @@ export default function StudioPage() {
                           'flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2 text-left',
                           isActiveFolder && 'bg-primary/10'
                         )}
-                        aria-expanded={isExpanded}
+                        aria-expanded={isExpanded ? 'true' : 'false'}
                       >
                         <div className="flex items-center gap-2">
                           <ChevronDown

@@ -7,13 +7,12 @@ import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import {
-  Boxes,
-  CheckCircle2,
+  CheckCircle,
   Flame,
   Layers,
   PlayCircle,
   RefreshCcw,
-  ShieldCheck,
+  Shield,
   TerminalSquare,
   Zap,
 } from 'lucide-react';
@@ -209,7 +208,7 @@ const StudioPreview = ({ initialRunning = false }: StudioPreviewProps) => {
               <div className="flex items-center justify-between">
                 <span>UI Architect</span>
                 <span className="inline-flex items-center gap-1 text-emerald-400">
-                  <CheckCircle2 className="h-3.5 w-3.5" /> Aktif
+                  <CheckCircle className="h-3.5 w-3.5" /> Aktif
                 </span>
               </div>
               <div className="flex items-center justify-between">
@@ -280,7 +279,7 @@ const StudioPreview = ({ initialRunning = false }: StudioPreviewProps) => {
               </Button>
               <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-2">
-                  <ShieldCheck className="h-4 w-4 text-primary" />
+                  <Shield className="h-4 w-4 text-primary" />
                   Prod kalite güvence aktif
                 </span>
                 <span className="inline-flex items-center gap-2">
@@ -377,7 +376,7 @@ const StudioPreview = ({ initialRunning = false }: StudioPreviewProps) => {
             <h3 className="text-lg font-semibold text-foreground">Çalışma Alanı Kaynakları</h3>
             <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
               <li className="flex items-start gap-2">
-                <Boxes className="mt-0.5 h-4 w-4 text-primary" />
+                <TerminalSquare className="mt-0.5 h-4 w-4 text-primary" />
                 <div>
                   <p className="font-medium text-foreground">Kod Paketleri</p>
                   <p>React, Tailwind, Next.js + serverless API şablonları.</p>
