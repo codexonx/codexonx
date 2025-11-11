@@ -1,0 +1,20 @@
+{
+  "name": "@codexonx/core",
+  "version": "0.1.0",
+  "description": "Shared Codexonx platform utilities and types",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json --emitDeclarationOnly",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "test": "vitest"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  }
+}
