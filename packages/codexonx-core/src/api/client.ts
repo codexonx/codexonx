@@ -143,7 +143,7 @@ async function safeReadError(response: Response): Promise<string | undefined> {
         return String((parsed as { message: unknown }).message);
       }
       return text;
-    } catch (parseError) {
+    } catch (_parseError) {
       return text;
     }
   } catch (error) {

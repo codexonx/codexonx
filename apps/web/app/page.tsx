@@ -24,6 +24,10 @@ import {
 import { useI18n } from '@/contexts/i18n-context';
 import { BrandMark } from '@/components/brand-mark';
 import { FeatureCard } from '@/components/landing/feature-card';
+import { GlassCard } from '@/components/landing/glass-card';
+import { HeroSection } from '@/components/landing/hero-section';
+import { GradientButton } from '@/components/landing/ui/gradient-button';
+import { SectionHeading } from '@/components/landing/ui/section-heading';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { Button } from '@/components/ui/button';
 
@@ -333,6 +337,12 @@ type ResolvedTestimonial = {
   region: string;
 };
 
+type WorkflowStep = {
+  badge: string;
+  title: string;
+  description: string;
+};
+
 type ResolvedPricingFaq = {
   key: string;
   question: string;
@@ -471,6 +481,9 @@ export default function Home() {
     ? (heroBulletsRaw as string[])
     : [heroBulletsRaw as string];
 
+  const workflowStepsRaw = t('landing.workflow.steps', { returnObjects: true });
+  const workflowSteps = Array.isArray(workflowStepsRaw) ? (workflowStepsRaw as WorkflowStep[]) : [];
+
   const navLabels = {
     features: t('landing.nav.features'),
     ecosystem: t('landing.nav.ecosystem'),
@@ -552,7 +565,7 @@ export default function Home() {
         <div className="container relative flex h-16 items-center justify-between gap-6">
           <div className="flex items-center gap-8">
             <Link
-              href={buildLocaleHref('/')}
+              href={buildLocaleHref('/marketing')}
               aria-label="Codexonx ana sayfa"
               className="flex items-center gap-2 rounded-full border border-white/10 bg-background/70 px-3 py-1 transition-transform hover:-translate-y-0.5 hover:shadow-lg"
             >
@@ -595,212 +608,65 @@ export default function Home() {
       </header>
 
       <main className="flex-1">
-        <section className="relative overflow-hidden py-28">
-          <div className="absolute inset-0 bg-radial-ocean opacity-80" aria-hidden />
-          <div className="absolute inset-0 bg-hero-grid opacity-30" aria-hidden />
-          <div
-            className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-primary/15 via-transparent to-transparent"
-            aria-hidden
-          />
-          <div className="relative container grid gap-16 px-4 md:px-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
-            <div className="space-y-8">
-              <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-primary/90">
-                {heroBetaTag}
-              </span>
-              <div className="space-y-6">
-                <h1 className="font-display text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl md:text-6xl">
-                  {heroTitle.prefix}{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary">
-                    {heroTitle.highlight}
-                  </span>{' '}
-                  {heroTitle.suffix}
-                </h1>
-                <p className="max-w-2xl text-base text-muted-foreground md:text-lg">
-                  {heroDescriptions[0]}
-                  <span className="mt-3 block">{heroDescriptions[1]}</span>
-                </p>
-              </div>
-              <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
-                <Link href={buildLocaleHref('/auth/register')} className="w-full sm:w-auto">
-                  <Button
-                    size="lg"
-                    className="w-full gap-2 rounded-full bg-gradient-to-r from-primary via-accent to-secondary px-6 text-primary-foreground shadow-primary-glow transition-transform hover:-translate-y-1"
-                  >
-                    {heroPrimaryCta}
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
-                <Link href={buildLocaleHref('/contact?topic=demo')} className="w-full sm:w-auto">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="w-full gap-2 rounded-full border-primary/30 bg-background/70 px-6 text-primary transition hover:border-primary/50 hover:bg-primary/10"
-                  >
-                    {heroSecondaryCta}
-                  </Button>
-                </Link>
-              </div>
-              <ul className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
-                {heroBullets.map(bullet => (
-                  <li
-                    key={bullet}
-                    className="flex items-start gap-3 rounded-2xl border border-white/5 bg-background/40 p-4 backdrop-blur"
-                  >
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/15 text-primary">
-                      <Check className="h-3.5 w-3.5" />
-                    </span>
-                    <span className="leading-relaxed">{bullet}</span>
-                  </li>
-                ))}
-              </ul>
-              <dl className="grid gap-4 sm:grid-cols-3">
-                {heroStats.map(stat => (
-                  <div
-                    key={stat.key}
-                    className="rounded-2xl border border-white/10 bg-background/60 p-4 shadow-lg shadow-primary/10 backdrop-blur"
-                  >
-                    <dt className="text-xs font-medium uppercase tracking-[0.35em] text-muted-foreground/80">
-                      {stat.label}
-                    </dt>
-                    <dd className="mt-2 text-2xl font-semibold text-foreground md:text-3xl">
-                      {stat.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-            <div className="relative">
-              <div
-                className="absolute -inset-x-12 -inset-y-14 rounded-3xl bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/20 blur-3xl"
-                aria-hidden
-              />
-              <div className="relative space-y-6 rounded-3xl border border-white/10 bg-background/85 p-8 shadow-2xl shadow-primary/20 backdrop-blur">
-                <div className="flex items-center justify-between text-sm text-muted-foreground">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground/70">
-                      Aktivite Paneli
-                    </p>
-                    <p className="mt-1 text-base font-semibold text-foreground">
-                      Canlı Proje Akışı
-                    </p>
-                  </div>
-                  <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-medium text-emerald-400">
-                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" /> Gerçek
-                    zamanlı
-                  </span>
-                </div>
-                <div className="space-y-4 text-sm text-muted-foreground">
-                  <div className="rounded-2xl border border-white/5 bg-background/70 p-4 font-mono text-xs">
-                    <p>
-                      &gt; agent commit APM optimizasyonu <span className="text-primary">✓</span>
-                    </p>
-                    <p className="mt-2">
-                      &gt; pipeline deploy prod <span className="text-secondary">•</span>
-                    </p>
-                    <p className="mt-2">
-                      &gt; integration tests <span className="text-accent">passed</span>
-                    </p>
-                  </div>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="rounded-2xl border border-white/5 bg-background/70 p-4">
-                      <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground/70">
-                        API Anahtarları
-                      </p>
-                      <p className="mt-3 truncate font-mono text-xs text-foreground/80">
-                        codexonx_live_ap-9d3f...5a2c
-                      </p>
-                      <span className="mt-3 inline-flex h-7 items-center justify-center rounded-full bg-primary/15 px-3 text-xs font-medium text-primary">
-                        rota açık
-                      </span>
-                    </div>
-                    <div className="rounded-2xl border border-white/5 bg-background/70 p-4">
-                      <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground/70">
-                        Aktif Workspace
-                      </p>
-                      <p className="mt-3 text-xs text-muted-foreground">Design Systems • 12 üye</p>
-                      <span className="mt-3 inline-flex h-7 items-center justify-center rounded-full bg-secondary/15 px-3 text-xs font-medium text-secondary">
-                        senkron
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between rounded-2xl border border-white/5 bg-background/70 p-4 text-xs text-muted-foreground">
-                  <div>
-                    <p className="font-medium text-foreground">Auto-merge düzeyi</p>
-                    <p className="mt-1 text-muted-foreground/80">
-                      Riskli PR'lar için otomatik strateji
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-2 w-24 overflow-hidden rounded-full bg-muted/40">
-                      <div className="w-3/4 bg-gradient-to-r from-primary via-accent to-secondary" />
-                    </div>
-                    <span className="text-sm font-semibold text-foreground">%75</span>
-                  </div>
-                </div>
-                <div className="absolute -right-10 top-10 hidden w-48 rounded-2xl border border-white/10 bg-background/95 p-4 text-xs text-muted-foreground shadow-xl shadow-primary/20 sm:block">
-                  <p className="text-sm font-semibold text-foreground">Sprint Özetleri</p>
-                  <p className="mt-2 leading-relaxed">
-                    AI, tamamlanan görevlerden haftalık özet oluşturdu. Yeni eylem listesi hazır.
-                  </p>
-                  <span className="mt-3 inline-flex h-6 items-center justify-center rounded-full bg-foreground/10 px-3 text-[0.65rem] font-medium uppercase tracking-[0.3em] text-foreground/80">
-                    Otomasyon
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <HeroSection
+          betaTag={heroBetaTag}
+          title={heroTitle}
+          descriptions={heroDescriptions}
+          primaryCta={{ label: heroPrimaryCta, href: buildLocaleHref('/auth/register') }}
+          secondaryCta={{ label: heroSecondaryCta, href: buildLocaleHref('/contact?topic=demo') }}
+          bullets={heroBullets}
+          stats={heroStats.map(stat => ({ key: stat.key, label: stat.label, value: stat.value }))}
+        />
 
         <section
           id="stats"
-          className="relative overflow-hidden py-12 sm:py-14"
+          className="relative overflow-hidden py-16"
           aria-labelledby="platform-stats-heading"
         >
           <div
-            className="absolute inset-0 bg-gradient-to-b from-background via-background-strong/30 to-background"
+            className="absolute inset-0 bg-gradient-to-b from-background via-background-strong/35 to-background"
             aria-hidden
           />
           <div className="relative container px-4 md:px-6">
-            <div className="mx-auto max-w-2xl space-y-4 text-center">
-              <h2
-                id="platform-stats-heading"
-                className="text-xs uppercase tracking-[0.4em] text-muted-foreground/70"
-              >
-                {statsHeading}
-              </h2>
-              <p className="text-sm text-muted-foreground md:text-base">{statsDescription}</p>
-            </div>
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <SectionHeading
+              align="center"
+              className="mx-auto"
+              title={statsHeading}
+              lead={statsDescription}
+            />
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {resolvedPlatformStats.map(stat => (
-                <div
+                <GlassCard
                   key={stat.key}
-                  className="rounded-2xl border border-white/10 bg-background/70 px-6 py-6 text-center shadow-lg backdrop-blur"
+                  surface="muted"
+                  paddingClassName="p-6"
+                  className="text-center"
                 >
                   <span className="font-display text-3xl font-semibold text-foreground md:text-4xl">
                     {stat.value}
                   </span>
-                  <span className="mt-2 block text-xs uppercase tracking-[0.35em] text-muted-foreground/80">
+                  <span className="mt-3 block text-xs uppercase tracking-[0.35em] text-muted-foreground/80">
                     {stat.label}
                   </span>
-                </div>
+                </GlassCard>
               ))}
             </div>
           </div>
         </section>
 
-        <section id="features" className="py-24">
-          <div className="container px-4 md:px-6">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
-                {featuresHeading}
-              </h2>
-              <p className="mt-3 text-sm text-muted-foreground md:text-base">{featuresLead}</p>
-              <p className="mt-2 text-xs uppercase tracking-[0.3em] text-muted-foreground/70">
-                {featuresDetail}
-              </p>
-            </div>
-            <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <section id="features" className="relative overflow-hidden py-28">
+          <div
+            className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-background"
+            aria-hidden
+          />
+          <div className="relative container px-4 md:px-6">
+            <SectionHeading
+              eyebrow={featuresDetail}
+              title={featuresHeading}
+              lead={featuresLead}
+              className="mx-auto"
+            />
+            <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               {resolvedFeatureHighlights.map(feature => (
                 <FeatureCard
                   key={feature.key}
@@ -811,52 +677,82 @@ export default function Home() {
                 />
               ))}
             </div>
+            <section className="mt-24" aria-labelledby="workflow-heading">
+              <SectionHeading
+                id="workflow-heading"
+                eyebrow={t('landing.workflow.description')}
+                title={t('landing.workflow.heading')}
+                align="left"
+              />
+              <div className="mt-12 grid gap-6 lg:grid-cols-4">
+                {workflowSteps.slice(0, 4).map((step, index) => (
+                  <GlassCard key={step.title ?? index} surface="muted" paddingClassName="p-6">
+                    <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-primary">
+                      {step.badge}
+                    </span>
+                    <h3 className="mt-4 text-lg font-semibold text-foreground">{step.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      {step.description}
+                    </p>
+                  </GlassCard>
+                ))}
+              </div>
+            </section>
           </div>
         </section>
 
         <section
           id="ecosystem"
-          className="relative overflow-hidden border-y border-border/40 bg-background/80 py-24"
+          className="relative overflow-hidden border-y border-border/40 bg-background/80 py-28"
         >
+          <div
+            className="absolute inset-0 bg-gradient-to-b from-primary/8 via-background/90 to-background"
+            aria-hidden
+          />
           <div className="absolute inset-0 bg-grid-slate-900/[0.04]" aria-hidden />
           <div className="relative container px-4 md:px-6">
-            <div className="grid gap-12 lg:grid-cols-[1fr_1fr]">
-              <div className="space-y-6">
-                <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
-                  {trustHeading}
-                </h2>
-                <p className="text-sm text-muted-foreground md:text-base">{trustDescription}</p>
-                <div className="grid gap-4">
+            <div className="grid gap-16 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+              <div className="space-y-10">
+                <SectionHeading
+                  align="left"
+                  title={trustHeading}
+                  lead={trustDescription}
+                  className="max-w-xl"
+                />
+                <div className="grid gap-6 sm:grid-cols-2">
                   {resolvedTrustSignals.map(signal => (
-                    <div
-                      key={signal.key}
-                      className="rounded-2xl border border-white/10 bg-background/70 p-6 shadow-sm"
-                    >
+                    <GlassCard key={signal.key} surface="muted" paddingClassName="p-6">
                       <h3 className="text-lg font-semibold text-foreground">{signal.title}</h3>
-                      <p className="mt-2 text-sm text-muted-foreground">{signal.description}</p>
-                    </div>
+                      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                        {signal.description}
+                      </p>
+                    </GlassCard>
                   ))}
                 </div>
               </div>
               <div className="space-y-10">
-                <div className="space-y-4">
-                  <h3 className="text-2xl font-semibold text-foreground">{integrationsHeading}</h3>
-                  <p className="text-sm text-muted-foreground md:text-base">
-                    {integrationsDescription}
-                  </p>
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <SectionHeading
+                  align="left"
+                  title={integrationsHeading}
+                  lead={integrationsDescription}
+                  className="max-w-md"
+                />
+                <div className="grid gap-6 sm:grid-cols-2">
                   {resolvedIntegrationHighlights.map(item => (
-                    <div
+                    <GlassCard
                       key={item.key}
-                      className="flex items-start gap-4 rounded-2xl border border-white/10 bg-background/70 p-5"
+                      surface="muted"
+                      paddingClassName="p-6"
+                      className="flex items-start gap-4"
                     >
-                      <item.icon className="h-10 w-10 text-primary" />
-                      <div className="space-y-1">
+                      <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary shadow-primary-glow">
+                        <item.icon className="h-6 w-6" />
+                      </span>
+                      <div className="space-y-2">
                         <h4 className="text-base font-semibold text-foreground">{item.name}</h4>
                         <p className="text-sm text-muted-foreground">{item.description}</p>
                       </div>
-                    </div>
+                    </GlassCard>
                   ))}
                 </div>
               </div>
@@ -864,33 +760,48 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="testimonials" className="py-24">
-          <div className="container px-4 md:px-6">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
-                {testimonialsHeading}
-              </h2>
-              <p className="mt-3 text-sm text-muted-foreground md:text-base">
-                {testimonialsDescription}
-              </p>
-            </div>
-            <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {resolvedTestimonials.map(item => (
-                <figure
-                  key={item.key}
-                  className="flex h-full flex-col justify-between rounded-3xl border border-white/10 bg-background/70 p-6"
-                >
-                  <blockquote className="text-sm leading-relaxed text-muted-foreground">
-                    “{item.quote}”
-                  </blockquote>
-                  <figcaption className="mt-6 space-y-1 text-sm">
-                    <p className="font-semibold text-foreground">{item.name}</p>
-                    <p className="text-muted-foreground">{item.role}</p>
-                    <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground/70">
-                      {item.company} • {item.region}
-                    </p>
-                  </figcaption>
-                </figure>
+        <section id="testimonials" className="relative overflow-hidden py-28">
+          <div
+            className="absolute inset-0 bg-gradient-to-b from-secondary/10 via-background/90 to-background"
+            aria-hidden
+          />
+          <div
+            className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(0,209,255,0.18),transparent_55%),radial-gradient(circle_at_80%_0%,rgba(152,92,255,0.2),transparent_60%)] opacity-70"
+            aria-hidden
+          />
+          <div className="relative container px-4 md:px-6">
+            <SectionHeading
+              id="testimonials-heading"
+              title={testimonialsHeading}
+              lead={testimonialsDescription}
+              className="mx-auto"
+            />
+            <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {resolvedTestimonials.map((item, index) => (
+                <div key={item.key} className={index === 0 ? 'md:col-span-2 lg:col-span-2' : ''}>
+                  <GlassCard
+                    surface="muted"
+                    paddingClassName="p-6"
+                    className="flex h-full flex-col justify-between gap-6"
+                    glow={index === 0}
+                  >
+                    <div className="space-y-4">
+                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 text-primary shadow-primary-glow">
+                        <MessageSquare className="h-5 w-5" />
+                      </span>
+                      <blockquote className="text-base leading-relaxed text-muted-foreground">
+                        “{item.quote}”
+                      </blockquote>
+                    </div>
+                    <figcaption className="space-y-1 text-sm">
+                      <p className="font-semibold text-foreground">{item.name}</p>
+                      <p className="text-muted-foreground">{item.role}</p>
+                      <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground/70">
+                        {item.company} • {item.region}
+                      </p>
+                    </figcaption>
+                  </GlassCard>
+                </div>
               ))}
             </div>
           </div>
@@ -906,27 +817,23 @@ export default function Home() {
             aria-hidden
           />
           <div className="relative container px-4 md:px-6">
-            <div className="flex flex-col gap-6 text-center md:flex-row md:items-end md:justify-between md:text-left">
-              <div className="space-y-3">
-                <span className="text-xs font-semibold uppercase tracking-[0.4em] text-muted-foreground/70">
-                  {currencyLabel}
-                </span>
-                <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
-                  {pricingHeading}
-                </h2>
-                <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
-                  {pricingSubheading}
-                </p>
-              </div>
+            <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+              <SectionHeading
+                align="left"
+                eyebrow={currencyLabel}
+                title={pricingHeading}
+                lead={pricingSubheading}
+                className="max-w-2xl"
+              />
               <div className="flex flex-col items-center gap-3 text-sm text-muted-foreground md:items-end">
-                <div className="flex items-center gap-2 rounded-full border border-white/10 bg-background/70 p-1">
+                <div className="flex items-center gap-2 rounded-full border border-white/15 bg-background/70 p-1">
                   {supportedCurrencies.map(code => (
                     <Link
                       key={code}
                       href={buildLocaleHref(`/?currency=${code}#pricing`)}
                       className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
                         code === selectedCurrency
-                          ? 'bg-gradient-to-r from-primary via-accent to-secondary text-primary-foreground shadow-primary-glow'
+                          ? 'bg-gradient-primary text-primary-foreground shadow-halo'
                           : 'text-muted-foreground hover:text-foreground'
                       }`}
                     >
@@ -941,16 +848,15 @@ export default function Home() {
             <div className="mt-14 grid gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
               <div className="grid gap-6 lg:grid-cols-3">
                 {resolvedPricingPlans.map(plan => (
-                  <div
+                  <GlassCard
                     key={plan.nameKey}
-                    className={`flex h-full flex-col justify-between rounded-3xl border bg-background/85 p-6 shadow-xl backdrop-blur transition ${
-                      plan.highlighted
-                        ? 'border-accent/40 shadow-primary-glow shadow-primary/30'
-                        : 'border-white/10'
-                    }`}
+                    surface={plan.highlighted ? 'primary' : 'muted'}
+                    glow={plan.highlighted}
+                    paddingClassName={null}
+                    className="h-full"
                   >
-                    <div className="space-y-5">
-                      <div className="flex items-start justify-between">
+                    <div className="flex h-full flex-col gap-6 p-6">
+                      <div className="flex items-start justify-between gap-6">
                         <div className="space-y-1.5">
                           <h3 className="text-xl font-semibold text-foreground">{plan.name}</h3>
                           {plan.frequency ? (
@@ -958,7 +864,7 @@ export default function Home() {
                           ) : null}
                         </div>
                         {plan.highlighted ? (
-                          <span className="inline-flex items-center rounded-full bg-accent/15 px-3 py-1 text-xs font-medium text-accent">
+                          <span className="inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-primary-foreground">
                             {pricingBadgeLabel}
                           </span>
                         ) : null}
@@ -982,76 +888,76 @@ export default function Home() {
                           </li>
                         ))}
                       </ul>
+                      <div className="mt-auto">
+                        <Link href={buildLocaleHref(plan.ctaHref)}>
+                          <GradientButton size="lg" outline={!plan.highlighted} className="w-full">
+                            {plan.ctaLabel}
+                          </GradientButton>
+                        </Link>
+                      </div>
                     </div>
-                    <div className="mt-6 flex flex-col gap-3">
-                      <Link href={buildLocaleHref(plan.ctaHref)}>
-                        <Button
-                          size="lg"
-                          variant={plan.buttonVariant}
-                          className={`w-full rounded-full ${plan.buttonClass}`}
-                        >
-                          {plan.ctaLabel}
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
+                  </GlassCard>
                 ))}
               </div>
               <div className="space-y-6">
-                <div className="rounded-3xl border border-white/10 bg-background/85 p-6 shadow-lg backdrop-blur">
+                <GlassCard surface="muted" paddingClassName="p-6" className="space-y-4">
                   <h3 className="text-lg font-semibold text-foreground">Sık Sorulan Sorular</h3>
-                  <ul className="mt-4 space-y-4 text-left text-sm text-muted-foreground">
+                  <ul className="space-y-4 text-left text-sm text-muted-foreground">
                     {pricingFaqItems.map(item => (
-                      <li
-                        key={item.key}
-                        className="rounded-2xl border border-white/5 bg-background/60 p-4"
-                      >
-                        <p className="text-sm font-semibold text-foreground">{item.question}</p>
-                        <p className="mt-2 leading-relaxed">{item.answer}</p>
+                      <li key={item.key}>
+                        <GlassCard surface="muted" paddingClassName="p-4">
+                          <p className="text-sm font-semibold text-foreground">{item.question}</p>
+                          <p className="mt-2 leading-relaxed">{item.answer}</p>
+                        </GlassCard>
                       </li>
                     ))}
                   </ul>
-                </div>
-                <div className="rounded-3xl border border-white/10 bg-background/85 p-6 text-left text-sm text-muted-foreground">
+                </GlassCard>
+                <GlassCard
+                  surface="muted"
+                  paddingClassName="p-6"
+                  className="space-y-3 text-sm text-muted-foreground"
+                >
                   <p className="font-medium text-foreground">Kurumsal plan mı arıyorsunuz?</p>
-                  <p className="mt-2 leading-relaxed">
-                    Enterprise ekibimiz, özel güvenlik gereksinimleri ve SLA'ler için size rehberlik
-                    eder.
+
+                  <p className="leading-relaxed">
+                    {[
+                      'Enterprise ekibimiz, özel güvenlik gereksinimleri ve',
+                      "SLA'ler için size rehberlik eder.",
+                    ].join(' ')}
                   </p>
                   <Link
                     href={buildLocaleHref('/contact?topic=enterprise')}
-                    className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:text-primary/80"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:text-primary/80"
                   >
                     Satış ekibiyle iletişime geçin
                     <ArrowRight className="h-4 w-4" />
                   </Link>
-                </div>
+                </GlassCard>
               </div>
             </div>
-            <p className="mt-10 text-center text-xs text-muted-foreground">{currencyDisclaimer}</p>
+            <p className="mt-12 text-center text-xs text-muted-foreground">{currencyDisclaimer}</p>
           </div>
         </section>
 
-        <section id="contact" className="py-24">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-8 rounded-3xl border border-white/10 bg-background/80 p-10 shadow-lg backdrop-blur md:grid-cols-[minmax(0,1fr)_minmax(0,320px)]">
-              <div className="space-y-4">
-                <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
-                  {finalCtaTitle}
-                </h2>
-                <p className="text-sm text-muted-foreground md:text-base">{finalCtaDescription}</p>
+        <section id="contact" className="relative overflow-hidden py-28">
+          <div
+            className="absolute inset-0 bg-gradient-to-b from-secondary/12 via-transparent to-background"
+            aria-hidden
+          />
+          <div className="relative container px-4 md:px-6">
+            <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,320px)]">
+              <GlassCard surface="muted" paddingClassName="p-8" className="space-y-6">
+                <SectionHeading align="left" title={finalCtaTitle} lead={finalCtaDescription} />
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <Link
                     href={buildLocaleHref('/contact?topic=enterprise')}
                     className="w-full sm:w-auto"
                   >
-                    <Button
-                      className="w-full gap-2 bg-gradient-to-r from-primary via-accent to-secondary text-primary-foreground shadow-primary-glow hover:-translate-y-1"
-                      size="lg"
-                    >
+                    <GradientButton size="lg" className="w-full gap-2">
                       {finalCtaButton}
                       <Code className="h-4 w-4" />
-                    </Button>
+                    </GradientButton>
                   </Link>
                   <Link
                     href={buildLocaleHref('/docs')}
@@ -1060,17 +966,21 @@ export default function Home() {
                     {finalCtaLink}
                   </Link>
                 </div>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-background/70 p-6 text-sm text-muted-foreground">
+              </GlassCard>
+              <GlassCard
+                surface="muted"
+                paddingClassName="p-6"
+                className="space-y-3 text-sm text-muted-foreground"
+              >
                 <p className="font-medium text-foreground">
                   {footerContent.sections.contact.title}
                 </p>
-                <p className="mt-2">info@codexonx.com</p>
-                <p className="mt-1">+90 212 555 12 34</p>
-                <p className="mt-4 text-xs uppercase tracking-[0.3em] text-muted-foreground/70">
+                <p>info@codexonx.com</p>
+                <p>+90 212 555 12 34</p>
+                <p className="pt-2 text-xs uppercase tracking-[0.3em] text-muted-foreground/70">
                   {footerContent.sections.contact.location}
                 </p>
-              </div>
+              </GlassCard>
             </div>
           </div>
         </section>

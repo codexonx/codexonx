@@ -13,11 +13,13 @@ export const handleApiError = async (response: Response): Promise<Error> => {
   }
 };
 
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+
 // API isteği gönderme (genel amaçlı)
 export const apiRequest = async <T>(
   url: string,
-  method: string = 'GET',
-  body?: any,
+  method: HttpMethod = 'GET',
+  body?: unknown,
   headers?: HeadersInit
 ): Promise<T> => {
   const options: RequestInit = {
@@ -38,14 +40,15 @@ export const apiRequest = async <T>(
     throw await handleApiError(response);
   }
 
-  return response.json();
+  const data = await response.json();
+  return data as T;
 };
 
 // Form verisi gönderme (dosya yükleme vb.)
 export const apiFormRequest = async <T>(
   url: string,
   formData: FormData,
-  method: string = 'POST',
+  method: HttpMethod = 'POST',
   headers?: HeadersInit
 ): Promise<T> => {
   const options: RequestInit = {
@@ -62,16 +65,17 @@ export const apiFormRequest = async <T>(
     throw await handleApiError(response);
   }
 
-  return response.json();
+  const data = await response.json();
+  return data as T;
 };
 
 // Zaman aşımı ile API isteği
 export const apiRequestWithTimeout = async <T>(
   url: string,
-  method: string = 'GET',
-  body?: any,
+  method: HttpMethod = 'GET',
+  body?: unknown,
   headers?: HeadersInit,
-  timeoutMs: number = 10000
+  timeoutMs = 10000
 ): Promise<T> => {
   // Zaman aşımı promise
   const timeoutPromise = new Promise<never>((_, reject) => {
@@ -88,11 +92,11 @@ export const apiRequestWithTimeout = async <T>(
 // Yeniden deneme ile API isteği
 export const apiRequestWithRetry = async <T>(
   url: string,
-  method: string = 'GET',
-  body?: any,
+  method: HttpMethod = 'GET',
+  body?: unknown,
   headers?: HeadersInit,
-  maxRetries: number = 3,
-  retryDelay: number = 1000
+  maxRetries = 3,
+  retryDelay = 1000
 ): Promise<T> => {
   let lastError: Error | undefined;
 

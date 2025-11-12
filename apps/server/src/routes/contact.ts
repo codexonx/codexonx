@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import rateLimit from 'express-rate-limit';
+import rateLimitMiddleware from 'express-rate-limit';
 
 import { createContactRequest } from '../controllers/contact';
 
 const router = Router();
 
-const contactLimiter = rateLimit({
+const contactLimiter = rateLimitMiddleware({
   windowMs: 10 * 60 * 1000,
   limit: 5,
   standardHeaders: 'draft-7',

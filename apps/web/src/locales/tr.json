@@ -223,6 +223,32 @@
         }
       ]
     },
+    "workflow": {
+      "heading": "Öneriden canlı yayına",
+      "description": "Studio, AI aksiyonlarının her adımını izlenebilir kılar; böylece ekipleriniz neyin, neden canlıya çıktığını bilir.",
+      "steps": [
+        {
+          "title": "Yakala ve önceliklendir",
+          "description": "AI önerileri, insan görevleri ve güvenlik kontrolleri tek aksiyon kuyruğunda birleşir.",
+          "badge": "Planla"
+        },
+        {
+          "title": "Guardrail ile auto-apply",
+          "description": "Tek tıklama ile öneri branch’e dönüşür; reviewer politikaları, onaylar ve otomatik testler uygulanır.",
+          "badge": "Uygula"
+        },
+        {
+          "title": "Run log’u izle",
+          "description": "Tüm değişiklikler commit, deploy hedefi, incident etiketi ve sahip bilgisiyle run log’a akar.",
+          "badge": "İzle"
+        },
+        {
+          "title": "Sonuçları raporla",
+          "description": "Özetler, bildirimler ve denetime hazır dışa aktarımlar; ürün, mühendislik ve uyumluluk ekiplerini senkron tutar.",
+          "badge": "Paylaş"
+        }
+      ]
+    },
     "trust": {
       "heading": "Güvenin Dayanakları",
       "description": "Pilot takımlarımızla birlikte kod önerilerinin gerçekten uygulandığı şeffaf süreçler tasarlıyoruz.",

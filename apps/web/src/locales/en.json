@@ -223,6 +223,32 @@
         }
       ]
     },
+    "workflow": {
+      "heading": "From suggestion to production",
+      "description": "Studio keeps every AI action auditable so your team understands what shipped and why.",
+      "steps": [
+        {
+          "title": "Capture & prioritize",
+          "description": "Studio consolidates AI suggestions, human tasks, and security checks into a single action queue.",
+          "badge": "Plan"
+        },
+        {
+          "title": "Auto-apply with guardrails",
+          "description": "One click turns a suggestion into a branch with reviewer policies, approvals, and automated tests applied.",
+          "badge": "Apply"
+        },
+        {
+          "title": "Observe the run log",
+          "description": "Every change streams into the run log with context — commits, deploy targets, incident flags, and owner.",
+          "badge": "Monitor"
+        },
+        {
+          "title": "Report outcomes",
+          "description": "Summaries, notifications, and audit-ready exports keep engineering, product, and compliance aligned.",
+          "badge": "Share"
+        }
+      ]
+    },
     "trust": {
       "heading": "Why teams trust Codexonx",
       "description": "We co-design Studio with pilot squads so AI actions stay transparent and auditable.",

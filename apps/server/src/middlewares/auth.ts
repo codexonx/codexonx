@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import { verify as verifyJwt } from 'jsonwebtoken';
 
 import prisma from '../lib/prisma';
 
@@ -36,7 +36,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     }
 
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret') as any;
+    const decoded = verifyJwt(token, process.env.JWT_SECRET || 'your_jwt_secret') as any;
 
     // Check if user still exists and load memberships
     const userWithMemberships = await prisma.user.findUnique({

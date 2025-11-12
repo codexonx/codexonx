@@ -1,10 +1,13 @@
-import type { ComponentType } from 'react';
+import type { ComponentType, ReactNode } from 'react';
+
+import { GlassCard } from '@/components/landing/glass-card';
 
 export type FeatureCardProps = {
   icon: ComponentType<{ className?: string }>;
   title: string;
   description: string;
   ctaLabel?: string;
+  footnote?: ReactNode;
 };
 
 export function FeatureCard({
@@ -12,23 +15,23 @@ export function FeatureCard({
   title,
   description,
   ctaLabel = 'Daha fazla keşfet',
+  footnote,
 }: FeatureCardProps) {
   return (
-    <article className="group relative overflow-hidden rounded-3xl border border-white/10 bg-background/50 p-6 hover-lift">
-      <div
-        className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        aria-hidden
-      >
-        <div className="h-full w-full bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10" />
-      </div>
-      <div className="relative space-y-4">
+    <GlassCard
+      className="group overflow-hidden bg-card-gradient/70 hover:shadow-halo"
+      paddingClassName="p-6"
+    >
+      <div className="relative space-y-5">
         <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary shadow-primary-glow transition-base group-hover:scale-105">
           <Icon className="h-6 w-6" />
         </div>
-        <h3 className="text-xl font-semibold text-foreground">{title}</h3>
-        <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>
-        <div className="pt-2">
-          <span className="inline-flex items-center gap-2 text-xs font-medium text-primary">
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold text-foreground">{title}</h3>
+          <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>
+        </div>
+        <div className="flex items-center justify-between pt-2 text-xs font-medium text-primary">
+          <span className="inline-flex items-center gap-2">
             {ctaLabel}
             <svg
               className="h-3 w-3"
@@ -45,8 +48,9 @@ export function FeatureCard({
               />
             </svg>
           </span>
+          {footnote ? <span className="text-muted-foreground/70">{footnote}</span> : null}
         </div>
       </div>
-    </article>
+    </GlassCard>
   );
 }

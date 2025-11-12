@@ -1,39 +1,40 @@
 :root {
   /* Surface palette */
-  --token-surface-background: 220 65% 6%;
-  --token-surface-strong: 219 58% 9%;
-  --token-surface-muted: 219 40% 18%;
-  --token-surface-card: 223 52% 10%;
-  --token-surface-card-foreground: 210 45% 98%;
-  --token-surface-popover: 223 52% 10%;
-  --token-surface-popover-foreground: 210 45% 98%;
-  --token-surface-foreground: 210 40% 96%;
+  --token-surface-background: 220 35% 4%;
+  --token-surface-strong: 220 33% 7%;
+  --token-surface-muted: 220 28% 12%;
+  --token-surface-card: 222 32% 10%;
+  --token-surface-card-foreground: 0 0% 98%;
+  --token-surface-popover: 220 28% 11%;
+  --token-surface-popover-foreground: 0 0% 99%;
+  --token-surface-foreground: 0 0% 96%;
 
   /* Brand palette */
-  --token-color-primary: 187 92% 55%;
-  --token-color-primary-foreground: 210 40% 10%;
-  --token-color-secondary: 268 88% 70%;
-  --token-color-secondary-foreground: 255 100% 16%;
-  --token-color-accent: 200 100% 62%;
-  --token-color-accent-foreground: 210 40% 12%;
-  --token-color-muted: 222 40% 20%;
-  --token-color-muted-foreground: 220 25% 70%;
-  --token-color-destructive: 0 84% 60%;
-  --token-color-destructive-foreground: 210 40% 98%;
-  --token-color-border: 223 34% 22%;
-  --token-color-input: 223 34% 22%;
-  --token-color-ring: 190 98% 62%;
+  --token-color-primary: 22 100% 59%;
+  --token-color-primary-foreground: 0 0% 12%;
+  --token-color-secondary: 24 95% 68%;
+  --token-color-secondary-foreground: 26 100% 18%;
+  --token-color-accent: 28 90% 74%;
+  --token-color-accent-foreground: 25 100% 18%;
+  --token-color-muted: 210 12% 28%;
+  --token-color-muted-foreground: 210 10% 70%;
+  --token-color-destructive: 0 84% 58%;
+  --token-color-destructive-foreground: 0 0% 98%;
+  --token-color-border: 220 26% 18%;
+  --token-color-input: 220 26% 18%;
+  --token-color-ring: 22 100% 59%;
 
   /* Status palette */
-  --token-color-success: 142 71% 45%;
-  --token-color-warning: 38 92% 50%;
+  --token-color-success: 140 70% 45%;
+  --token-color-warning: 38 94% 55%;
   --token-color-danger: 0 70% 50%;
-  --token-color-info: 215 82% 53%;
+  --token-color-info: 213 84% 55%;
 
   /* Glassmorphism */
-  --token-glass-border: rgba(255, 255, 255, 0.08);
-  --token-glass-background: rgba(14, 23, 38, 0.6);
-  --token-glass-blur: 18px;
+  --token-glass-border: rgba(255, 255, 255, 0.16);
+  --token-glass-background: rgba(8, 10, 18, 0.58);
+  --token-glass-blur: 24px;
+  --token-glass-border-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0.04) 100%);
 
   /* Radii */
   --token-radius-xs: 0.375rem;
@@ -55,12 +56,15 @@
   --token-space-2xl: 3rem;
 
   /* Shadows */
-  --token-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --token-shadow-md: 0 12px 25px -8px rgba(7, 12, 27, 0.4);
-  --token-shadow-lg: 0 25px 45px -10px rgba(4, 12, 24, 0.55);
-  --token-shadow-xl: 0 35px 65px -15px rgba(3, 10, 22, 0.65);
-  --token-shadow-primary-glow: 0 0 30px rgba(0, 168, 232, 0.4);
-  --token-shadow-secondary-glow: 0 0 35px rgba(147, 51, 234, 0.35);
+  --token-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.08);
+  --token-shadow-md: 0 18px 32px -16px rgba(8, 10, 24, 0.55);
+  --token-shadow-lg: 0 32px 60px -18px rgba(6, 8, 20, 0.65);
+  --token-shadow-xl: 0 48px 90px -20px rgba(4, 6, 16, 0.72);
+  --token-shadow-glass: 0 38px 80px -24px rgba(5, 8, 20, 0.68);
+  --token-shadow-primary-glow: 0 0 70px rgba(255, 107, 44, 0.55);
+  --token-shadow-secondary-glow: 0 0 75px rgba(255, 185, 113, 0.45);
+  --token-shadow-halo: 0 0 80px rgba(255, 107, 44, 0.48);
+  --token-shadow-purple-halo: 0 0 88px rgba(84, 120, 255, 0.38);
 
   /* Animation helpers */
   --token-duration-fast: 150ms;
@@ -69,32 +73,38 @@
   --token-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --token-easing-accelerate: cubic-bezier(0.4, 0, 1, 1);
   --token-easing-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --token-gradient-primary: linear-gradient(120deg, rgba(255, 107, 44, 0.95) 0%, rgba(255, 146, 71, 0.88) 48%, rgba(255, 225, 160, 0.62) 100%);
+  --token-gradient-surface: radial-gradient(circle at 18% 18%, rgba(255, 146, 71, 0.26), transparent 55%),
+    radial-gradient(circle at 82% 12%, rgba(255, 107, 44, 0.32), transparent 52%),
+    linear-gradient(175deg, rgba(5, 6, 10, 1) 0%, rgba(8, 10, 16, 1) 58%, rgba(4, 5, 9, 1) 100%);
+  --token-gradient-card: linear-gradient(150deg, rgba(12, 13, 18, 0.98) 0%, rgba(10, 11, 16, 0.84) 55%, rgba(9, 10, 14, 0.78) 100%);
+  --token-noise-opacity: 0.1;
 }
 
 .dark {
-  --token-surface-background: 220 65% 4%;
-  --token-surface-strong: 220 65% 7%;
-  --token-surface-muted: 220 40% 16%;
-  --token-surface-card: 223 55% 9%;
-  --token-surface-card-foreground: 210 45% 98%;
-  --token-surface-popover: 223 55% 9%;
-  --token-surface-popover-foreground: 210 45% 98%;
-  --token-surface-foreground: 210 40% 96%;
+  --token-surface-background: 220 35% 3%;
+  --token-surface-strong: 220 33% 6%;
+  --token-surface-muted: 220 27% 11%;
+  --token-surface-card: 222 31% 8%;
+  --token-surface-card-foreground: 0 0% 98%;
+  --token-surface-popover: 220 26% 9%;
+  --token-surface-popover-foreground: 0 0% 99%;
+  --token-surface-foreground: 0 0% 95%;
 
-  --token-color-primary: 190 95% 62%;
-  --token-color-primary-foreground: 215 22% 12%;
-  --token-color-secondary: 265 90% 72%;
-  --token-color-secondary-foreground: 240 50% 12%;
-  --token-color-accent: 200 100% 66%;
-  --token-color-accent-foreground: 215 22% 12%;
-  --token-color-muted: 222 38% 18%;
-  --token-color-muted-foreground: 220 26% 70%;
-  --token-color-destructive: 0 76% 52%;
-  --token-color-destructive-foreground: 210 40% 98%;
-  --token-color-border: 223 35% 18%;
-  --token-color-input: 223 35% 18%;
-  --token-color-ring: 190 98% 62%;
+  --token-color-primary: 22 100% 60%;
+  --token-color-primary-foreground: 0 0% 12%;
+  --token-color-secondary: 24 100% 68%;
+  --token-color-secondary-foreground: 26 100% 20%;
+  --token-color-accent: 28 95% 75%;
+  --token-color-accent-foreground: 26 100% 20%;
+  --token-color-muted: 220 18% 24%;
+  --token-color-muted-foreground: 220 12% 72%;
+  --token-color-destructive: 0 78% 52%;
+  --token-color-destructive-foreground: 0 0% 98%;
+  --token-color-border: 220 20% 16%;
+  --token-color-input: 220 20% 16%;
+  --token-color-ring: 22 100% 60%;
 
-  --token-glass-background: rgba(12, 19, 30, 0.65);
-  --token-glass-blur: 20px;
+  --token-glass-background: rgba(10, 11, 16, 0.68);
+  --token-glass-blur: 28px;
 }

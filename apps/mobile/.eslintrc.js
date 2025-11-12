@@ -1,25 +1,47 @@
-const baseConfig = require('@react-native/eslint-config');
-
-const overrides = (baseConfig.overrides || []).map(override => {
-  if (override.env && override.env['jest/globals']) {
-    const { ['jest/globals']: _unused, ...restEnv } = override.env;
-    return {
-      ...override,
+module.exports = {
+  root: true,
+  extends: [
+    '@react-native/eslint-config',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:jest/recommended',
+    'prettier',
+  ],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 2021,
+    sourceType: 'module',
+  },
+  plugins: ['@typescript-eslint'],
+  env: {
+    'jest/globals': true,
+  },
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      rules: {
+        'no-unused-vars': 'off',
+        '@typescript-eslint/no-unused-vars': [
+          'error',
+          {
+            argsIgnorePattern: '^_',
+            destructuredArrayIgnorePattern: '^_',
+          },
+        ],
+        'func-call-spacing': 'off',
+        '@typescript-eslint/func-call-spacing': ['error'],
+      },
+    },
+    {
+      files: ['*.test.ts', '*.test.tsx', '*.spec.ts', '*.spec.tsx'],
       env: {
-        ...restEnv,
         jest: true,
       },
-    };
-  }
-  return override;
-});
-
-module.exports = {
-  ...baseConfig,
-  root: true,
-  overrides,
+      rules: {
+        'react-native/no-inline-styles': 'off',
+      },
+    },
+  ],
   rules: {
-    ...baseConfig.rules,
     'prettier/prettier': 'off',
   },
 };

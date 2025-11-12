@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import argon2 from 'argon2';
+import { hash as hashPassword, verify as verifyPassword } from 'argon2';
 import { Request, Response, NextFunction } from 'express';
-import jwt, { type Secret, type SignOptions } from 'jsonwebtoken';
+import { sign as signJwt, type Secret, type SignOptions } from 'jsonwebtoken';
 import { z } from 'zod';
 
 import { AppError } from '../middlewares/errorHandler';
@@ -66,7 +66,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
 
     logger.debug('Register - şifre hashleniyor', { email });
     currentStep = 'hash-password';
-    const hashedPassword = await argon2.hash(password);
+    const hashedPassword = await hashPassword(password);
 
     logger.debug('Register - kullanıcı oluşturuluyor', { email });
     currentStep = 'create-user';
@@ -135,7 +135,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     }
 
     // Check password
-    const isValidPassword = await argon2.verify(user.password, password);
+    const isValidPassword = await verifyPassword(user.password, password);
     if (!isValidPassword) {
       return next(new AppError('Geçersiz e-posta veya şifre', 401));
     }
@@ -153,7 +153,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       expiresIn,
     };
 
-    const token = jwt.sign({ id: user.id, role: user.role }, secret, signOptions);
+    const token = signJwt({ id: user.id, role: user.role }, secret, signOptions);
 
     // Remove password from output
     const { password: _, ...userWithoutPassword } = user;
@@ -269,7 +269,7 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
     }
 
     // Hash new password
-    const hashedPassword = await argon2.hash(password);
+    const hashedPassword = await hashPassword(password);
 
     // Update user password
     await prisma.user.update({

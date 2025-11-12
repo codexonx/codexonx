@@ -21,6 +21,33 @@ services:
       timeout: 5s
       retries: 5
 
+  # Supabase Database
+  supabase:
+    image: supabase/supabase:latest
+    container_name: codexonx-supabase
+    ports:
+      - "54321:54321"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_NAME: codexonx
+      JWT_SECRET: your_jwt_secret
+    depends_on:
+      - postgres
+    networks:
+      - codexonx-network
+
+  # Redis
+  redis:
+    image: redis:alpine
+    container_name: codexonx-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - codexonx-network
+
   # Backend API Server
   server:
     build:
@@ -35,9 +62,31 @@ services:
       - JWT_SECRET=your_jwt_secret
       - JWT_EXPIRES_IN=1d
       - PORT=3001
+      - REDIS_URL=redis://redis:6379
+      - SUPABASE_URL=http://supabase:54321
+      - SUPABASE_KEY=your_supabase_key
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
+      - redis
+      - supabase
+    networks:
+      - codexonx-network
+    restart: always
+
+  # Worker
+  worker:
+    build:
+      context: ./apps/worker
+      dockerfile: Dockerfile
+    container_name: codexonx-worker
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+      - SUPABASE_URL=http://supabase:54321
+      - SUPABASE_KEY=your_supabase_key
+    depends_on:
+      - redis
+      - supabase
     networks:
       - codexonx-network
     restart: always
@@ -55,8 +104,11 @@ services:
       - API_URL=http://server:3001/api
       - NEXTAUTH_URL=http://localhost:3000
       - NEXTAUTH_SECRET=your_nextauth_secret
+      - SUPABASE_URL=http://supabase:54321
+      - SUPABASE_KEY=your_supabase_key
     depends_on:
       - server
+      - supabase
     networks:
       - codexonx-network
     restart: always

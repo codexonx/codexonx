@@ -44,6 +44,28 @@ export type MainTabParamList = {
   Settings: undefined;
 };
 
+type TabBarIconProps = {
+  color: string;
+  focused: boolean;
+  size: number;
+};
+
+const HomeTabIcon = ({ color, size }: TabBarIconProps) => (
+  <HomeIcon color={color} width={size} height={size} />
+);
+
+const ProjectsTabIcon = ({ color, size }: TabBarIconProps) => (
+  <ProjectsIcon color={color} width={size} height={size} />
+);
+
+const ProfileTabIcon = ({ color, size }: TabBarIconProps) => (
+  <ProfileIcon color={color} width={size} height={size} />
+);
+
+const SettingsTabIcon = ({ color, size }: TabBarIconProps) => (
+  <SettingsIcon color={color} width={size} height={size} />
+);
+
 // Navigatörler
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
@@ -96,7 +118,7 @@ const MainNavigator = () => {
         component={HomeScreen}
         options={{
           title: t('nav.dashboard'),
-          tabBarIcon: ({ color, size }) => <HomeIcon color={color} width={size} height={size} />,
+          tabBarIcon: HomeTabIcon,
         }}
       />
       <MainTab.Screen
@@ -104,9 +126,7 @@ const MainNavigator = () => {
         component={ProjectsScreen}
         options={{
           title: t('nav.projects'),
-          tabBarIcon: ({ color, size }) => (
-            <ProjectsIcon color={color} width={size} height={size} />
-          ),
+          tabBarIcon: ProjectsTabIcon,
         }}
       />
       <MainTab.Screen
@@ -114,7 +134,7 @@ const MainNavigator = () => {
         component={ProfileScreen}
         options={{
           title: t('nav.profile'),
-          tabBarIcon: ({ color, size }) => <ProfileIcon color={color} width={size} height={size} />,
+          tabBarIcon: ProfileTabIcon,
         }}
       />
       <MainTab.Screen
@@ -122,9 +142,7 @@ const MainNavigator = () => {
         component={SettingsScreen}
         options={{
           title: t('nav.settings'),
-          tabBarIcon: ({ color, size }) => (
-            <SettingsIcon color={color} width={size} height={size} />
-          ),
+          tabBarIcon: SettingsTabIcon,
         }}
       />
     </MainTab.Navigator>
@@ -143,7 +161,7 @@ const RootNavigator = () => {
           <RootStack.Screen
             name="ProjectDetail"
             component={ProjectDetailScreen}
-            options={({ route }) => ({
+            options={({ route }: { route: { params: RootStackParamList['ProjectDetail'] } }) => ({
               headerShown: true,
               title: route.params.title,
             })}
