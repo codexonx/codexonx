@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Search, Plus, ChevronLeft, ChevronRight, SlidersHorizontal, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/contexts/i18n-context';
+import { cn } from '@/lib/utils';
 
 // Abonelik veri tipi
 type Subscription = {
@@ -17,6 +19,69 @@ type Subscription = {
   endDate: string | null;
   createdAt: string;
 };
+
+const cardShellClass =
+  'relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] shadow-[0_45px_90px_rgba(4,6,16,0.55)] backdrop-blur-xl';
+const subtleOverlayClass =
+  'pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,107,44,0.18),transparent_70%),radial-gradient(circle_at_bottom_right,rgba(84,120,255,0.18),transparent_72%)]';
+const tableOverlayClass =
+  'pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,107,44,0.18),transparent_70%),radial-gradient(circle_at_bottom_left,rgba(84,120,255,0.19),transparent_74%)]';
+const toggleButtonBaseClass =
+  'relative flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/20 hover:text-white';
+const toggleButtonActiveClass =
+  'border-primary/60 bg-primary/25 text-white shadow-[0_0_30px_rgba(255,107,44,0.35)]';
+const infoPillClass =
+  'inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs uppercase tracking-[0.38em] text-white/50';
+const searchInputClass =
+  'h-11 w-full rounded-full border border-white/15 bg-black/40 pl-12 pr-4 text-sm text-white placeholder:text-white/50 transition focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/35';
+const paginationButtonClass =
+  'rounded-full border border-white/10 bg-white/[0.05] text-white/70 transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/20 hover:text-white disabled:opacity-50';
+const paginationActiveClass =
+  'border-primary/50 bg-primary/25 text-white shadow-[0_0_25px_rgba(255,107,44,0.4)]';
+const tableActionButtonClass =
+  'rounded-full border border-white/10 bg-white/[0.05] text-white/70 transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/20 hover:text-white';
+
+const pageVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.4, ease: 'easeOut', staggerChildren: 0.08, delayChildren: 0.08 },
+  },
+} as const;
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 18 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: 'easeOut' },
+  },
+} as const;
+
+const gridVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.08, delayChildren: 0.05 },
+  },
+} as const;
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: (index = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: 'easeOut', delay: Math.min(index * 0.06, 0.3) },
+  }),
+} as const;
+
+const tableRowVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: (index: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.28, ease: 'easeOut', delay: Math.min(index * 0.05, 0.35) },
+  }),
+} as const;
 
 export default function SubscriptionsPage() {
   const { t } = useI18n();
@@ -152,13 +217,13 @@ export default function SubscriptionsPage() {
   const getStatusStyle = (status: string) => {
     switch (status) {
       case 'ACTIVE':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+        return 'border-emerald-400/50 bg-emerald-500/25 text-emerald-50 shadow-[0_0_18px_rgba(16,185,129,0.45)]';
       case 'CANCELED':
-        return 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300';
+        return 'border-amber-400/50 bg-amber-500/25 text-amber-50 shadow-[0_0_18px_rgba(245,158,11,0.45)]';
       case 'EXPIRED':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+        return 'border-rose-400/50 bg-rose-500/25 text-rose-50 shadow-[0_0_18px_rgba(244,63,94,0.45)]';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'border-white/15 bg-white/[0.12] text-white/75';
     }
   };
 
@@ -184,194 +249,284 @@ export default function SubscriptionsPage() {
     );
   }
 
+  const safeTotalPages = Math.max(totalPages, 1);
+  const showingStart = filteredSubscriptions.length === 0 ? 0 : indexOfFirstItem + 1;
+  const showingEnd = Math.min(indexOfLastItem, filteredSubscriptions.length);
+  const activeCount = subscriptions.filter(sub => sub.status === 'ACTIVE').length;
+  const canceledCount = subscriptions.filter(sub => sub.status === 'CANCELED').length;
+  const expiredCount = subscriptions.filter(sub => sub.status === 'EXPIRED').length;
+  const averagePrice =
+    subscriptions.length > 0
+      ? Math.round(
+          subscriptions.reduce((total, sub) => total + sub.price, 0) / subscriptions.length
+        )
+      : 0;
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">{t('admin.subscriptions')}</h1>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Yeni Abonelik
-        </Button>
-      </div>
-
-      {/* Filtreler ve Arama */}
-      <div className="flex flex-wrap gap-4 items-center">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Kullanıcı veya plan adı ile ara..."
-            className="pl-10 h-10 w-full rounded-md border border-input bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-          />
+    <motion.div className="space-y-8" variants={pageVariants} initial="hidden" animate="visible">
+      <motion.div className={cn(cardShellClass, 'px-6 py-6')} variants={sectionVariants}>
+        <div className={subtleOverlayClass} aria-hidden />
+        <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="space-y-3">
+            <span className={infoPillClass}>{t('admin.subscriptions')}</span>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-semibold tracking-tight text-white">
+                Abonelik Akışını Tek Panelden Yönet
+              </h1>
+              <p className="max-w-xl text-sm text-white/65">
+                Takımınızdaki planları izleyin, risk altındaki abonelikleri yakalayın ve iptalleri
+                Codexonx parıltısıyla zahmetsizce yönetin.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3 text-xs text-white/60">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.05] px-3 py-1">
+                <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.6)]" />
+                Aktif: {activeCount.toLocaleString('tr-TR')}
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.05] px-3 py-1">
+                <span className="h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.65)]" />
+                İptal: {canceledCount.toLocaleString('tr-TR')}
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.05] px-3 py-1">
+                <span className="h-2 w-2 rounded-full bg-rose-400 shadow-[0_0_12px_rgba(244,63,94,0.65)]" />
+                Süresi Doldu: {expiredCount.toLocaleString('tr-TR')}
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.05] px-3 py-1">
+                <span className="h-2 w-2 rounded-full bg-primary shadow-[0_0_12px_rgba(255,107,44,0.7)]" />
+                Ortalama Ücret: {formatCurrency(averagePrice)}
+              </span>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button className="gap-2 rounded-full bg-primary/80 px-4 text-white shadow-[0_0_35px_rgba(255,107,44,0.45)] transition hover:-translate-y-0.5 hover:bg-primary">
+              <Plus className="h-4 w-4" />
+              Yeni Abonelik
+            </Button>
+            <Button variant="ghost" className={cn(tableActionButtonClass, 'px-4')}>
+              İçe Aktar
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant={filterStatus === null ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setFilterStatus(null)}
-          >
-            Tümü
-          </Button>
-          <Button
-            variant={filterStatus === 'ACTIVE' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setFilterStatus('ACTIVE')}
-          >
-            Aktif
-          </Button>
-          <Button
-            variant={filterStatus === 'CANCELED' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setFilterStatus('CANCELED')}
-          >
-            İptal Edildi
-          </Button>
-          <Button
-            variant={filterStatus === 'EXPIRED' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setFilterStatus('EXPIRED')}
-          >
-            Süresi Doldu
-          </Button>
-        </div>
-        <Button variant="outline" className="flex items-center gap-2">
-          <SlidersHorizontal className="h-4 w-4" />
-          Gelişmiş Filtreler
-        </Button>
-      </div>
+      </motion.div>
 
-      {/* Abonelik Tablosu */}
-      <div className="rounded-md border">
-        <div className="relative w-full overflow-auto">
-          <table className="w-full caption-bottom text-sm">
-            <thead className="[&_tr]:border-b">
-              <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                  Kullanıcı
-                </th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                  Plan
-                </th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                  Fiyat
-                </th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                  Durum
-                </th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                  Başlangıç
-                </th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                  Bitiş
-                </th>
-                <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">
-                  İşlemler
-                </th>
-              </tr>
-            </thead>
-            <tbody className="[&_tr:last-child]:border-0">
-              {currentItems.map(subscription => (
-                <tr
-                  key={subscription.id}
-                  className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
-                >
-                  <td className="p-4 align-middle">{subscription.userName}</td>
-                  <td className="p-4 align-middle">{subscription.planName}</td>
-                  <td className="p-4 align-middle">
-                    {formatCurrency(subscription.price)}
-                    {subscription.price === 0 && (
-                      <span className="ml-1 text-xs text-muted-foreground">(Ücretsiz)</span>
-                    )}
-                  </td>
-                  <td className="p-4 align-middle">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusStyle(
-                        subscription.status
-                      )}`}
-                    >
-                      {subscription.status === 'ACTIVE' && <Check className="mr-1 h-3 w-3" />}
-                      {subscription.status === 'CANCELED' && <X className="mr-1 h-3 w-3" />}
-                      {getStatusText(subscription.status)}
-                    </span>
-                  </td>
-                  <td className="p-4 align-middle">{formatDate(subscription.startDate)}</td>
-                  <td className="p-4 align-middle">{formatDate(subscription.endDate)}</td>
-                  <td className="p-4 text-right align-middle">
-                    <div className="flex items-center justify-end gap-2">
-                      <Button variant="outline" size="sm">
-                        Detaylar
-                      </Button>
-                      {subscription.status === 'ACTIVE' && (
-                        <Button variant="outline" size="sm">
-                          İptal Et
-                        </Button>
-                      )}
-                    </div>
-                  </td>
+      <motion.div className={cn(cardShellClass, 'px-6 py-5')} variants={sectionVariants}>
+        <div className={subtleOverlayClass} aria-hidden />
+        <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="relative w-full md:max-w-sm">
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/55" />
+            <input
+              type="text"
+              placeholder="Kullanıcı veya plan adı ile ara..."
+              className={searchInputClass}
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-2 text-xs">
+            <Button
+              variant="ghost"
+              className={cn(
+                toggleButtonBaseClass,
+                filterStatus === null && toggleButtonActiveClass
+              )}
+              onClick={() => setFilterStatus(null)}
+            >
+              Tümü
+            </Button>
+            <Button
+              variant="ghost"
+              className={cn(
+                toggleButtonBaseClass,
+                filterStatus === 'ACTIVE' && toggleButtonActiveClass
+              )}
+              onClick={() => setFilterStatus('ACTIVE')}
+            >
+              Aktif
+            </Button>
+            <Button
+              variant="ghost"
+              className={cn(
+                toggleButtonBaseClass,
+                filterStatus === 'CANCELED' && toggleButtonActiveClass
+              )}
+              onClick={() => setFilterStatus('CANCELED')}
+            >
+              İptal
+            </Button>
+            <Button
+              variant="ghost"
+              className={cn(
+                toggleButtonBaseClass,
+                filterStatus === 'EXPIRED' && toggleButtonActiveClass
+              )}
+              onClick={() => setFilterStatus('EXPIRED')}
+            >
+              Süresi Doldu
+            </Button>
+            <Button variant="ghost" className={cn(toggleButtonBaseClass, 'px-5')}>
+              <SlidersHorizontal className="h-4 w-4" />
+              Gelişmiş Filtreler
+            </Button>
+          </div>
+        </div>
+      </motion.div>
+
+      <motion.div className={cn(cardShellClass, 'overflow-hidden')} variants={sectionVariants}>
+        <div className={tableOverlayClass} aria-hidden />
+        <div className="relative">
+          <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Abonelik Tablosu</h2>
+              <p className="text-sm text-white/60">
+                Toplam {filteredSubscriptions.length.toLocaleString('tr-TR')} kayıt görüntüleniyor.
+              </p>
+            </div>
+            <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs text-white/60">
+              Sayfa {currentPage} / {safeTotalPages}
+            </span>
+          </div>
+
+          <div className="relative w-full overflow-auto">
+            <table className="w-full caption-bottom text-sm">
+              <thead>
+                <tr className="border-b border-white/10 text-left text-xs uppercase tracking-[0.32em] text-white/45">
+                  <th className="h-12 px-6 align-middle font-medium">Kullanıcı</th>
+                  <th className="h-12 px-6 align-middle font-medium">Plan</th>
+                  <th className="h-12 px-6 align-middle font-medium">Fiyat</th>
+                  <th className="h-12 px-6 align-middle font-medium">Durum</th>
+                  <th className="h-12 px-6 align-middle font-medium">Başlangıç</th>
+                  <th className="h-12 px-6 align-middle font-medium">Bitiş</th>
+                  <th className="h-12 px-6 text-right align-middle font-medium">İşlemler</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Sayfalama */}
-        <div className="flex items-center justify-between border-t px-4 py-4">
-          <div className="text-sm text-muted-foreground">
-            {filteredSubscriptions.length} sonuçtan {indexOfFirstItem + 1} -{' '}
-            {Math.min(indexOfLastItem, filteredSubscriptions.length)} arası gösteriliyor
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1}
-            >
-              <ChevronLeft className="h-4 w-4" />
-              <span className="sr-only">Önceki Sayfa</span>
-            </Button>
-            {Array.from({ length: Math.min(totalPages, 5) }).map((_, i) => {
-              let pageNum: number;
-
-              // Sayfa düğmelerini ortalamalı gösterme
-              if (totalPages <= 5) {
-                pageNum = i + 1;
-              } else if (currentPage <= 3) {
-                pageNum = i + 1;
-              } else if (currentPage >= totalPages - 2) {
-                pageNum = totalPages - 4 + i;
-              } else {
-                pageNum = currentPage - 2 + i;
-              }
-
-              if (pageNum > 0 && pageNum <= totalPages) {
-                return (
-                  <Button
-                    key={pageNum}
-                    variant={currentPage === pageNum ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handlePageChange(pageNum)}
+              </thead>
+              <tbody>
+                {currentItems.map((subscription, index) => (
+                  <motion.tr
+                    key={subscription.id}
+                    variants={tableRowVariants}
+                    initial="hidden"
+                    animate="visible"
+                    custom={index}
+                    className="border-b border-white/[0.08] text-white/80 transition hover:bg-white/[0.04]"
                   >
-                    {pageNum}
-                  </Button>
-                );
-              }
-              return null;
-            })}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-              disabled={currentPage === totalPages}
-            >
-              <ChevronRight className="h-4 w-4" />
-              <span className="sr-only">Sonraki Sayfa</span>
-            </Button>
+                    <td className="px-6 py-4 align-middle">
+                      <div className="flex flex-col">
+                        <span className="font-medium text-white">{subscription.userName}</span>
+                        <span className="text-xs text-white/50">ID: {subscription.userId}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 align-middle">
+                      <span className="rounded-full border border-white/12 bg-white/[0.08] px-3 py-1 text-xs text-white/75">
+                        {subscription.planName}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 align-middle">
+                      <div className="flex items-center gap-2">
+                        <span>{formatCurrency(subscription.price)}</span>
+                        {subscription.price === 0 && (
+                          <span className="text-xs text-white/50">(Ücretsiz)</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 align-middle">
+                      <span
+                        className={cn(
+                          'inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium',
+                          getStatusStyle(subscription.status)
+                        )}
+                      >
+                        {subscription.status === 'ACTIVE' && <Check className="h-3.5 w-3.5" />}
+                        {subscription.status === 'CANCELED' && <X className="h-3.5 w-3.5" />}
+                        {getStatusText(subscription.status)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 align-middle">
+                      <span className="text-xs text-white/65">
+                        {formatDate(subscription.startDate)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 align-middle">
+                      <span className="text-xs text-white/65">
+                        {formatDate(subscription.endDate)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right align-middle">
+                      <div className="flex items-center justify-end gap-2">
+                        <Button variant="ghost" size="sm" className={tableActionButtonClass}>
+                          Detaylar
+                        </Button>
+                        {subscription.status === 'ACTIVE' && (
+                          <Button variant="ghost" size="sm" className={tableActionButtonClass}>
+                            İptal Et
+                          </Button>
+                        )}
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="flex flex-col gap-4 border-t border-white/10 px-6 py-4 text-sm text-white/65 md:flex-row md:items-center md:justify-between">
+            <div>
+              {filteredSubscriptions.length} sonuçtan {showingStart} - {showingEnd} arası
+              gösteriliyor
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className={paginationButtonClass}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                <span className="sr-only">Önceki Sayfa</span>
+              </Button>
+              {Array.from({ length: Math.min(safeTotalPages, 5) }).map((_, i) => {
+                let pageNum: number;
+
+                if (safeTotalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= safeTotalPages - 2) {
+                  pageNum = safeTotalPages - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
+
+                if (pageNum > 0 && pageNum <= safeTotalPages) {
+                  const isActive = currentPage === pageNum;
+                  return (
+                    <Button
+                      key={pageNum}
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handlePageChange(pageNum)}
+                      className={cn(paginationButtonClass, isActive && paginationActiveClass)}
+                    >
+                      {pageNum}
+                    </Button>
+                  );
+                }
+                return null;
+              })}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handlePageChange(Math.min(safeTotalPages, currentPage + 1))}
+                disabled={currentPage === safeTotalPages}
+                className={paginationButtonClass}
+              >
+                <ChevronRight className="h-4 w-4" />
+                <span className="sr-only">Sonraki Sayfa</span>
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

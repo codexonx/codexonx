@@ -35,8 +35,14 @@ const quickWins: QuickWin[] = [
 ];
 
 const ctaParagraphs = [
-  'Görev tabanlı ajanlarımız, Studio shell ve komut paleti ile ürün ekibinizin ritmini ilk günden hizalar.',
-  'Deploy guardrail’leri, Supabase otomasyonları ve gözlem panelleriyle turuncu glow hissini prod’da canlı tutun.',
+  'Görev tabanlı ajanlarımız, Studio shell ve komut paleti ile shipping ritminizi ilk günden hizalar.',
+  'Supabase, Vercel ve CI guardrail entegrasyonları ile turuncu glow hissini prod’da canlı tutun.',
+];
+
+const ctaHighlights = [
+  { value: '10dk', label: 'İlk turuncu deploy için ortalama kurulum süresi' },
+  { value: '+42%', label: 'Lovable migrasyonlarında hızlanan sprint ritmi' },
+  { value: '99.7%', label: 'Guardrail ile kapanan prod hatası oranı' },
 ];
 
 export function FinalCTASection() {
@@ -54,11 +60,15 @@ export function FinalCTASection() {
         aria-hidden
       />
       <div
-        className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,_rgba(255,146,71,0.24),_transparent_62%)] blur-3xl"
+        className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,_rgba(255,146,71,0.26),_transparent_62%),radial-gradient(circle_at_bottom,_rgba(84,120,255,0.18),_transparent_68%)] blur-3xl"
         aria-hidden
       />
       <div
-        className="absolute inset-x-8 bottom-[-35%] -z-10 h-[420px] rounded-full bg-[radial-gradient(circle,_rgba(84,120,255,0.18),_transparent_70%)] blur-[140px]"
+        className="absolute inset-x-12 bottom-[-32%] -z-10 h-[420px] rounded-full bg-[radial-gradient(circle,_rgba(255,107,44,0.35),_transparent_70%)] blur-[150px]"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(120deg,rgba(255,107,44,0.12)_0%,rgba(12,14,18,0.7)_48%,rgba(255,185,113,0.12)_100%)] opacity-80"
         aria-hidden
       />
 
@@ -106,6 +116,10 @@ export function FinalCTASection() {
               className="pointer-events-none absolute -top-20 left-1/2 aspect-square w-[420px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,_rgba(255,185,113,0.32),_transparent_70%)] blur-3xl"
               aria-hidden
             />
+            <span
+              className="pointer-events-none absolute inset-x-0 bottom-[-35%] w-full translate-y-6 bg-[radial-gradient(circle,_rgba(255,255,255,0.14),_transparent_70%)]"
+              aria-hidden
+            />
             <div className="flex flex-col items-center gap-7 text-center">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/[0.12] px-4 py-2 text-xs font-semibold uppercase tracking-[0.32em] text-white/80">
                 <Sparkles className="h-4 w-4" />
@@ -114,11 +128,24 @@ export function FinalCTASection() {
               <h3 className="font-display text-3xl font-semibold text-white md:text-4xl">
                 Kendi Lovable hikayenizi Codexonx Studio ile yazın
               </h3>
-              <div className="max-w-2xl space-y-3 text-sm leading-relaxed text-white/70 md:text-base">
+              <div className="max-w-2xl space-y-3 text-sm leading-relaxed text-white/75 md:text-base">
                 {ctaParagraphs.map(paragraph => (
                   <p key={paragraph} className="text-balance">
                     {paragraph}
                   </p>
+                ))}
+              </div>
+              <div className="grid w-full max-w-2xl gap-4 text-left text-white/70 sm:grid-cols-3">
+                {ctaHighlights.map(item => (
+                  <div
+                    key={item.label}
+                    className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-4 text-center shadow-[0_0_40px_rgba(255,107,44,0.18)]"
+                  >
+                    <p className="font-display text-2xl font-semibold text-white sm:text-3xl">
+                      {item.value}
+                    </p>
+                    <p className="mt-2 text-xs leading-relaxed text-white/60">{item.label}</p>
+                  </div>
                 ))}
               </div>
               <div className="flex w-full flex-col justify-center gap-3 sm:flex-row">

@@ -2,8 +2,10 @@
 // @ts-ignore - Tip tanımlarını geçici olarak görmezden gelelim
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { MobileFriendlyLayout } from '@/components/layouts/mobile-friendly-layout';
+import { Button } from '@/components/ui/button';
 import {
   BarChart,
   Bar,
@@ -20,9 +22,75 @@ import {
   Cell,
 } from 'recharts';
 import { useI18n } from '@/contexts/i18n-context';
+import { cn } from '@/lib/utils';
 
 // Renk paleti
 const COLORS = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+
+const cardShellClass =
+  'relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] shadow-[0_45px_90px_rgba(4,6,16,0.55)] backdrop-blur-xl';
+const subtleOverlayClass =
+  'pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,107,44,0.18),transparent_70%),radial-gradient(circle_at_bottom_right,rgba(84,120,255,0.18),transparent_72%)]';
+const chartOverlayClass =
+  'pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,107,44,0.14),transparent_72%),radial-gradient(circle_at_bottom_left,rgba(56,189,248,0.18),transparent_74%)]';
+const tableOverlayClass =
+  'pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,107,44,0.18),transparent_70%),radial-gradient(circle_at_bottom_left,rgba(84,120,255,0.18),transparent_74%)]';
+const toggleButtonBaseClass =
+  'relative flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/20 hover:text-white';
+const toggleButtonActiveClass =
+  'border-primary/60 bg-primary/25 text-white shadow-[0_0_30px_rgba(255,107,44,0.35)]';
+const sectionBadgeClass =
+  'inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.05] px-3 py-1 text-xs uppercase tracking-[0.4em] text-white/45';
+
+const glowAccentDotClass =
+  'h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_12px_rgba(255,107,44,0.65)]';
+
+const pageVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.4,
+      ease: 'easeOut',
+      staggerChildren: 0.08,
+      delayChildren: 0.08,
+    },
+  },
+} as const;
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 18 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: 'easeOut' },
+  },
+} as const;
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: (index = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: 'easeOut', delay: Math.min(index * 0.06, 0.3) },
+  }),
+} as const;
+
+const tableRowVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: (index: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.32, ease: 'easeOut', delay: Math.min(index * 0.05, 0.35) },
+  }),
+} as const;
+
+const gridVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.08, delayChildren: 0.05 },
+  },
+} as const;
 
 export default function AnalyticsPage() {
   const { t } = useI18n();
@@ -33,6 +101,7 @@ export default function AnalyticsPage() {
   // Ekran boyutunu kontrol et
   const isMobile = useMediaQuery('(max-width: 767px)');
   const isTablet = useMediaQuery('(min-width: 768px) and (max-width: 1023px)');
+  const chartHeightClass = isMobile ? 'h-[260px]' : isTablet ? 'h-[320px]' : 'h-[360px]';
 
   // Veri yükleme simülasyonu
   useEffect(() => {
@@ -158,204 +227,338 @@ export default function AnalyticsPage() {
     );
   }
 
+  const activeProjectPercent = data.summary.totalProjects
+    ? Math.round((data.summary.activeProjects / data.summary.totalProjects) * 100)
+    : 0;
+  const activeUserPercent = data.summary.totalUsers
+    ? Math.round((data.summary.activeUsers / data.summary.totalUsers) * 100)
+    : 0;
+
+  const summaryMetrics = [
+    {
+      title: t('dashboard.totalProjects'),
+      value: data.summary.totalProjects.toLocaleString('tr-TR'),
+      helper: `${activeProjectPercent}% aktif`,
+      accentClass: 'text-sky-300',
+    },
+    {
+      title: t('admin.totalRevenue'),
+      value: formatCurrency(data.summary.revenue),
+      helper: `+${timeframe === 'week' ? '18' : '32'}%`,
+      accentClass: 'text-emerald-300',
+    },
+    {
+      title: t('admin.activeUsers'),
+      value: data.summary.activeUsers.toLocaleString('tr-TR'),
+      helper: `${activeUserPercent}% aktif`,
+      accentClass: 'text-amber-300',
+    },
+  ];
+
   return (
-    <MobileFriendlyLayout className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">{t('admin.analytics')}</h1>
-        <div className="flex items-center space-x-2">
-          <button
-            className={`px-4 py-2 text-sm rounded-md ${
-              timeframe === 'week'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-secondary text-secondary-foreground'
-            }`}
-            onClick={() => setTimeframe('week')}
+    <MobileFriendlyLayout className="space-y-8">
+      <motion.div className="space-y-8" variants={pageVariants} initial="hidden" animate="visible">
+        <motion.div className={cn(cardShellClass, 'px-6 py-6')} variants={sectionVariants}>
+          <div className={subtleOverlayClass} aria-hidden />
+          <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 text-xs text-white/60">
+                <span className={glowAccentDotClass} />
+                <span className="uppercase tracking-[0.45em] text-white/45">
+                  {t('admin.analytics')}
+                </span>
+              </div>
+              <div className="space-y-2">
+                <h1 className="text-3xl font-semibold tracking-tight text-white">
+                  Codexonx Analitik Kontrol Merkezi
+                </h1>
+                <p className="max-w-xl text-sm text-white/65">
+                  Platformunuzun büyümesini, trafik kaynaklarını ve API performansını tek panelden
+                  takip edin. Turuncu/siyah glow ile anlık durumunuza odaklanın.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button
+                type="button"
+                onClick={() => setTimeframe('week')}
+                className={cn(
+                  toggleButtonBaseClass,
+                  timeframe === 'week' && toggleButtonActiveClass
+                )}
+              >
+                Haftalık
+              </Button>
+              <Button
+                type="button"
+                onClick={() => setTimeframe('month')}
+                className={cn(
+                  toggleButtonBaseClass,
+                  timeframe === 'month' && toggleButtonActiveClass
+                )}
+              >
+                Aylık
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+          variants={gridVariants}
+        >
+          {summaryMetrics.map((metric, index) => (
+            <motion.div
+              key={metric.title}
+              className={cn(cardShellClass, 'px-5 py-5')}
+              variants={itemVariants}
+              custom={index}
+            >
+              <div className={subtleOverlayClass} aria-hidden />
+              <div className="relative space-y-4">
+                <div className="flex items-center justify-between text-xs text-white/60">
+                  <span className="uppercase tracking-[0.32em] text-white/45">{metric.title}</span>
+                  <span className={cn('font-medium', metric.accentClass)}>{metric.helper}</span>
+                </div>
+                <span className="text-3xl font-semibold text-white">{metric.value}</span>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        <motion.div
+          className={cn('grid grid-cols-1 gap-6', !isMobile && 'lg:grid-cols-2')}
+          variants={gridVariants}
+        >
+          <motion.div
+            className={cn(cardShellClass, 'px-6 py-5')}
+            variants={itemVariants}
+            custom={0}
           >
-            {t('dashboard.weeklyStats')}
-          </button>
-          <button
-            className={`px-4 py-2 text-sm rounded-md ${
-              timeframe === 'month'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-secondary text-secondary-foreground'
-            }`}
-            onClick={() => setTimeframe('month')}
+            <div className={chartOverlayClass} aria-hidden />
+            <div className="relative space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase tracking-[0.32em] text-white/45">
+                  {t('dashboard.usageStats')}
+                </span>
+                <span className="text-xs text-white/45">
+                  {timeframe === 'week' ? '7 gün' : '30 gün'}
+                </span>
+              </div>
+              <div className={chartHeightClass}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={data.userActivity}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 20,
+                      bottom: 5,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
+                    <XAxis dataKey="name" stroke="#ffffff60" tickLine={false} />
+                    <YAxis stroke="#ffffff60" tickLine={false} axisLine={false} />
+                    <Tooltip contentStyle={{ backgroundColor: '#0f111a', borderRadius: 12 }} />
+                    <Legend />
+                    <Bar
+                      dataKey="users"
+                      name={t('admin.users')}
+                      fill="#4f46e5"
+                      radius={[6, 6, 0, 0]}
+                    />
+                    <Bar
+                      dataKey="projects"
+                      name={t('admin.projects')}
+                      fill="#10b981"
+                      radius={[6, 6, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className={cn(cardShellClass, 'px-6 py-5')}
+            variants={itemVariants}
+            custom={1}
           >
-            {t('dashboard.monthlyStats')}
-          </button>
-        </div>
-      </div>
+            <div className={chartOverlayClass} aria-hidden />
+            <div className="relative space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase tracking-[0.32em] text-white/45">
+                  {t('dashboard.apiCalls')}
+                </span>
+                <span className="text-xs text-white/45">
+                  {timeframe === 'week' ? 'API / Gün' : 'API / Gün'}
+                </span>
+              </div>
+              <div className={chartHeightClass}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={data.userActivity}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 20,
+                      bottom: 5,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
+                    <XAxis dataKey="name" stroke="#ffffff60" tickLine={false} />
+                    <YAxis stroke="#ffffff60" tickLine={false} axisLine={false} />
+                    <Tooltip contentStyle={{ backgroundColor: '#0f111a', borderRadius: 12 }} />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="apiCalls"
+                      name="API Çağrıları"
+                      stroke="#f59e0b"
+                      strokeWidth={3}
+                      dot={{ r: 2 }}
+                      activeDot={{ r: 6 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </motion.div>
 
-      {/* Özet Kartları */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <div className="rounded-lg border bg-card p-4 shadow">
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">{t('dashboard.totalProjects')}</p>
+          <motion.div
+            className={cn(cardShellClass, 'px-6 py-5')}
+            variants={itemVariants}
+            custom={2}
+          >
+            <div className={chartOverlayClass} aria-hidden />
+            <div className="relative space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase tracking-[0.32em] text-white/45">
+                  {t('dashboard.trafficSources')}
+                </span>
+                <span className="text-xs text-white/45">
+                  {timeframe === 'week' ? 'Bu hafta' : 'Bu ay'}
+                </span>
+              </div>
+              <div className={chartHeightClass}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={data.trafficSources}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={(entry: any) => `${entry.name}: ${(entry.percent * 100).toFixed(0)}%`}
+                      outerRadius={isMobile ? 80 : 100}
+                      innerRadius={isMobile ? 45 : 55}
+                      dataKey="value"
+                    >
+                      {data.trafficSources.map((entry: any, index: number) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Legend />
+                    <Tooltip contentStyle={{ backgroundColor: '#0f111a', borderRadius: 12 }} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className={cn(cardShellClass, 'px-6 py-5')}
+            variants={itemVariants}
+            custom={3}
+          >
+            <div className={chartOverlayClass} aria-hidden />
+            <div className="relative space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase tracking-[0.32em] text-white/45">
+                  {t('admin.userGrowth')}
+                </span>
+                <span className="text-xs text-white/45">Signup trendi</span>
+              </div>
+              <div className={chartHeightClass}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={data.userGrowth}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 20,
+                      bottom: 5,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
+                    <XAxis dataKey="name" stroke="#ffffff60" tickLine={false} />
+                    <YAxis stroke="#ffffff60" tickLine={false} axisLine={false} />
+                    <Tooltip contentStyle={{ backgroundColor: '#0f111a', borderRadius: 12 }} />
+                    <Legend />
+                    <Bar
+                      dataKey="value"
+                      name={t('admin.newSignups')}
+                      fill="#8b5cf6"
+                      radius={[6, 6, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          className={cn(cardShellClass, 'overflow-hidden px-6 py-5')}
+          variants={sectionVariants}
+        >
+          <div className={tableOverlayClass} aria-hidden />
+          <div className="relative space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-bold">{data.summary.totalProjects}</h3>
-              <p className="text-sm text-emerald-500">
-                {Math.round((data.summary.activeProjects / data.summary.totalProjects) * 100)}%
-                aktif
-              </p>
+              <div>
+                <p className="text-xs uppercase tracking-[0.35em] text-white/45">
+                  {t('dashboard.popularEndpoints')}
+                </p>
+                <h3 className="text-lg font-semibold text-white">
+                  Trafiğin yoğun olduğu API uçları
+                </h3>
+              </div>
+              <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs text-white/60">
+                {timeframe === 'week' ? '7 günlük görünüm' : '30 günlük görünüm'}
+              </span>
+            </div>
+
+            <div className="relative w-full overflow-auto">
+              <table className="w-full text-sm text-white/70">
+                <thead>
+                  <tr className="border-b border-white/10 text-left text-xs uppercase tracking-[0.3em] text-white/45">
+                    <th className="py-3">Endpoint</th>
+                    <th className="py-3 text-right">API Çağrıları</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.topEndpoints.map(
+                    (endpoint: { name: string; calls: number }, index: number) => (
+                      <motion.tr
+                        key={endpoint.name}
+                        variants={tableRowVariants}
+                        initial="hidden"
+                        animate="visible"
+                        custom={index}
+                        className="border-b border-white/[0.08] last:border-0"
+                      >
+                        <td className="py-3 font-medium text-white">{endpoint.name}</td>
+                        <td className="py-3 text-right text-white/80">
+                          {endpoint.calls.toLocaleString('tr-TR')}
+                        </td>
+                      </motion.tr>
+                    )
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
-        </div>
-        <div className="rounded-lg border bg-card p-4 shadow">
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">{t('admin.totalRevenue')}</p>
-            <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-bold">{formatCurrency(data.summary.revenue)}</h3>
-              <p className="text-sm text-emerald-500">+{timeframe === 'week' ? '18' : '32'}%</p>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-lg border bg-card p-4 shadow">
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">{t('admin.activeUsers')}</p>
-            <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-bold">{data.summary.activeUsers}</h3>
-              <p className="text-sm text-emerald-500">
-                {Math.round((data.summary.activeUsers / data.summary.totalUsers) * 100)}% aktif
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Aktivite Grafikleri */}
-      <div className={`grid grid-cols-1 gap-6 ${!isMobile ? 'lg:grid-cols-2' : ''}`}>
-        {/* Kullanıcı ve Proje Aktivitesi */}
-        <div className="rounded-lg border bg-card p-4 shadow">
-          <h3 className="mb-4 text-lg font-medium">{t('dashboard.usageStats')}</h3>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={data.userActivity}
-                margin={{
-                  top: 20,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="users" name={t('admin.users')} fill="#4f46e5" />
-                <Bar dataKey="projects" name={t('admin.projects')} fill="#10b981" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* API Çağrıları */}
-        <div className="rounded-lg border bg-card p-4 shadow">
-          <h3 className="mb-4 text-lg font-medium">{t('dashboard.apiCalls')}</h3>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={data.userActivity}
-                margin={{
-                  top: 20,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="apiCalls"
-                  name="API Çağrıları"
-                  stroke="#f59e0b"
-                  activeDot={{ r: 8 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Trafik Kaynakları */}
-        <div className="rounded-lg border bg-card p-4 shadow">
-          <h3 className="mb-4 text-lg font-medium">{t('dashboard.trafficSources')}</h3>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={data.trafficSources}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={true}
-                  label={(entry: any) => `${entry.name}: ${(entry.percent * 100).toFixed(0)}%`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {data.trafficSources.map((entry: any, index: number) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Legend />
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Kullanıcı Büyümesi */}
-        <div className="rounded-lg border bg-card p-4 shadow">
-          <h3 className="mb-4 text-lg font-medium">{t('admin.userGrowth')}</h3>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={data.userGrowth}
-                margin={{
-                  top: 20,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="value" name={t('admin.newSignups')} fill="#8b5cf6" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-
-      {/* Popüler Endpoint'ler */}
-      <div className="rounded-lg border bg-card p-4 shadow">
-        <h3 className="mb-4 text-lg font-medium">{t('dashboard.popularEndpoints')}</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="py-2 text-left">Endpoint</th>
-                <th className="py-2 text-right">API Çağrıları</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.topEndpoints.map((endpoint: { name: string; calls: number }, index: number) => (
-                <tr key={index} className="border-b last:border-0">
-                  <td className="py-2 font-medium">{endpoint.name}</td>
-                  <td className="py-2 text-right">{endpoint.calls.toLocaleString('tr-TR')}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </MobileFriendlyLayout>
   );
 }

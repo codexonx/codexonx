@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Editor from '@monaco-editor/react';
+import { m } from 'framer-motion';
 
 import { useWorkspace } from '@/contexts/workspace-context';
 import { toast } from '@/hooks/use-toast';
@@ -162,6 +163,44 @@ const progressWidthClassMap: Record<number, string> = {
   100: 'w-full',
 };
 
+const panelBaseClass =
+  'relative overflow-hidden rounded-2xl border border-white/12 bg-[linear-gradient(160deg,rgba(12,14,18,0.94)_0%,rgba(8,10,16,0.9)_48%,rgba(5,7,12,0.95)_100%)] shadow-[0_40px_90px_rgba(2,4,12,0.6)] backdrop-blur';
+const panelHoverClass =
+  'transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_0_45px_rgba(255,107,44,0.25)]';
+const primaryActionClass =
+  'inline-flex items-center justify-center gap-2 rounded-full bg-[linear-gradient(120deg,#FF6B2C_0%,#FF9247_48%,#FFE1A0_100%)] px-5 py-2 text-xs font-semibold text-black shadow-[0_0_45px_rgba(255,107,44,0.35)] transition hover:shadow-[0_0_60px_rgba(255,107,44,0.45)] disabled:cursor-not-allowed disabled:opacity-60';
+const secondaryActionClass =
+  'inline-flex items-center justify-center rounded-full border border-white/18 bg-white/[0.06] px-5 py-2 text-xs font-semibold text-white/85 transition hover:border-white/35 hover:text-white disabled:cursor-not-allowed disabled:opacity-60';
+const ghostActionClass =
+  'inline-flex items-center justify-center rounded-full border border-white/12 bg-transparent px-5 py-2 text-xs font-semibold text-white/70 transition hover:border-white/30 hover:text-white disabled:cursor-not-allowed disabled:opacity-50';
+
+const panelMotionProps = {
+  initial: { opacity: 0, y: 18 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.2 },
+  transition: { duration: 0.45, ease: 'easeOut' },
+} as const;
+
+const primaryActionMotionProps = {
+  whileHover: { scale: 1.02, boxShadow: '0 0 38px rgba(255,107,44,0.45)' },
+  whileTap: { scale: 0.97 },
+} as const;
+
+const secondaryActionMotionProps = {
+  whileHover: { scale: 1.015 },
+  whileTap: { scale: 0.985 },
+} as const;
+
+const subtleListHoverMotionProps = {
+  whileHover: { y: -3, scale: 1.005 },
+  whileTap: { scale: 0.995 },
+} as const;
+
+const cardHoverMotionProps = {
+  whileHover: { y: -4, scale: 1.01 },
+  whileTap: { scale: 0.985 },
+} as const;
+
 function getProgressWidthClass(progress: number) {
   const clamped = Math.max(0, Math.min(100, Math.round(progress / 10) * 10));
   return progressWidthClassMap[clamped] ?? 'w-full';
@@ -233,6 +272,15 @@ function buildFileTree(files: MockProjectFile[]): FileTreeNode[] {
   sortNodes(root);
 
   return root;
+}
+
+function getListStaggerProps(index: number, depth = 0) {
+  const delay = Math.min(0.5, index * 0.04 + depth * 0.03);
+  return {
+    initial: { opacity: 0, y: 8 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.28, ease: 'easeOut', delay },
+  };
 }
 
 function StudioShell() {
@@ -706,10 +754,12 @@ function StudioShell() {
 
   const renderFileTree = useCallback(
     (nodes: FileTreeNode[], depth = 0): JSX.Element[] =>
-      nodes.flatMap(node => {
+      nodes.map((node, index) => {
+        const motion = getListStaggerProps(index, depth);
+
         if (node.type === 'directory') {
           return (
-            <li key={node.id} className="text-sm">
+            <m.li key={node.id} {...motion} className="text-sm">
               <div
                 className={cn(
                   'flex items-center gap-2 py-1 text-muted-foreground',
@@ -723,7 +773,7 @@ function StudioShell() {
               {node.children ? (
                 <ul className="mt-1 space-y-1">{renderFileTree(node.children, depth + 1)}</ul>
               ) : null}
-            </li>
+            </m.li>
           );
         }
 
@@ -731,8 +781,8 @@ function StudioShell() {
         const isDirty = dirtyFileIds.has(node.id);
 
         return (
-          <li key={node.id}>
-            <button
+          <m.li key={node.id} {...motion}>
+            <m.button
               type="button"
               onClick={() => setSelectedFileId(node.id)}
               className={cn(
@@ -742,11 +792,12 @@ function StudioShell() {
                   ? 'border-primary/40 bg-primary/10 text-primary'
                   : 'border-white/10 bg-white/5 text-muted-foreground hover:border-primary/30 hover:text-foreground'
               )}
+              {...subtleListHoverMotionProps}
             >
               <span className="truncate">{node.name}</span>
               {isDirty ? <span className="text-[0.6rem] uppercase text-amber-300">●</span> : null}
-            </button>
-          </li>
+            </m.button>
+          </m.li>
         );
       }),
     [dirtyFileIds, selectedFileId]
@@ -761,8 +812,27 @@ function StudioShell() {
   }
 
   return (
-    <section className="flex flex-col gap-6">
-      <header className="rounded-3xl border border-white/10 bg-background/70 px-6 py-5 backdrop-blur">
+    <section className="relative flex flex-col gap-6 overflow-hidden py-6">
+      <div
+        className="pointer-events-none absolute inset-0 -z-40 bg-[linear-gradient(150deg,rgba(5,6,9,0.92)_0%,rgba(8,10,14,0.96)_48%,rgba(3,4,7,0.9)_100%)]"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 -z-30 bg-[radial-gradient(circle_at_top,_rgba(255,146,71,0.18),_transparent_60%),radial-gradient(circle_at_bottom,_rgba(84,120,255,0.22),_transparent_72%)]"
+        aria-hidden
+      />
+      <m.header
+        {...panelMotionProps}
+        className={cn(panelBaseClass, 'rounded-3xl border-white/15 px-6 py-6')}
+      >
+        <div
+          className="pointer-events-none absolute inset-y-0 right-[-18%] top-[-15%] h-[160%] w-[60%] bg-[radial-gradient(circle,rgba(255,107,44,0.28),transparent_65%)] blur-3xl"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute -left-20 top-12 h-36 w-36 rounded-full bg-[rgba(84,120,255,0.22)] blur-3xl"
+          aria-hidden
+        />
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.35em] text-primary/70">Codexonx Studio</p>
@@ -791,99 +861,84 @@ function StudioShell() {
           </div>
         </div>
         <div className="mt-5 flex flex-wrap gap-3">
-          <button
+          <m.button
+            {...primaryActionMotionProps}
             type="button"
-            className="rounded-full border border-primary/40 bg-primary/10 px-4 py-2 text-xs font-semibold text-primary transition hover:bg-primary/20 disabled:opacity-50"
+            className={cn(primaryActionClass, 'px-6')}
             onClick={handleRunCode}
             disabled={!activeProject || !activeFile || isRunning}
           >
             {isRunning ? 'Çalıştırılıyor...' : 'Run tetikle'}
-          </button>
-          <button
+          </m.button>
+          <m.button
+            {...secondaryActionMotionProps}
             type="button"
-            className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-muted-foreground transition hover:text-foreground"
+            className={secondaryActionClass}
             onClick={handleSimulateAgentTask}
           >
             Stub ajan görevi oluştur
-          </button>
-          <button
+          </m.button>
+          <m.button
+            {...secondaryActionMotionProps}
             type="button"
-            className="rounded-full border border-primary/30 bg-primary/5 px-4 py-2 text-xs font-semibold text-primary transition hover:bg-primary/10 disabled:opacity-50"
+            className={cn(
+              secondaryActionClass,
+              'border-primary/30 text-primary hover:border-primary/50 hover:text-primary/90'
+            )}
             onClick={handleSaveFile}
             disabled={!activeFile || !isActiveFileDirty || isSaving}
           >
             {isSaving ? 'Kaydediliyor...' : 'Dosyayı kaydet'}
-          </button>
-          <button
+          </m.button>
+          <m.button
+            {...secondaryActionMotionProps}
             type="button"
-            className="rounded-full border border-white/10 bg-white/0 px-4 py-2 text-xs font-semibold text-muted-foreground transition hover:text-foreground"
+            className={ghostActionClass}
             onClick={handleResetCode}
             disabled={!activeProject}
           >
             Kod şablonunu sıfırla
-          </button>
+          </m.button>
         </div>
-      </header>
+      </m.header>
 
       <div className="grid gap-6 2xl:grid-cols-[260px_minmax(0,1fr)_340px]">
-        <div className="space-y-4 rounded-2xl border border-white/10 bg-background/60 p-4 text-xs text-muted-foreground">
-          <div className="flex items-center justify-between text-[0.7rem] uppercase tracking-[0.35em] text-primary/70">
+        <m.aside
+          {...panelMotionProps}
+          className={cn(panelBaseClass, panelHoverClass, 'space-y-5 p-5 text-xs text-white/70')}
+        >
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle,rgba(255,146,71,0.2),transparent_75%)] blur-2xl"
+            aria-hidden
+          />
+          <div className="flex items-center justify-between text-[0.7rem] uppercase tracking-[0.35em] text-primary/75">
             <span>Dosya ağacı</span>
-            <span className="text-muted-foreground/60">{projectFiles.length} adet</span>
+            <span className="text-white/40">{projectFiles.length} adet</span>
           </div>
           {fileTree.length === 0 ? (
-            <p className="mt-4 text-xs text-muted-foreground/70">
-              Bu projeye ait mock dosya bulunamadı.
-            </p>
+            <p className="mt-4 text-xs text-white/60">Bu projeye ait mock dosya bulunamadı.</p>
           ) : (
-            <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
-              {renderFileTree(fileTree)}
-            </ul>
+            <ul className="mt-3 space-y-1 text-sm text-white/70">{renderFileTree(fileTree)}</ul>
           )}
-          <div className="rounded-xl border border-white/10 bg-black/40 p-3 text-xs text-muted-foreground">
-            <div className="text-[0.7rem] uppercase tracking-[0.3em] text-primary/70">
-              Prompt Checklist
-            </div>
-            <ul className="mt-3 space-y-2">
-              {promptNotes.map(note => (
-                <li key={note.id} className="flex items-center justify-between">
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={note.checked}
-                      onChange={() => togglePromptNote(note.id)}
-                      className="h-3.5 w-3.5 rounded border-white/20 bg-black/60 accent-primary"
-                    />
-                    <span>{note.label}</span>
-                  </label>
-                  <span className="text-[0.6rem] uppercase tracking-[0.3em] text-muted-foreground/60">
-                    {note.checked ? 'Tamamlandı' : 'Bekliyor'}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        </m.aside>
 
         <div className="flex flex-col gap-6">
-          <div className="rounded-2xl border border-white/10 bg-black/80">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 bg-white/5 px-4 py-3 text-xs text-muted-foreground">
+          <m.article {...panelMotionProps} className={cn(panelBaseClass, 'border-white/15')}>
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 bg-white/[0.04] px-5 py-4 text-xs text-white/70">
               <div>
-                <span className="font-medium uppercase tracking-[0.35em] text-primary/70">
+                <span className="font-medium uppercase tracking-[0.35em] text-primary/75">
                   Monaco Editor
                 </span>
-                <p className="mt-1 text-[0.7rem] text-muted-foreground/70">
+                <p className="mt-1 text-[0.7rem] text-white/50">
                   {activeFile ? activeFile.path : 'Dosya seçilmedi'}
                   {isActiveFileDirty ? ' • Kaydedilmedi' : ''}
                 </p>
               </div>
               <div className="flex items-center gap-3 text-[0.7rem]">
                 <span>
-                  Dil: <span className="capitalize text-foreground">{language}</span>
+                  Dil: <span className="capitalize text-white/90">{language}</span>
                 </span>
-                {!isEditorReady ? (
-                  <span className="text-muted-foreground/60">(hazırlanıyor...)</span>
-                ) : null}
+                {!isEditorReady ? <span className="text-white/40">(hazırlanıyor...)</span> : null}
               </div>
             </div>
             <Editor
@@ -903,13 +958,16 @@ function StudioShell() {
                 tabSize: 2,
               }}
             />
-          </div>
+          </m.article>
 
-          <div className="rounded-2xl border border-white/10 bg-background/60 p-4 font-mono text-xs text-muted-foreground">
-            <div className="flex flex-wrap items-center justify-between gap-3 text-[0.7rem] uppercase tracking-[0.35em] text-primary/70">
+          <m.section
+            {...panelMotionProps}
+            className={cn(panelBaseClass, 'border-white/15 p-5 font-mono text-xs text-white/70')}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 text-[0.7rem] uppercase tracking-[0.35em] text-primary/75">
               <div className="flex items-center gap-3">
                 <span>Terminal</span>
-                <span className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[0.6rem] normal-case tracking-[0.2em] text-muted-foreground/70">
+                <span className="rounded-full border border-white/15 bg-white/[0.06] px-2 py-1 text-[0.6rem] normal-case tracking-[0.2em] text-white/60">
                   {filteredRunLogs.length}/{runLogs.length}
                 </span>
               </div>
@@ -919,11 +977,11 @@ function StudioShell() {
                   value={logSearchTerm}
                   onChange={event => setLogSearchTerm(event.target.value)}
                   placeholder="Log ara..."
-                  className="w-full max-w-xs rounded-full border border-white/10 bg-black/60 px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/70 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="w-full max-w-xs rounded-full border border-white/15 bg-black/60 px-3 py-1.5 text-xs text-white placeholder:text-white/40 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
             </div>
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-[0.65rem] normal-case tracking-normal text-muted-foreground">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-[0.65rem] normal-case tracking-normal text-white/65">
               <div className="flex flex-wrap items-center gap-2">
                 {logLevelOptions.map(option => {
                   const isActive = logLevelFilter === option.value;
@@ -933,10 +991,10 @@ function StudioShell() {
                       type="button"
                       onClick={() => setLogLevelFilter(option.value)}
                       className={cn(
-                        'rounded-full border px-2.5 py-1 text-xs transition',
-                        isActive
-                          ? 'border-primary/40 bg-primary/15 text-primary'
-                          : 'border-white/10 bg-white/0 text-muted-foreground hover:border-white/30 hover:text-foreground'
+                        secondaryActionClass,
+                        'px-3 py-1 text-[0.65rem]',
+                        isActive &&
+                          'border-primary/50 bg-primary/15 text-primary shadow-[0_0_25px_rgba(255,107,44,0.25)]'
                       )}
                     >
                       {option.label}
@@ -945,18 +1003,19 @@ function StudioShell() {
                 })}
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[0.6rem] uppercase tracking-[0.3em] text-muted-foreground/60">
+                <span className="text-[0.6rem] uppercase tracking-[0.3em] text-white/45">
                   Sıralama
                 </span>
-                <div className="inline-flex rounded-full border border-white/10 bg-white/0 p-0.5">
+                <div className="inline-flex rounded-full border border-white/15 bg-white/[0.04] p-0.5">
                   <button
                     type="button"
                     onClick={() => setLogSortOrder('desc')}
                     className={cn(
-                      'rounded-full px-3 py-1 text-[0.65rem] transition',
+                      secondaryActionClass,
+                      'border-none px-3 py-1 text-[0.65rem]',
                       logSortOrder === 'desc'
                         ? 'bg-primary/15 text-primary'
-                        : 'text-muted-foreground hover:text-foreground'
+                        : 'bg-transparent text-white/60 hover:text-white'
                     )}
                   >
                     Yeni → Eski
@@ -965,10 +1024,11 @@ function StudioShell() {
                     type="button"
                     onClick={() => setLogSortOrder('asc')}
                     className={cn(
-                      'rounded-full px-3 py-1 text-[0.65rem] transition',
+                      secondaryActionClass,
+                      'border-none px-3 py-1 text-[0.65rem]',
                       logSortOrder === 'asc'
                         ? 'bg-primary/15 text-primary'
-                        : 'text-muted-foreground hover:text-foreground'
+                        : 'bg-transparent text-white/60 hover:text-white'
                     )}
                   >
                     Eski → Yeni
@@ -977,92 +1037,127 @@ function StudioShell() {
               </div>
             </div>
             {filteredRunLogs.length === 0 ? (
-              <p className="mt-4 text-sm text-muted-foreground/70">
+              <p className="mt-4 text-sm text-white/55">
                 {logLevelFilter === 'all'
                   ? 'Henüz run logu bulunmuyor. Run tetiklediğinde çıktılar burada görünecek.'
                   : 'Bu filtre için log bulunamadı. Başka bir seviye seçmeyi deneyin.'}
               </p>
             ) : (
-              <ul className="mt-3 space-y-3">
-                {filteredRunLogs.map(log => (
-                  <li
-                    key={log.id}
-                    className="rounded-lg border border-white/5 bg-black/60 p-3 text-muted-foreground"
-                  >
-                    <div className="flex items-center justify-between text-[0.7rem] uppercase tracking-[0.3em] text-muted-foreground/70">
-                      <span>{new Date(log.timestamp).toLocaleTimeString('tr-TR')}</span>
-                      <span
-                        className={cn(
-                          'rounded-full border px-2 py-0.5 text-[0.6rem] font-semibold',
-                          log.level === 'error'
-                            ? 'border-red-400 text-red-300'
-                            : log.level === 'warn'
-                              ? 'border-amber-400 text-amber-200'
-                              : 'border-emerald-400 text-emerald-200'
-                        )}
+              <ul className="mt-4 space-y-3">
+                {filteredRunLogs.map((log, index) => {
+                  const motion = getListStaggerProps(index);
+                  return (
+                    <li key={log.id}>
+                      <m.div
+                        {...motion}
+                        {...subtleListHoverMotionProps}
+                        className="rounded-xl border border-white/12 bg-white/[0.03] p-3 text-white/70 shadow-[0_0_30px_rgba(255,107,44,0.12)] transition hover:border-primary/40 hover:bg-primary/10"
                       >
-                        {log.level}
-                      </span>
-                    </div>
-                    <pre className="mt-2 whitespace-pre-wrap text-xs text-foreground/90">
-                      {log.message}
-                    </pre>
-                  </li>
-                ))}
+                        <div className="flex items-center justify-between text-[0.7rem] uppercase tracking-[0.3em] text-white/45">
+                          <span>{new Date(log.timestamp).toLocaleTimeString('tr-TR')}</span>
+                          <span
+                            className={cn(
+                              'rounded-full border px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-[0.2em]',
+                              log.level === 'error'
+                                ? 'border-red-400 text-red-300'
+                                : log.level === 'warn'
+                                  ? 'border-amber-300 text-amber-200'
+                                  : 'border-emerald-300 text-emerald-200'
+                            )}
+                          >
+                            {log.level}
+                          </span>
+                        </div>
+                        <pre className="mt-2 whitespace-pre-wrap text-xs text-white/85">
+                          {log.message}
+                        </pre>
+                      </m.div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
-          </div>
+          </m.section>
         </div>
 
         <aside className="flex flex-col gap-6">
-          <div className="rounded-2xl border border-white/10 bg-background/70 p-4 text-sm text-muted-foreground">
-            <h2 className="text-base font-semibold text-foreground">Ajan görev listesi</h2>
-            <ul className="mt-3 space-y-2 text-xs">
+          <m.section
+            {...panelMotionProps}
+            className={cn(
+              panelBaseClass,
+              panelHoverClass,
+              'border-white/15 p-5 text-xs text-white/70'
+            )}
+          >
+            <div
+              className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle,rgba(255,107,44,0.16),transparent_72%)] blur-2xl"
+              aria-hidden
+            />
+            <div className="flex items-center justify-between text-[0.75rem] uppercase tracking-[0.35em] text-primary/75">
+              <h2 className="text-base font-semibold text-white">Ajan görev listesi</h2>
+              <span className="rounded-full border border-white/15 bg-white/[0.05] px-3 py-1 text-[0.6rem] tracking-[0.3em] text-white/50">
+                {agentTodos.length}
+              </span>
+            </div>
+            <ul className="mt-4 space-y-3 text-xs text-white/70">
               {agentTodos.length === 0 ? (
-                <li className="rounded-lg border border-white/5 bg-white/5 p-3 text-muted-foreground/70">
+                <li className="rounded-xl border border-white/12 bg-white/[0.03] p-4 text-white/55">
                   {activeProject
                     ? 'Ajan görevi bulunamadı.'
                     : 'Bu workspace için ajan görevi bulunamadı.'}
                 </li>
               ) : (
-                agentTodos.map(thread => (
-                  <li
-                    key={thread.id}
-                    className="rounded-lg border border-white/5 bg-white/5 p-3 text-muted-foreground"
-                  >
-                    <div className="flex items-center justify-between font-medium text-foreground">
-                      <span className="uppercase tracking-[0.3em] text-primary/70">
-                        {thread.role}
-                      </span>
-                      <span>{new Date(thread.updatedAt).toLocaleTimeString('tr-TR')}</span>
-                    </div>
-                    <p className="mt-2 text-[0.8rem]">{thread.lastMessage}</p>
-                  </li>
-                ))
+                agentTodos.map((thread, index) => {
+                  const motion = getListStaggerProps(index);
+                  return (
+                    <li key={thread.id}>
+                      <m.div
+                        {...motion}
+                        {...cardHoverMotionProps}
+                        className="rounded-xl border border-white/12 bg-white/[0.04] p-4 text-white/70 shadow-[0_0_30px_rgba(255,107,44,0.1)] transition hover:border-primary/40 hover:bg-primary/10"
+                      >
+                        <div className="flex items-center justify-between font-semibold text-white">
+                          <span className="uppercase tracking-[0.32em] text-primary/80">
+                            {thread.role}
+                          </span>
+                          <span className="text-white/50">
+                            {new Date(thread.updatedAt).toLocaleTimeString('tr-TR')}
+                          </span>
+                        </div>
+                        <p className="mt-2 text-[0.8rem] text-white/70">{thread.lastMessage}</p>
+                      </m.div>
+                    </li>
+                  );
+                })
               )}
             </ul>
-          </div>
+          </m.section>
 
-          <div className="rounded-2xl border border-white/10 bg-background/70 p-4 text-xs text-muted-foreground">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.35em] text-primary/70">
+          <m.section
+            {...panelMotionProps}
+            className={cn(
+              panelBaseClass,
+              panelHoverClass,
+              'border-white/15 p-5 text-xs text-white/70'
+            )}
+          >
+            <h2 className="text-sm font-semibold uppercase tracking-[0.35em] text-primary/75">
               Studio quick stats
             </h2>
-            <dl className="mt-3 space-y-3">
+            <dl className="mt-4 space-y-3">
               <div className="flex items-center justify-between">
-                <dt>Aktif dosya</dt>
-                <dd className="font-medium text-foreground">
-                  {activeFile ? activeFile.path : '—'}
-                </dd>
+                <dt className="text-white/60">Aktif dosya</dt>
+                <dd className="font-medium text-white">{activeFile ? activeFile.path : '—'}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt>Terminal log sayısı</dt>
-                <dd className="font-medium text-foreground">{runLogs.length}</dd>
+                <dt className="text-white/60">Terminal log sayısı</dt>
+                <dd className="font-medium text-white">{runLogs.length}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt>Kaydedilmemiş değişiklik</dt>
+                <dt className="text-white/60">Kaydedilmemiş değişiklik</dt>
                 <dd
                   className={cn(
-                    'font-medium',
+                    'font-semibold uppercase tracking-[0.2em]',
                     isActiveFileDirty ? 'text-amber-300' : 'text-emerald-300'
                   )}
                 >
@@ -1070,14 +1165,22 @@ function StudioShell() {
                 </dd>
               </div>
             </dl>
-          </div>
+          </m.section>
 
-          <div className="rounded-2xl border border-white/10 bg-background/70 p-4 text-xs text-muted-foreground">
+          <m.section
+            {...panelMotionProps}
+            className={cn(
+              panelBaseClass,
+              panelHoverClass,
+              'border-white/15 p-5 text-xs text-white/70'
+            )}
+          >
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold uppercase tracking-[0.35em] text-primary/70">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.35em] text-primary/75">
                 AI önerileri
               </h2>
-              <button
+              <m.button
+                {...secondaryActionMotionProps}
                 type="button"
                 onClick={() => {
                   suggestionQueue.forEach(id => stopSuggestionTimers(id));
@@ -1091,45 +1194,51 @@ function StudioShell() {
                   );
                   appendSuggestionLog('AI öneri kuyruğu temizlendi.');
                 }}
-                className="rounded-full border border-white/15 px-3 py-1 text-[0.65rem] tracking-[0.3em] text-muted-foreground transition hover:border-white/30 hover:text-foreground"
+                className={cn(
+                  ghostActionClass,
+                  'border-white/20 px-3 py-1 text-[0.65rem] tracking-[0.3em] text-white/60'
+                )}
                 disabled={suggestionQueue.length === 0}
               >
                 Kuyruğu temizle
-              </button>
+              </m.button>
             </div>
             <div className="mt-4 space-y-3">
-              {aiSuggestions.map(suggestion => {
+              {aiSuggestions.map((suggestion, index) => {
                 const state = suggestionState[suggestion.id] ?? { status: 'idle', note: 'Hazır' };
+                const motion = getListStaggerProps(index);
                 return (
-                  <div
+                  <m.div
                     key={suggestion.id}
+                    {...motion}
+                    {...cardHoverMotionProps}
                     className={cn(
-                      'rounded-xl border border-white/10 bg-black/40 p-3 text-xs text-muted-foreground',
+                      'rounded-xl border border-white/12 bg-white/[0.03] p-4 text-xs text-white/75 transition-all duration-300',
                       suggestionStatusTone[state.status],
                       suggestionImpactTone[suggestion.impact]
                     )}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="space-y-2">
-                        <h3 className="font-semibold text-foreground">{suggestion.title}</h3>
-                        <p className="text-xs text-foreground/70">{suggestion.description}</p>
+                        <h3 className="font-semibold text-white">{suggestion.title}</h3>
+                        <p className="text-xs text-white/70">{suggestion.description}</p>
                       </div>
-                      <div className="text-right">
-                        <div className="rounded-full border border-white/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.3em] text-muted-foreground/70">
+                      <div className="text-right text-white/60">
+                        <div className="rounded-full border border-white/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.3em]">
                           {suggestion.impact}
                         </div>
-                        <div className="mt-2 rounded-full bg-white/10 px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.3em] text-muted-foreground/70">
+                        <div className="mt-2 rounded-full border border-white/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.3em]">
                           {suggestionStatusLabel[state.status]}
                         </div>
                       </div>
                     </div>
-                    <div className="relative mt-3 flex flex-wrap items-center justify-between gap-2 text-[0.7rem] text-muted-foreground/80">
+                    <div className="relative mt-3 flex flex-wrap items-center justify-between gap-2 text-[0.7rem] text-white/70">
                       <span>{state.note}</span>
-                      <span className="text-muted-foreground/50">{state.lastUpdated ?? '—'}</span>
+                      <span className="text-white/45">{state.lastUpdated ?? '—'}</span>
                     </div>
                     {typeof state.progress === 'number' ? (
                       <div className="mt-3">
-                        <div className="flex items-center justify-between text-[0.65rem] text-muted-foreground/60">
+                        <div className="flex items-center justify-between text-[0.65rem] text-white/55">
                           <span>İlerleme</span>
                           <span>%{state.progress}</span>
                         </div>
@@ -1144,86 +1253,104 @@ function StudioShell() {
                       </div>
                     ) : null}
                     <div className="mt-3 flex flex-wrap items-center gap-2">
-                      <button
+                      <m.button
+                        {...primaryActionMotionProps}
                         type="button"
-                        className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[0.65rem] font-semibold text-primary transition hover:bg-primary/20 disabled:opacity-50"
+                        className={cn(primaryActionClass, 'px-4 py-1 text-[0.65rem] text-black')}
                         onClick={() => applySuggestion(suggestion)}
                         disabled={['queued', 'in-progress'].includes(state.status)}
                       >
                         {state.status === 'completed' ? 'Tekrar uygula' : "Prompt'a ekle"}
-                      </button>
-                      <button
+                      </m.button>
+                      <m.button
+                        {...secondaryActionMotionProps}
                         type="button"
-                        className="rounded-full border border-white/15 px-3 py-1 text-[0.65rem] text-muted-foreground transition hover:border-white/30 hover:text-foreground disabled:opacity-50"
+                        className={cn(
+                          ghostActionClass,
+                          'border-white/20 px-3 py-1 text-[0.65rem] text-white/70'
+                        )}
                         onClick={() => revertSuggestion(suggestion)}
                         disabled={state.status === 'idle'}
                       >
                         {state.status === 'completed' ? 'Geri al' : 'İptal et'}
-                      </button>
+                      </m.button>
                     </div>
-                  </div>
+                  </m.div>
                 );
               })}
             </div>
-          </div>
+          </m.section>
 
-          <div className="rounded-2xl border border-white/10 bg-background/70 p-4 text-xs text-muted-foreground">
+          <m.section
+            {...panelMotionProps}
+            className={cn(
+              panelBaseClass,
+              panelHoverClass,
+              'border-white/15 p-5 text-xs text-white/70'
+            )}
+          >
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold uppercase tracking-[0.35em] text-primary/70">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.35em] text-primary/75">
                 Test Suites
               </h2>
-              <button
+              <m.button
+                {...secondaryActionMotionProps}
                 type="button"
                 onClick={refreshTestSuite}
-                className="rounded-full border border-white/15 px-3 py-1 text-[0.65rem] tracking-[0.3em] text-muted-foreground transition hover:border-white/30 hover:text-foreground"
+                className={cn(secondaryActionClass, 'px-3 py-1 text-[0.65rem] tracking-[0.3em]')}
               >
                 Sonuçları yenile
-              </button>
+              </m.button>
             </div>
             <div className="mt-4 space-y-3">
-              {testSuites.map(suite => (
-                <div
-                  key={suite.id}
-                  className="rounded-xl border border-white/10 bg-black/40 p-3 text-xs text-muted-foreground"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold text-foreground">{suite.name}</h3>
-                      <p className="text-[0.7rem] text-muted-foreground/70">
-                        Kapsama: {suite.coverage} • Süre: {suite.duration}
-                      </p>
+              {testSuites.map((suite, index) => {
+                const motion = getListStaggerProps(index);
+                return (
+                  <m.div
+                    key={suite.id}
+                    {...motion}
+                    {...cardHoverMotionProps}
+                    className="rounded-xl border border-white/12 bg-white/[0.03] p-4 text-xs text-white/75 shadow-[0_0_28px_rgba(255,107,44,0.12)] transition hover:border-primary/40 hover:bg-primary/10"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-white">{suite.name}</h3>
+                        <p className="text-[0.7rem] text-white/60">
+                          Kapsama: {suite.coverage} • Süre: {suite.duration}
+                        </p>
+                      </div>
+                      <div className="rounded-full border border-white/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.3em] text-white/65">
+                        {suite.status === 'running'
+                          ? 'RUNNING'
+                          : suite.status === 'pass'
+                            ? 'PASS'
+                            : 'FAILED'}
+                      </div>
                     </div>
-                    <div className="rounded-full border border-white/20 px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.3em] text-muted-foreground/70">
-                      {suite.status === 'running'
-                        ? 'RUNNING'
-                        : suite.status === 'pass'
-                          ? 'PASS'
-                          : 'FAILED'}
+                    <div className="mt-2 flex items-center justify-between text-[0.65rem] text-white/55">
+                      <span>Son güncelleme</span>
+                      <span>{suite.updatedAt}</span>
                     </div>
-                  </div>
-                  <div className="mt-2 flex items-center justify-between text-[0.65rem] text-muted-foreground/60">
-                    <span>Son güncelleme</span>
-                    <span>{suite.updatedAt}</span>
-                  </div>
-                  {typeof suite.progress === 'number' ? (
-                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
-                      <div
-                        className={cn(
-                          'h-full rounded-full',
-                          suite.status === 'running'
-                            ? 'bg-amber-400'
-                            : suite.status === 'pass'
-                              ? 'bg-emerald-400'
-                              : 'bg-red-400',
-                          getProgressWidthClass(suite.progress)
-                        )}
-                      />
-                    </div>
-                  ) : null}
-                </div>
-              ))}
+                    {typeof suite.progress === 'number' ? (
+                      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/12">
+                        <div
+                          className={cn(
+                            'h-full rounded-full',
+                            suite.status === 'running'
+                              ? 'bg-amber-400'
+                              : suite.status === 'pass'
+                                ? 'bg-emerald-400'
+                                : 'bg-red-400',
+                            getProgressWidthClass(suite.progress)
+                          )}
+                        />
+                      </div>
+                    ) : null}
+                  </m.div>
+                );
+              })}
             </div>
-          </div>
+          </m.section>
         </aside>
       </div>
     </section>

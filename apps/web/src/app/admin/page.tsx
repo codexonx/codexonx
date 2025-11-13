@@ -37,6 +37,7 @@ import { StatisticsReport } from '@/components/dashboard/statistics-report';
 import { Logo } from '@/components/ui/logo';
 import { AdminLayout } from '@/components/layouts/admin-layout';
 import { useI18n } from '@/contexts/i18n-context';
+import { cn } from '@/lib/utils';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -168,33 +169,45 @@ export default function AdminDashboard() {
       animate="animate"
       className="overflow-hidden"
     >
-      <Card className="overflow-hidden">
-        <CardHeader className="pb-2">
+      <Card className="relative overflow-hidden border-white/12 bg-white/[0.03] shadow-[0_30px_70px_rgba(4,6,16,0.45)] backdrop-blur-xl">
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,107,44,0.16),transparent_70%),radial-gradient(circle_at_bottom_left,rgba(84,120,255,0.16),transparent_75%)]"
+          aria-hidden
+        />
+        <CardHeader className="relative pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm font-medium">{title}</CardTitle>
-            <div className={`rounded-md bg-${accentColor}/10 p-2 text-${accentColor}`}>
+            <CardTitle className="text-sm font-medium text-white/90">{title}</CardTitle>
+            <div
+              className={cn(
+                'rounded-lg border border-white/10 bg-black/40 p-2 text-white/80 shadow-[0_0_22px_rgba(255,107,44,0.3)]',
+                accentColor === 'emerald' &&
+                  'shadow-[0_0_22px_rgba(16,185,129,0.3)] text-emerald-200',
+                accentColor === 'violet' &&
+                  'shadow-[0_0_22px_rgba(139,92,246,0.28)] text-violet-200',
+                accentColor === 'pink' && 'shadow-[0_0_22px_rgba(236,72,153,0.28)] text-pink-200',
+                accentColor === 'indigo' && 'shadow-[0_0_22px_rgba(99,102,241,0.3)] text-indigo-200'
+              )}
+            >
               <Icon className="h-4 w-4" />
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{value}</div>
+        <CardContent className="relative">
+          <div className="text-3xl font-semibold text-white">{value}</div>
           {change !== undefined && (
-            <div className="flex items-center pt-1 text-xs">
+            <div className="mt-2 flex items-center text-xs">
               {change >= 0 ? (
-                <span className="flex items-center text-emerald-500">
+                <span className="flex items-center text-emerald-300">
                   <ArrowUp className="mr-1 h-3 w-3" />
                   <span>{change}%</span>
                 </span>
               ) : (
-                <span className="flex items-center text-rose-500">
+                <span className="flex items-center text-rose-300">
                   <ArrowDown className="mr-1 h-3 w-3" />
                   <span>{Math.abs(change)}%</span>
                 </span>
               )}
-              <span className="ml-1.5 text-muted-foreground">
-                {t('dashboard.comparedToPrevious')}
-              </span>
+              <span className="ml-1.5 text-white/60">{t('dashboard.comparedToPrevious')}</span>
             </div>
           )}
         </CardContent>
@@ -204,18 +217,24 @@ export default function AdminDashboard() {
 
   return (
     <AdminLayout>
-      <div className="space-y-8">
+      <div className="space-y-10">
         {/* Hoş Geldiniz Bölümü */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex flex-col gap-4 rounded-3xl border border-white/8 bg-white/[0.03] p-6 shadow-[0_45px_85px_rgba(4,6,16,0.48)] backdrop-blur-xl md:flex-row md:items-center md:justify-between">
+          <div
+            className="pointer-events-none absolute inset-0 hidden rounded-3xl bg-[radial-gradient(circle_at_top_left,rgba(255,107,44,0.18),transparent_70%),radial-gradient(circle_at_bottom_right,rgba(84,120,255,0.18),transparent_70%)] md:block"
+            aria-hidden
+          />
           <motion.div
             custom={0}
             variants={fadeInUp}
             initial="initial"
             animate="animate"
-            className="space-y-0.5"
+            className="relative space-y-0.5"
           >
-            <h1 className="text-2xl font-bold tracking-tight">{t('dashboard.welcome')}</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-3xl font-semibold tracking-tight text-white">
+              {t('dashboard.welcome')}
+            </h1>
+            <p className="text-sm text-white/60">
               {new Date().toLocaleDateString('tr-TR', {
                 weekday: 'long',
                 year: 'numeric',
@@ -280,7 +299,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* İstatistik Grafiği ve Öneriler */}
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-3">
           {/* Ana Grafik */}
           <motion.div
             custom={2}
@@ -289,62 +308,93 @@ export default function AdminDashboard() {
             animate="animate"
             className="lg:col-span-2"
           >
-            <Card>
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
+            <Card className="relative overflow-hidden border-white/10 bg-white/[0.03] shadow-[0_40px_85px_rgba(4,6,16,0.55)] backdrop-blur-xl">
+              <div
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,107,44,0.22),transparent_72%),radial-gradient(circle_at_bottom_left,rgba(84,120,255,0.2),transparent_72%)]"
+                aria-hidden
+              />
+              <CardHeader className="relative pb-2">
+                <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <CardTitle>{t('dashboard.analytics.title')}</CardTitle>
-                    <CardDescription>{t('dashboard.analytics.description')}</CardDescription>
+                    <CardTitle className="text-lg font-semibold text-white">
+                      {t('dashboard.analytics.title')}
+                    </CardTitle>
+                    <CardDescription className="text-white/60">
+                      {t('dashboard.analytics.description')}
+                    </CardDescription>
                   </div>
-                  <div>
-                    <Button variant="ghost" size="sm" className="gap-1 text-xs">
-                      {t('dashboard.analytics.weekly')}
-                    </Button>
-                    <Button variant="ghost" size="sm" className="gap-1 text-xs text-primary">
-                      {t('dashboard.analytics.monthly')}
-                    </Button>
-                    <Button variant="ghost" size="sm" className="gap-1 text-xs">
-                      {t('dashboard.analytics.yearly')}
-                    </Button>
+                  <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/40 p-1">
+                    {[
+                      t('dashboard.analytics.weekly'),
+                      t('dashboard.analytics.monthly'),
+                      t('dashboard.analytics.yearly'),
+                    ].map((label, index) => (
+                      <Button
+                        key={label}
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                          'h-7 rounded-full px-3 text-xs text-white/70 transition',
+                          index === 1
+                            ? 'border border-primary/40 bg-primary/20 text-white shadow-[0_0_25px_rgba(255,107,44,0.35)]'
+                            : 'hover:border-primary/35 hover:bg-primary/15'
+                        )}
+                      >
+                        {label}
+                      </Button>
+                    ))}
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-0">
-                <div className="h-[300px] w-full flex items-center justify-center">
-                  {/* Buraya gerçek grafik bileşeni eklenecek */}
-                  <BarChart2 className="h-16 w-16 text-muted-foreground/50" />
-                </div>
+              <CardContent className="relative flex h-[300px] w-full items-center justify-center">
+                <div
+                  className="pointer-events-none absolute inset-6 rounded-3xl border border-dashed border-white/10"
+                  aria-hidden
+                />
+                <BarChart2 className="h-16 w-16 text-white/40" />
               </CardContent>
             </Card>
           </motion.div>
 
           {/* Öneriler */}
           <motion.div custom={3} variants={fadeInUp} initial="initial" animate="animate">
-            <Card className="h-full">
-              <CardHeader>
-                <CardTitle>{t('dashboard.insights')}</CardTitle>
-                <CardDescription>{t('dashboard.insightsDescription')}</CardDescription>
+            <Card className="relative h-full overflow-hidden border-white/10 bg-white/[0.03] shadow-[0_40px_85px_rgba(4,6,16,0.55)] backdrop-blur-xl">
+              <div
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,107,44,0.18),transparent_70%),radial-gradient(circle_at_bottom,rgba(84,120,255,0.18),transparent_72%)]"
+                aria-hidden
+              />
+              <CardHeader className="relative">
+                <CardTitle className="text-white">{t('dashboard.insights')}</CardTitle>
+                <CardDescription className="text-white/65">
+                  {t('dashboard.insightsDescription')}
+                </CardDescription>
               </CardHeader>
-              <CardContent className="pb-2">
+              <CardContent className="relative pb-2">
                 <div className="space-y-4">
                   {suggestions.map((suggestion, index) => (
-                    <div key={index} className="flex gap-3">
-                      <div className={`p-2 rounded-full ${suggestion.color} h-fit`}>
+                    <motion.div
+                      key={index}
+                      custom={index}
+                      variants={fadeInUp}
+                      className="flex gap-3 rounded-2xl border border-white/10 bg-black/40 p-4 text-white"
+                    >
+                      <div className={cn('h-fit rounded-full p-2 text-white/90', suggestion.color)}>
                         <suggestion.icon className="h-4 w-4" />
                       </div>
-                      <div>
-                        <h4 className="text-sm font-medium">{suggestion.title}</h4>
-                        <p className="text-sm text-muted-foreground mt-0.5">
-                          {suggestion.description}
-                        </p>
+                      <div className="space-y-1">
+                        <h4 className="text-sm font-semibold text-white/90">{suggestion.title}</h4>
+                        <p className="text-sm text-white/65">{suggestion.description}</p>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </CardContent>
-              <CardFooter>
-                <Button variant="ghost" className="w-full justify-start">
-                  <ArrowUpRight className="mr-2 h-4 w-4" />
+              <CardFooter className="relative">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-2 rounded-2xl border border-white/10 bg-white/[0.04] text-white/80 transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/15 hover:text-white"
+                >
+                  <ArrowUpRight className="h-4 w-4" />
                   {t('dashboard.viewAllInsights')}
                 </Button>
               </CardFooter>
@@ -353,25 +403,29 @@ export default function AdminDashboard() {
         </div>
 
         {/* Hızlı Eylemler ve Son Aktiviteler */}
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           {/* Hızlı Eylemler */}
           <motion.div custom={4} variants={fadeInUp} initial="initial" animate="animate">
-            <Card>
-              <CardHeader>
-                <CardTitle>{t('dashboard.quickActions')}</CardTitle>
+            <Card className="relative overflow-hidden border-white/10 bg-white/[0.03] shadow-[0_35px_85px_rgba(4,6,16,0.55)] backdrop-blur-xl">
+              <div
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,107,44,0.2),transparent_72%),radial-gradient(circle_at_bottom_left,rgba(84,120,255,0.18),transparent_74%)]"
+                aria-hidden
+              />
+              <CardHeader className="relative">
+                <CardTitle className="text-white">{t('dashboard.quickActions')}</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="relative">
                 <div className="grid grid-cols-2 gap-3">
                   {quickActions.map((action, index) => (
                     <Link href={action.href} key={index}>
-                      <Button variant="outline" className="h-auto p-4 w-full justify-start">
-                        <div className="flex flex-col items-start gap-1">
-                          <span className="rounded-full bg-primary/10 p-1.5">
-                            <action.icon className="h-4 w-4 text-primary" />
+                      <motion.div whileHover={{ y: -4 }} whileTap={{ scale: 0.99 }}>
+                        <div className="flex h-full flex-col gap-2 rounded-2xl border border-white/10 bg-black/40 p-4 text-white/80 transition hover:border-primary/40 hover:bg-primary/15 hover:text-white">
+                          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-primary/30 bg-primary/25 text-white shadow-[0_0_25px_rgba(255,107,44,0.35)]">
+                            <action.icon className="h-4 w-4" />
                           </span>
-                          <span className="font-medium text-sm mt-1">{action.name}</span>
+                          <span className="text-sm font-medium">{action.name}</span>
                         </div>
-                      </Button>
+                      </motion.div>
                     </Link>
                   ))}
                 </div>
@@ -381,46 +435,62 @@ export default function AdminDashboard() {
 
           {/* Son Aktiviteler */}
           <motion.div custom={5} variants={fadeInUp} initial="initial" animate="animate">
-            <Card>
-              <CardHeader className="pb-3">
+            <Card className="relative overflow-hidden border-white/10 bg-white/[0.03] shadow-[0_35px_85px_rgba(4,6,16,0.55)] backdrop-blur-xl">
+              <div
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,107,44,0.18),transparent_70%),radial-gradient(circle_at_bottom_left,rgba(84,120,255,0.18),transparent_72%)]"
+                aria-hidden
+              />
+              <CardHeader className="relative pb-3">
                 <div className="flex items-center justify-between">
-                  <CardTitle>{t('dashboard.recentActivity')}</CardTitle>
-                  <Button size="sm" variant="ghost" className="gap-1 h-7 px-2">
+                  <CardTitle className="text-white">{t('dashboard.recentActivity')}</CardTitle>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 gap-1 rounded-full border border-white/15 px-3 text-xs text-white/75 transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/20 hover:text-white"
+                  >
                     <Clock className="h-3.5 w-3.5" />
-                    <span className="text-xs">{t('dashboard.viewAll')}</span>
+                    <span>{t('dashboard.viewAll')}</span>
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="p-0">
-                <div className="space-y-0">
+              <CardContent className="relative p-0">
+                <div className="divide-y divide-white/10">
                   {recentActivity.map((activity, index) => (
-                    <div
+                    <motion.div
                       key={index}
-                      className="flex items-center justify-between py-3 px-6 border-b last:border-0 hover:bg-muted/50"
+                      custom={index}
+                      variants={fadeInUp}
+                      className="flex items-center justify-between px-6 py-4 transition hover:bg-white/[0.04]"
                     >
                       <div className="flex items-start gap-3">
                         <div
-                          className={`rounded-full p-1.5 ${getActivityTypeColor(activity.type)}`}
+                          className={cn(
+                            'rounded-full border border-white/15 p-2 text-white',
+                            getActivityTypeColor(activity.type)
+                          )}
                         >
                           {getActivityTypeIcon(activity.type)}
                         </div>
                         <div>
-                          <p className="text-sm font-medium">{activity.title}</p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-sm font-semibold text-white">{activity.title}</p>
+                          <p className="text-xs text-white/65">
                             {activity.user} {getActivityActionText(activity.action)}
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center">
-                        <p className="text-xs text-muted-foreground pr-2">{activity.time}</p>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                      <div className="flex items-center gap-2 text-xs text-white/55">
+                        <span>{activity.time}</span>
+                        <ChevronRight className="h-4 w-4" />
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </CardContent>
-              <CardFooter className="pt-3">
-                <Button variant="outline" className="w-full">
+              <CardFooter className="relative pt-3">
+                <Button
+                  variant="outline"
+                  className="w-full rounded-full border-white/15 bg-white/[0.06] text-white/80 transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/20 hover:text-white"
+                >
                   {t('dashboard.viewAllActivity')}
                 </Button>
               </CardFooter>
@@ -430,23 +500,36 @@ export default function AdminDashboard() {
 
         {/* En altta geniş kart - özet veya performans istatistikleri */}
         <motion.div custom={6} variants={fadeInUp} initial="initial" animate="animate">
-          <Card className="overflow-hidden">
-            <CardHeader>
-              <CardTitle>{t('dashboard.performanceOverview')}</CardTitle>
-              <CardDescription>{t('dashboard.performanceDescription')}</CardDescription>
+          <Card className="relative overflow-hidden border-white/10 bg-gradient-to-br from-black/80 via-black/70 to-black/60 shadow-[0_45px_100px_rgba(4,6,16,0.6)] backdrop-blur-2xl">
+            <div
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,107,44,0.22),transparent_70%),radial-gradient(circle_at_bottom_right,rgba(84,120,255,0.22),transparent_72%)]"
+              aria-hidden
+            />
+            <CardHeader className="relative">
+              <CardTitle className="text-white">{t('dashboard.performanceOverview')}</CardTitle>
+              <CardDescription className="text-white/65">
+                {t('dashboard.performanceDescription')}
+              </CardDescription>
             </CardHeader>
-            <CardContent className="p-0">
-              <div className="aspect-[3/1] bg-gradient-to-br from-muted/50 to-muted border-y flex items-center justify-center">
-                <div className="max-w-md text-center p-6">
+            <CardContent className="relative p-0">
+              <div className="flex aspect-[3/1] items-center justify-center border-y border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,107,44,0.08),transparent_75%)]">
+                <div className="max-w-2xl p-8 text-center text-white">
                   <Logo size="lg" animated className="mx-auto mb-6" />
-                  <h3 className="text-xl font-bold mb-2">{t('dashboard.codexonxPlatform')}</h3>
-                  <p className="text-muted-foreground">{t('dashboard.platformDescription')}</p>
+                  <h3 className="mb-2 text-2xl font-semibold">{t('dashboard.codexonxPlatform')}</h3>
+                  <p className="text-sm text-white/70">{t('dashboard.platformDescription')}</p>
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button variant="ghost">{t('dashboard.documentation')}</Button>
-              <Button>{t('dashboard.getStarted')}</Button>
+            <CardFooter className="relative flex flex-wrap justify-between gap-3">
+              <Button
+                variant="ghost"
+                className="rounded-full border border-white/15 px-4 text-white/80 transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/15 hover:text-white"
+              >
+                {t('dashboard.documentation')}
+              </Button>
+              <Button className="rounded-full bg-primary/80 px-4 text-white shadow-[0_0_40px_rgba(255,107,44,0.5)] transition hover:-translate-y-0.5 hover:bg-primary">
+                {t('dashboard.getStarted')}
+              </Button>
             </CardFooter>
           </Card>
         </motion.div>
@@ -458,13 +541,13 @@ export default function AdminDashboard() {
   function getActivityTypeColor(type: string) {
     switch (type) {
       case 'project':
-        return 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400';
+        return 'border-emerald-400/30 bg-emerald-400/15 text-emerald-200';
       case 'subscription':
-        return 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400';
+        return 'border-purple-400/30 bg-purple-400/15 text-purple-200';
       case 'api':
-        return 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400';
+        return 'border-sky-400/30 bg-sky-400/15 text-sky-200';
       default:
-        return 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400';
+        return 'border-white/10 bg-white/10 text-white/75';
     }
   }
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import {
   Search,
   Plus,
@@ -14,6 +15,7 @@ import {
   SlidersHorizontal,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 // Kullanıcı veri tipi
 type User = {
@@ -24,6 +26,31 @@ type User = {
   status: 'ACTIVE' | 'INACTIVE';
   createdAt: string;
 };
+
+const cardShellClass =
+  'relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] shadow-[0_45px_90px_rgba(4,6,16,0.55)] backdrop-blur-xl';
+const subtleOverlayClass =
+  'pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,107,44,0.18),transparent_70%),radial-gradient(circle_at_bottom_right,rgba(84,120,255,0.18),transparent_72%)]';
+const tableCardOverlayClass =
+  'pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,107,44,0.16),transparent_72%),radial-gradient(circle_at_bottom_left,rgba(84,120,255,0.18),transparent_74%)]';
+
+const containerVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: (delay = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay, duration: 0.45, ease: 'easeOut' },
+  }),
+} as const;
+
+const tableRowVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: (index: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: Math.min(index * 0.04, 0.4), duration: 0.25, ease: 'easeOut' },
+  }),
+} as const;
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -81,6 +108,9 @@ export default function UsersPage() {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
+  const safeTotalPages = Math.max(totalPages, 1);
+  const showingStart = filteredUsers.length === 0 ? 0 : indexOfFirstItem + 1;
+  const showingEnd = Math.min(indexOfLastItem, filteredUsers.length);
 
   // Sayfa değiştirme işlevi
   const handlePageChange = (pageNumber: number) => {
@@ -105,178 +135,259 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Kullanıcı Yönetimi</h1>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Yeni Kullanıcı
-        </Button>
-      </div>
-
-      {/* Filtreler ve Arama */}
-      <div className="flex flex-wrap gap-4 items-center">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="İsim veya e-posta ile ara..."
-            className="pl-10 h-10 w-full rounded-md border border-input bg-background py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-          />
+    <motion.div
+      className="space-y-8"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.div className={cardShellClass} variants={containerVariants} custom={0.05}>
+        <div className={subtleOverlayClass} aria-hidden />
+        <div className="relative flex flex-col gap-6 px-6 py-6 md:flex-row md:items-center md:justify-between">
+          <div className="space-y-1">
+            <p className="text-xs uppercase tracking-[0.45em] text-white/45">Yönetim</p>
+            <h1 className="text-3xl font-semibold tracking-tight text-white">Kullanıcı Yönetimi</h1>
+            <p className="text-sm text-white/60">
+              Takımınızı yönetin, roller atayın ve erişim izinlerini tek noktadan kontrol edin.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              variant="ghost"
+              className="gap-2 rounded-full border border-white/15 px-4 text-white/80 transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/15 hover:text-white"
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+              Filtreler
+            </Button>
+            <Button className="gap-2 rounded-full bg-primary/80 px-4 text-white shadow-[0_0_35px_rgba(255,107,44,0.45)] transition hover:-translate-y-0.5 hover:bg-primary">
+              <Plus className="h-4 w-4" />
+              Yeni Kullanıcı
+            </Button>
+          </div>
         </div>
-        <Button variant="outline" className="flex items-center gap-2">
-          <SlidersHorizontal className="h-4 w-4" />
-          Filtreler
-        </Button>
-      </div>
+      </motion.div>
 
-      {/* Kullanıcı Tablosu */}
-      <div className="rounded-md border">
-        <div className="relative w-full overflow-auto">
-          <table className="w-full caption-bottom text-sm">
-            <thead className="[&_tr]:border-b">
-              <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                  Ad Soyad
-                </th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                  E-posta
-                </th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                  Rol
-                </th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                  Durum
-                </th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                  Kayıt Tarihi
-                </th>
-                <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">
-                  İşlemler
-                </th>
-              </tr>
-            </thead>
-            <tbody className="[&_tr:last-child]:border-0">
-              {currentItems.map(user => (
-                <tr
-                  key={user.id}
-                  className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
-                >
-                  <td className="p-4 align-middle">{user.name}</td>
-                  <td className="p-4 align-middle">{user.email}</td>
-                  <td className="p-4 align-middle">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        user.role === 'ADMIN'
-                          ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300'
-                          : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
-                      }`}
-                    >
-                      {user.role === 'ADMIN' ? 'Admin' : 'Kullanıcı'}
-                    </span>
-                  </td>
-                  <td className="p-4 align-middle">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        user.status === 'ACTIVE'
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                          : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-                      }`}
-                    >
-                      {user.status === 'ACTIVE' ? (
-                        <>
-                          <Check className="mr-1 h-3 w-3" />
-                          Aktif
-                        </>
-                      ) : (
-                        <>
-                          <X className="mr-1 h-3 w-3" />
-                          Pasif
-                        </>
-                      )}
-                    </span>
-                  </td>
-                  <td className="p-4 align-middle">{formatDate(user.createdAt)}</td>
-                  <td className="p-4 text-right align-middle">
-                    <div className="flex items-center justify-end gap-2">
-                      <Button variant="ghost" size="icon">
-                        <Edit className="h-4 w-4" />
-                        <span className="sr-only">Düzenle</span>
-                      </Button>
-                      <Button variant="ghost" size="icon">
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                        <span className="sr-only">Sil</span>
-                      </Button>
-                      <Button variant="ghost" size="icon">
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Daha Fazla</span>
-                      </Button>
-                    </div>
-                  </td>
+      <motion.div
+        className={cn(cardShellClass, 'px-6 py-5')}
+        variants={containerVariants}
+        custom={0.12}
+      >
+        <div className={subtleOverlayClass} aria-hidden />
+        <motion.div
+          className="relative grid gap-4 md:grid-cols-[2fr_1fr]"
+          variants={containerVariants}
+        >
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/55" />
+            <input
+              type="text"
+              placeholder="İsim veya e-posta ile ara..."
+              className="h-11 w-full rounded-full border border-white/15 bg-black/40 pl-12 pr-4 text-sm text-white placeholder:text-white/50 transition focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/35"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center justify-end gap-3 text-xs text-white/60">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1">
+              <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.6)]" />
+              Aktif kullanıcılar: {users.filter(user => user.status === 'ACTIVE').length}
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1">
+              <span className="h-2 w-2 rounded-full bg-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.6)]" />
+              Adminler: {users.filter(user => user.role === 'ADMIN').length}
+            </span>
+          </div>
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        className={cn(cardShellClass, 'overflow-hidden')}
+        variants={containerVariants}
+        custom={0.18}
+      >
+        <div className={tableCardOverlayClass} aria-hidden />
+        <div className="relative">
+          <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Üye Tablosu</h2>
+              <p className="text-sm text-white/60">
+                Kullanıcı aktivitelerini, rollerini ve durumlarını izleyin.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-white/65">
+                Toplam {filteredUsers.length} kayıt
+              </span>
+            </div>
+          </div>
+
+          <div className="relative w-full overflow-auto">
+            <table className="w-full caption-bottom text-sm">
+              <thead>
+                <tr className="border-b border-white/10 text-left text-xs uppercase tracking-[0.32em] text-white/45">
+                  <th className="h-12 px-6 align-middle font-medium">Ad Soyad</th>
+                  <th className="h-12 px-6 align-middle font-medium">E-posta</th>
+                  <th className="h-12 px-6 align-middle font-medium">Rol</th>
+                  <th className="h-12 px-6 align-middle font-medium">Durum</th>
+                  <th className="h-12 px-6 align-middle font-medium">Kayıt Tarihi</th>
+                  <th className="h-12 px-6 text-right align-middle font-medium">İşlemler</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Sayfalama */}
-        <div className="flex items-center justify-between border-t px-4 py-4">
-          <div className="text-sm text-muted-foreground">
-            {filteredUsers.length} sonuçtan {indexOfFirstItem + 1} -{' '}
-            {Math.min(indexOfLastItem, filteredUsers.length)} arası gösteriliyor
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1}
-            >
-              <ChevronLeft className="h-4 w-4" />
-              <span className="sr-only">Önceki Sayfa</span>
-            </Button>
-            {Array.from({ length: Math.min(totalPages, 5) }).map((_, i) => {
-              let pageNum: number;
-
-              // Sayfa düğmelerini ortalamalı gösterme
-              if (totalPages <= 5) {
-                pageNum = i + 1;
-              } else if (currentPage <= 3) {
-                pageNum = i + 1;
-              } else if (currentPage >= totalPages - 2) {
-                pageNum = totalPages - 4 + i;
-              } else {
-                pageNum = currentPage - 2 + i;
-              }
-
-              if (pageNum > 0 && pageNum <= totalPages) {
-                return (
-                  <Button
-                    key={pageNum}
-                    variant={currentPage === pageNum ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handlePageChange(pageNum)}
+              </thead>
+              <tbody>
+                {currentItems.map((user, index) => (
+                  <motion.tr
+                    key={user.id}
+                    variants={tableRowVariants}
+                    initial="hidden"
+                    animate="visible"
+                    custom={index}
+                    className="border-b border-white/8 text-white/80 transition hover:bg-white/[0.04]"
                   >
-                    {pageNum}
-                  </Button>
-                );
-              }
-              return null;
-            })}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-              disabled={currentPage === totalPages}
-            >
-              <ChevronRight className="h-4 w-4" />
-              <span className="sr-only">Sonraki Sayfa</span>
-            </Button>
+                    <td className="px-6 py-4 align-middle">
+                      <div className="flex flex-col">
+                        <span className="font-medium text-white">{user.name}</span>
+                        <span className="text-xs text-white/50">ID: {user.id}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 align-middle">
+                      <span className="rounded-full border border-white/10 bg-black/40 px-3 py-1 text-xs text-white/75">
+                        {user.email}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 align-middle">
+                      <span
+                        className={cn(
+                          'inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium transition',
+                          user.role === 'ADMIN'
+                            ? 'border-purple-400/40 bg-purple-500/20 text-purple-100 shadow-[0_0_20px_rgba(168,85,247,0.35)]'
+                            : 'border-white/12 bg-white/[0.08] text-white/70 hover:border-primary/40 hover:bg-primary/20'
+                        )}
+                      >
+                        {user.role === 'ADMIN' ? 'Admin' : 'Kullanıcı'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 align-middle">
+                      <span
+                        className={cn(
+                          'inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium',
+                          user.status === 'ACTIVE'
+                            ? 'border-emerald-400/40 bg-emerald-500/25 text-emerald-100 shadow-[0_0_20px_rgba(16,185,129,0.35)]'
+                            : 'border-rose-400/40 bg-rose-500/25 text-rose-100 shadow-[0_0_20px_rgba(244,63,94,0.35)]'
+                        )}
+                      >
+                        {user.status === 'ACTIVE' ? (
+                          <>
+                            <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.6)]" />
+                            Aktif
+                          </>
+                        ) : (
+                          <>
+                            <span className="h-2 w-2 rounded-full bg-rose-300 shadow-[0_0_12px_rgba(244,63,94,0.6)]" />
+                            Pasif
+                          </>
+                        )}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 align-middle">
+                      <span className="text-xs text-white/60">{formatDate(user.createdAt)}</span>
+                    </td>
+                    <td className="px-6 py-4 text-right align-middle">
+                      <div className="inline-flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="rounded-full border border-white/10 bg-white/[0.05] text-white/70 transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/20 hover:text-white"
+                        >
+                          <Edit className="h-4 w-4" />
+                          <span className="sr-only">Düzenle</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="rounded-full border border-white/12 bg-white/[0.05] text-rose-200 transition hover:-translate-y-0.5 hover:border-rose-400/60 hover:bg-rose-400/20 hover:text-white"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">Sil</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="rounded-full border border-white/10 bg-white/[0.05] text-white/70 transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/20 hover:text-white"
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Daha Fazla</span>
+                        </Button>
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="flex flex-col gap-4 border-t border-white/10 px-6 py-4 text-sm text-white/65 md:flex-row md:items-center md:justify-between">
+            <div>
+              {filteredUsers.length} sonuçtan {showingStart} - {showingEnd} arası gösteriliyor
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="rounded-full border border-white/10 bg-white/[0.05] text-white/70 transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/20 hover:text-white disabled:opacity-50"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                <span className="sr-only">Önceki Sayfa</span>
+              </Button>
+              {Array.from({ length: Math.min(safeTotalPages, 5) }).map((_, i) => {
+                let pageNum: number;
+
+                if (safeTotalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= safeTotalPages - 2) {
+                  pageNum = safeTotalPages - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
+
+                if (pageNum > 0 && pageNum <= safeTotalPages) {
+                  const isActive = currentPage === pageNum;
+                  return (
+                    <Button
+                      key={pageNum}
+                      size="sm"
+                      onClick={() => handlePageChange(pageNum)}
+                      className={cn(
+                        'rounded-full border px-3 text-xs transition',
+                        isActive
+                          ? 'border-primary/50 bg-primary/25 text-white shadow-[0_0_25px_rgba(255,107,44,0.4)]'
+                          : 'border-white/10 bg-white/[0.04] text-white/70 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/15 hover:text-white'
+                      )}
+                    >
+                      {pageNum}
+                    </Button>
+                  );
+                }
+                return null;
+              })}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handlePageChange(Math.min(safeTotalPages, currentPage + 1))}
+                disabled={currentPage === safeTotalPages}
+                className="rounded-full border border-white/10 bg-white/[0.05] text-white/70 transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/20 hover:text-white disabled:opacity-50"
+              >
+                <ChevronRight className="h-4 w-4" />
+                <span className="sr-only">Sonraki Sayfa</span>
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
